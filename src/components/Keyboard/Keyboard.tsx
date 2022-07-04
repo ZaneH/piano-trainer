@@ -3,8 +3,13 @@ import { listen } from '@tauri-apps/api/event'
 import { useCallback, useContext, useEffect, useState } from 'react'
 import { KeyboardShortcuts, MidiNumbers, Piano } from 'react-piano'
 import 'react-piano/dist/styles.css'
+import styled from 'styled-components'
 import SoundfontProvider from '../SoundfontProvider'
 import { TrainerContext } from '../TrainerProvider'
+
+const KeyboardContainer = styled.div`
+  height: 25vh;
+`
 
 const Keyboard = () => {
   const { nextTargetNote, setNoteCounter } = useContext(TrainerContext)
@@ -61,31 +66,33 @@ const Keyboard = () => {
       onLoad={() => {}}
       render={({ playNote, stopNote }) => {
         return (
-          <Piano
-            noteRange={{ first: firstNote, last: lastNote }}
-            playNote={(midiNumber: number) => {
-              if (midiNumber === nextTargetNote) {
-                setNoteCounter?.((nc) => nc + 1)
-              }
+          <KeyboardContainer>
+            <Piano
+              noteRange={{ first: firstNote, last: lastNote }}
+              playNote={(midiNumber: number) => {
+                if (midiNumber === nextTargetNote) {
+                  setNoteCounter?.((nc) => nc + 1)
+                }
 
-              playNote(midiNumber)
-            }}
-            stopNote={(midiNumber: number) => {
-              stopNote(midiNumber)
-            }}
-            keyboardShortcuts={keyboardShortcuts}
-            renderNoteLabel={({ midiNumber }: { midiNumber: number }) => (
-              <p className='ReactPiano__NoteLabel'>
-                {MidiNumbers.getAttributes(midiNumber).note.replace(
-                  /[0-9]/,
-                  ''
-                )}
-              </p>
-            )}
-            activeNotes={Object.keys(activeNotes)
-              .filter((v: string) => activeNotes[v])
-              .map((s: string) => Number(s))}
-          />
+                playNote(midiNumber)
+              }}
+              stopNote={(midiNumber: number) => {
+                stopNote(midiNumber)
+              }}
+              keyboardShortcuts={keyboardShortcuts}
+              renderNoteLabel={({ midiNumber }: { midiNumber: number }) => (
+                <p className='ReactPiano__NoteLabel'>
+                  {MidiNumbers.getAttributes(midiNumber).note.replace(
+                    /[0-9]/,
+                    ''
+                  )}
+                </p>
+              )}
+              activeNotes={Object.keys(activeNotes)
+                .filter((v: string) => activeNotes[v])
+                .map((s: string) => Number(s))}
+            />
+          </KeyboardContainer>
         )
       }}
     />

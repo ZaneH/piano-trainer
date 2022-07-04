@@ -1,5 +1,5 @@
 import Keyboard from './components/Keyboard'
-import { TrainerPiano } from './components/Trainer'
+import { TrainerDisplay, TrainerPiano } from './components/Trainer'
 import TrainerProvider from './components/TrainerProvider'
 
 function App() {
@@ -7,6 +7,7 @@ function App() {
     <div className='App'>
       <TrainerProvider>
         <TrainerPiano />
+        <TrainerDisplay />
         <Keyboard />
       </TrainerProvider>
     </div>

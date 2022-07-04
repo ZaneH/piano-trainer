@@ -5,8 +5,7 @@ import { ignoreOctave } from '../../utils'
 import { TrainerContext } from '../TrainerProvider'
 
 const PianoContainer = styled.div`
-  height: 50vh;
-  width: 60%;
+  height: 35vh;
 `
 
 const InKeyMarker = styled.div`
@@ -31,19 +30,24 @@ const TrainerPiano = () => {
       <Keyboard
         noteRange={{
           first: MidiNumbers.fromNote('c3'),
-          last: MidiNumbers.fromNote('g4'),
+          last: MidiNumbers.fromNote('c5'),
         }}
         activeNotes={[nextTargetNote]}
         onPlayNoteInput={() => {}}
         onStopNoteInput={() => {}}
         keyWidthToHeight={0.33}
         renderNoteLabel={({ midiNumber }: { midiNumber: number }) => {
-          const modScale = ignoreOctave(scale || [])
-          return (
-            modScale[midiNumber % 12] && (
-              <InKeyMarker>{modScale[midiNumber % 12]}</InKeyMarker>
+          const isMidiNumbers = false
+          const modScale = ignoreOctave(scale || {})
+          if (isMidiNumbers) {
+            return <InKeyMarker>{midiNumber}</InKeyMarker>
+          } else {
+            return (
+              modScale[midiNumber % 12] && (
+                <InKeyMarker>{modScale[midiNumber % 12]}</InKeyMarker>
+              )
             )
-          )
+          }
         }}
       />
     </PianoContainer>

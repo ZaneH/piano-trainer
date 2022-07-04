@@ -1,4 +1,5 @@
 export type ScaleType = {
+  name?: string
   [midi: number]: string
 }
 
