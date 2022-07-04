@@ -1,7 +1,8 @@
 import { ScaleType } from '..'
 
 const CMajor: ScaleType = {
-  name: 'C Major',
+  label: 'C Major',
+  value: 'c-major',
   48: 'I',
   50: 'ii',
   52: 'iii',
@@ -13,7 +14,8 @@ const CMajor: ScaleType = {
 } as const
 
 const DMajor: ScaleType = {
-  name: 'D Major',
+  label: 'D Major',
+  value: 'd-major',
   50: 'I',
   52: 'ii',
   54: 'iii',
@@ -25,7 +27,8 @@ const DMajor: ScaleType = {
 } as const
 
 const EMajor: ScaleType = {
-  name: 'E Major',
+  label: 'E Major',
+  value: 'e-major',
   52: 'I',
   54: 'ii',
   56: 'iii',
@@ -37,7 +40,8 @@ const EMajor: ScaleType = {
 } as const
 
 const FMajor: ScaleType = {
-  name: 'F Major',
+  label: 'F Major',
+  value: 'f-major',
   53: 'I',
   55: 'ii',
   57: 'iii',
@@ -49,7 +53,8 @@ const FMajor: ScaleType = {
 } as const
 
 const GMajor: ScaleType = {
-  name: 'G Major',
+  label: 'G Major',
+  value: 'g-major',
   55: 'I',
   57: 'ii',
   59: 'iii',
@@ -61,7 +66,8 @@ const GMajor: ScaleType = {
 } as const
 
 const AMajor: ScaleType = {
-  name: 'A Major',
+  label: 'A Major',
+  value: 'a-major',
   57: 'I',
   59: 'ii',
   61: 'iii',
@@ -73,7 +79,8 @@ const AMajor: ScaleType = {
 } as const
 
 const BMajor: ScaleType = {
-  name: 'B Major',
+  label: 'B Major',
+  value: 'b-major',
   59: 'I',
   61: 'ii',
   63: 'iii',
@@ -95,4 +102,23 @@ const ignoreOctave = (scale: ScaleType): ScaleType => {
   return modKeys
 }
 
-export { CMajor, DMajor, EMajor, FMajor, GMajor, AMajor, BMajor, ignoreOctave }
+export type AvailableScalesType =
+  | 'c-major'
+  | 'd-major'
+  | 'e-major'
+  | 'f-major'
+  | 'g-major'
+  | 'a-major'
+  | 'b-major'
+
+const AVAILABLE_SCALES: { [key in AvailableScalesType]: ScaleType } = {
+  'c-major': CMajor,
+  'd-major': DMajor,
+  'e-major': EMajor,
+  'f-major': FMajor,
+  'g-major': GMajor,
+  'a-major': AMajor,
+  'b-major': BMajor,
+} as const
+
+export { AVAILABLE_SCALES, ignoreOctave }

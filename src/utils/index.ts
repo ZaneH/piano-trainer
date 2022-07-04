@@ -1,6 +1,10 @@
+import { AvailableScalesType } from './scales/majors'
+
 export type ScaleType = {
-  name?: string
+  label?: string
+  value?: AvailableScalesType
   [midi: number]: string
 }
 
-export * from './scales/Majors'
+export * from './scales/majors'
+export * from './modes/practice'

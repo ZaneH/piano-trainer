@@ -1,7 +1,14 @@
-html {
+html,
+body {
   height: 100vh;
   min-height: 100vh;
   margin: 0 auto;
+  background-color: #1f1f20;
+}
+
+.App,
+#root {
+  height: 100%;
 }
 
 .ReactPiano__NoteLabel {
