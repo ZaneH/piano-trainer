@@ -1,16 +1,18 @@
 import { invoke } from '@tauri-apps/api'
 import { listen } from '@tauri-apps/api/event'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useContext, useEffect, useState } from 'react'
 import { KeyboardShortcuts, MidiNumbers, Piano } from 'react-piano'
 import 'react-piano/dist/styles.css'
 import SoundfontProvider from '../SoundfontProvider'
+import { TrainerContext } from '../TrainerProvider'
 
 const Keyboard = () => {
+  const { nextTargetNote, setNoteCounter } = useContext(TrainerContext)
   const [activeNotes, setActiveNotes] = useState<{ [note: string]: boolean }>(
     {}
   )
   const firstNote = MidiNumbers.fromNote('c3')
-  const lastNote = MidiNumbers.fromNote('b4')
+  const lastNote = MidiNumbers.fromNote('c5')
   const keyboardShortcuts = KeyboardShortcuts.create({
     firstNote,
     lastNote,
@@ -25,7 +27,7 @@ const Keyboard = () => {
 
     listen('midi_message', (event) => {
       const payload = event.payload as { message: number[] }
-      const [command, note, velocity] = payload.message
+      const [command, note] = payload.message
 
       if (command === 144) {
         setActiveNotes((an) => ({
@@ -50,10 +52,6 @@ const Keyboard = () => {
     onLoadCallback()
   }, [onLoadCallback, isListening])
 
-  useEffect(() => {
-    console.log(Object.keys(activeNotes).filter((v: string) => activeNotes[v]))
-  }, [activeNotes])
-
   return (
     <SoundfontProvider
       instrumentName={'acoustic_grand_piano'}
@@ -65,10 +63,14 @@ const Keyboard = () => {
         return (
           <Piano
             noteRange={{ first: firstNote, last: lastNote }}
-            playNote={(midiNumber: any) => {
+            playNote={(midiNumber: number) => {
+              if (midiNumber === nextTargetNote) {
+                setNoteCounter?.((nc) => nc + 1)
+              }
+
               playNote(midiNumber)
             }}
-            stopNote={(midiNumber: any) => {
+            stopNote={(midiNumber: number) => {
               stopNote(midiNumber)
             }}
             keyboardShortcuts={keyboardShortcuts}
