@@ -1,26 +1,32 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import Keyboard from './components/Keyboard'
+import { useCallback, useEffect, useState } from 'react'
+import { listen } from '@tauri-apps/api/event'
+import { invoke } from '@tauri-apps/api'
 
 function App() {
+  const [isListening, setIsListening] = useState(false)
+
+  const onLoadCallback = useCallback(() => {
+    if (isListening) return
+    invoke('open_midi_connection', { inputIdx: 0 })
+
+    listen('midi_message', (event) => {
+      console.log(event)
+    }).catch(console.error)
+
+    console.log('Ready...')
+    setIsListening(true)
+  }, [isListening, setIsListening])
+
+  useEffect(() => {
+    onLoadCallback()
+  }, [onLoadCallback, isListening])
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className='App'>
+      <Keyboard />
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
