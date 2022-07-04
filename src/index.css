@@ -1,0 +1,13 @@
+html {
+    height: 100vh;
+    min-height: 100vh;
+    margin: 0 auto;
+}
+
+.ReactPiano__Keyboard {
+    height: 48vh !important;
+}
+
+.ReactPiano__NoteLabel {
+    font-family: Arial, Helvetica, sans-serif;
+}
