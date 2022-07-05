@@ -44,6 +44,7 @@ const TrainerPiano = () => {
             return <InKeyMarker>{midiNumber}</InKeyMarker>
           } else {
             if (isHardModeEnabled) {
+              // only add the first marker in hard mode
               if (midiNumber % 12 === 0) {
                 return (
                   <InKeyMarker>{modScale.keys[midiNumber % 12]}</InKeyMarker>

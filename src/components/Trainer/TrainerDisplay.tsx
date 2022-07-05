@@ -3,7 +3,7 @@ import Select from 'react-select'
 import styled from 'styled-components'
 import {
   AvailablePracticeModesType,
-  AvailableScalesType,
+  AvailableMajorScalesType,
   AVAILABLE_MODES,
   AVAILABLE_SCALES,
 } from '../../utils'
@@ -61,8 +61,8 @@ const TrainerDisplay = () => {
   } = useContext(TrainerContext)
 
   const scaleOptions = Object.keys(AVAILABLE_SCALES).map((s: string) => ({
-    label: AVAILABLE_SCALES[s as AvailableScalesType].label,
-    value: AVAILABLE_SCALES[s as AvailableScalesType].value,
+    label: AVAILABLE_SCALES[s as AvailableMajorScalesType].label,
+    value: AVAILABLE_SCALES[s as AvailableMajorScalesType].value,
   }))
 
   const modeOptions = Object.keys(AVAILABLE_MODES).map((s: string) => ({
@@ -93,11 +93,13 @@ const TrainerDisplay = () => {
         <Select
           options={scaleOptions}
           value={{
-            label: AVAILABLE_SCALES[scale?.value as AvailableScalesType].label,
-            value: AVAILABLE_SCALES[scale?.value as AvailableScalesType].value,
+            label:
+              AVAILABLE_SCALES[scale?.value as AvailableMajorScalesType].label,
+            value:
+              AVAILABLE_SCALES[scale?.value as AvailableMajorScalesType].value,
           }}
           onChange={(e) => {
-            setScale?.(AVAILABLE_SCALES[e?.value as AvailableScalesType])
+            setScale?.(AVAILABLE_SCALES[e?.value as AvailableMajorScalesType])
           }}
         />
       </TrainerSection>

@@ -105,18 +105,7 @@ const BMajor: ScaleType = {
   },
 } as const
 
-const ignoreOctave = (scale: ScaleType): ScaleType => {
-  const scaleKeys: string[] = Object.keys(scale.keys || {})
-  const modKeys: ScaleType = { keys: {} }
-
-  for (const k of scaleKeys) {
-    modKeys.keys[Number(k) % 12] = scale!.keys![Number(k)]
-  }
-
-  return modKeys
-}
-
-export type AvailableScalesType =
+export type AvailableMajorScalesType =
   | 'c-major'
   | 'd-major'
   | 'e-major'
@@ -125,14 +114,15 @@ export type AvailableScalesType =
   | 'a-major'
   | 'b-major'
 
-const AVAILABLE_SCALES: { [key in AvailableScalesType]: ScaleType } = {
-  'c-major': CMajor,
-  'd-major': DMajor,
-  'e-major': EMajor,
-  'f-major': FMajor,
-  'g-major': GMajor,
-  'a-major': AMajor,
-  'b-major': BMajor,
-} as const
+const AVAILABLE_MAJOR_SCALES: { [key in AvailableMajorScalesType]: ScaleType } =
+  {
+    'c-major': CMajor,
+    'd-major': DMajor,
+    'e-major': EMajor,
+    'f-major': FMajor,
+    'g-major': GMajor,
+    'a-major': AMajor,
+    'b-major': BMajor,
+  } as const
 
-export { AVAILABLE_SCALES, ignoreOctave }
+export { AVAILABLE_MAJOR_SCALES }
