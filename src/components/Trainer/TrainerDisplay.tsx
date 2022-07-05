@@ -8,6 +8,7 @@ import {
   AVAILABLE_SCALES,
 } from '../../utils'
 import { TrainerContext } from '../TrainerProvider'
+import ArrowLeftRight from 'remixicon-react/ArrowLeftRightFillIcon'
 
 const TrainerDisplayContainer = styled.div`
   display: flex;
@@ -26,9 +27,20 @@ const TrainerSection = styled.div`
   }
 `
 
+const IconContainer = styled.div`
+  padding: 16px;
+  display: inline-block;
+`
+
 const TrainerDisplay = () => {
-  const { scale, setScale, practiceMode, setPracticeMode } =
-    useContext(TrainerContext)
+  const {
+    scale,
+    setScale,
+    practiceMode,
+    setPracticeMode,
+    isScalePingPong,
+    setIsScalePingPong,
+  } = useContext(TrainerContext)
 
   const scaleOptions = Object.keys(AVAILABLE_SCALES).map((s: string) => ({
     label: AVAILABLE_SCALES[s as AvailableScalesType].label,
@@ -54,6 +66,13 @@ const TrainerDisplay = () => {
             setScale?.(AVAILABLE_SCALES[e?.value as AvailableScalesType])
           }}
         />
+        <IconContainer title='Enable ping-pong scale practice'>
+          <ArrowLeftRight
+            color={isScalePingPong ? '#70bcd3' : 'white'}
+            onClick={() => setIsScalePingPong?.((isPingPong) => !isPingPong)}
+            cursor='pointer'
+          />
+        </IconContainer>
       </TrainerSection>
 
       <TrainerSection>

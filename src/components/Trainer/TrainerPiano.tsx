@@ -38,13 +38,13 @@ const TrainerPiano = () => {
         keyWidthToHeight={0.33}
         renderNoteLabel={({ midiNumber }: { midiNumber: number }) => {
           const isMidiNumbers = false
-          const modScale = ignoreOctave(scale || {})
+          const modScale = ignoreOctave(scale || { keys: {} })
           if (isMidiNumbers) {
             return <InKeyMarker>{midiNumber}</InKeyMarker>
           } else {
             return (
-              modScale[midiNumber % 12] && (
-                <InKeyMarker>{modScale[midiNumber % 12]}</InKeyMarker>
+              modScale.keys?.[midiNumber % 12] && (
+                <InKeyMarker>{modScale.keys[midiNumber % 12]}</InKeyMarker>
               )
             )
           }
