@@ -10,6 +10,7 @@ import {
   AvailablePracticeModesType,
   AVAILABLE_SCALES,
   ScaleType,
+  SCALE_LENGTH,
 } from '../../utils'
 
 type TrainerContextType = {
@@ -65,16 +66,18 @@ const TrainerProvider: FC<TrainerContextType> = ({ children }) => {
   useEffect(() => {
     if (isScalePingPong && _isGoingDown) {
       setNextTargetNote(
-        Number(Object.keys(scale.keys).reverse()[noteCounter % 8])
+        Number(Object.keys(scale.keys).reverse()[noteCounter % SCALE_LENGTH])
       )
 
-      if ((noteCounter + 1) % 8 === 0) {
+      if ((noteCounter + 1) % SCALE_LENGTH === 0) {
         _setIsGoingDown(false)
       }
     } else {
-      setNextTargetNote(Number(Object.keys(scale.keys)[noteCounter % 8]))
+      setNextTargetNote(
+        Number(Object.keys(scale.keys)[noteCounter % SCALE_LENGTH])
+      )
 
-      if ((noteCounter + 1) % 8 === 0) {
+      if ((noteCounter + 1) % SCALE_LENGTH === 0) {
         _setIsGoingDown(true)
       }
     }

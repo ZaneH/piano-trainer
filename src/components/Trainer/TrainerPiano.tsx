@@ -1,7 +1,7 @@
 import { useContext } from 'react'
 import { Keyboard, MidiNumbers } from 'react-piano'
 import styled from 'styled-components'
-import { ignoreOctave } from '../../utils'
+import { ignoreOctave, OCTAVE_LENGTH } from '../../utils'
 import { TrainerContext } from '../TrainerProvider'
 
 const PianoContainer = styled.div`
@@ -45,15 +45,19 @@ const TrainerPiano = () => {
           } else {
             if (isHardModeEnabled) {
               // only add the first marker in hard mode
-              if (midiNumber % 12 === 0) {
+              if (midiNumber % OCTAVE_LENGTH === 0) {
                 return (
-                  <InKeyMarker>{modScale.keys[midiNumber % 12]}</InKeyMarker>
+                  <InKeyMarker>
+                    {modScale.keys[midiNumber % OCTAVE_LENGTH]}
+                  </InKeyMarker>
                 )
               }
             } else {
               return (
-                modScale.keys?.[midiNumber % 12] && (
-                  <InKeyMarker>{modScale.keys[midiNumber % 12]}</InKeyMarker>
+                modScale.keys?.[midiNumber % OCTAVE_LENGTH] && (
+                  <InKeyMarker>
+                    {modScale.keys[midiNumber % OCTAVE_LENGTH]}
+                  </InKeyMarker>
                 )
               )
             }
