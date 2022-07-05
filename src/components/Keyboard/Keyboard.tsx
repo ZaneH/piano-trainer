@@ -4,6 +4,7 @@ import { useCallback, useContext, useEffect, useState } from 'react'
 import { KeyboardShortcuts, MidiNumbers, Piano } from 'react-piano'
 import 'react-piano/dist/styles.css'
 import styled from 'styled-components'
+import { getTriadChordFromMidiNote } from '../../utils'
 import SoundfontProvider from '../SoundfontProvider'
 import { TrainerContext } from '../TrainerProvider'
 
@@ -12,7 +13,14 @@ const KeyboardContainer = styled.div`
 `
 
 const Keyboard = () => {
-  const { nextTargetNote, setNoteCounter } = useContext(TrainerContext)
+  const {
+    nextTargetNote,
+    setNoteCounter,
+    practiceMode,
+    chordStack,
+    setChordStack,
+    scale,
+  } = useContext(TrainerContext)
   const [activeNotes, setActiveNotes] = useState<{ [note: string]: boolean }>(
     {}
   )
@@ -57,6 +65,14 @@ const Keyboard = () => {
     onLoadCallback()
   }, [onLoadCallback, isListening])
 
+  useEffect(() => {
+    const targetChord = getTriadChordFromMidiNote(nextTargetNote!, scale!)
+    const matches = targetChord.every((e) => chordStack?.includes(e))
+    if (matches) {
+      setNoteCounter?.((nc) => nc + 1)
+    }
+  }, [chordStack])
+
   return (
     <SoundfontProvider
       instrumentName={'acoustic_grand_piano'}
@@ -70,14 +86,31 @@ const Keyboard = () => {
             <Piano
               noteRange={{ first: firstNote, last: lastNote }}
               playNote={(midiNumber: number) => {
-                if (midiNumber === nextTargetNote) {
+                if (
+                  midiNumber === nextTargetNote &&
+                  practiceMode === 'scales'
+                ) {
                   setNoteCounter?.((nc) => nc + 1)
+                } else if (practiceMode === 'chords') {
+                  setChordStack?.((cs) => [...cs, midiNumber])
                 }
 
                 playNote(midiNumber)
               }}
               stopNote={(midiNumber: number) => {
                 stopNote(midiNumber)
+
+                if (practiceMode === 'chords') {
+                  // remove midiNumber from chordStack
+                  setChordStack?.((cs) => {
+                    const removalIdx = cs.indexOf(midiNumber)
+                    if (removalIdx > -1) {
+                      cs.splice(removalIdx, 1)
+                    }
+
+                    return cs
+                  })
+                }
               }}
               keyboardShortcuts={keyboardShortcuts}
               renderNoteLabel={({ midiNumber }: { midiNumber: number }) => (

@@ -19,12 +19,17 @@ type TrainerContextType = {
   // Core functionality
   nextTargetNote?: number
   setNextTargetNote?: Dispatch<SetStateAction<number>>
+  /** Track the last key pressed for hard mode */
   prevNote?: number
   setPrevNote?: Dispatch<SetStateAction<number>>
   scale?: ScaleType
   setScale?: Dispatch<SetStateAction<ScaleType>>
-  noteCounter?: number // responsible for resetting the target note when we reach the end of a scale sequence
+  /** Responsible for resetting the nextTargetNote when we reach the end of a scale sequence. Counts to infinity */
+  noteCounter?: number
   setNoteCounter?: Dispatch<SetStateAction<number>>
+  /** Responsible for storing the current chord being played in Chord mode */
+  chordStack?: number[]
+  setChordStack?: Dispatch<SetStateAction<number[]>>
 
   // Settings
   practiceMode?: AvailablePracticeModesType
@@ -44,6 +49,7 @@ const TrainerProvider: FC<TrainerContextType> = ({ children }) => {
     Number(Object.keys(scale)[0])
   )
   const [noteCounter, setNoteCounter] = useState(0)
+  const [chordStack, setChordStack] = useState<number[]>([])
   const [practiceMode, setPracticeMode] =
     useState<AvailablePracticeModesType>('scales')
   const [isScalePingPong, setIsScalePingPong] = useState(false)
@@ -60,6 +66,8 @@ const TrainerProvider: FC<TrainerContextType> = ({ children }) => {
     setScale,
     noteCounter,
     setNoteCounter,
+    chordStack,
+    setChordStack,
     practiceMode,
     setPracticeMode,
     isScalePingPong,
