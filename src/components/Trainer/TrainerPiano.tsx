@@ -23,7 +23,8 @@ const InKeyMarker = styled.div`
 `
 
 const TrainerPiano = () => {
-  const { nextTargetNote, scale } = useContext(TrainerContext)
+  const { nextTargetNote, scale, isHardModeEnabled } =
+    useContext(TrainerContext)
 
   return (
     <PianoContainer>
@@ -32,7 +33,7 @@ const TrainerPiano = () => {
           first: MidiNumbers.fromNote('c3'),
           last: MidiNumbers.fromNote('c5'),
         }}
-        activeNotes={[nextTargetNote]}
+        activeNotes={[!isHardModeEnabled && nextTargetNote]}
         onPlayNoteInput={() => {}}
         onStopNoteInput={() => {}}
         keyWidthToHeight={0.33}
@@ -42,11 +43,19 @@ const TrainerPiano = () => {
           if (isMidiNumbers) {
             return <InKeyMarker>{midiNumber}</InKeyMarker>
           } else {
-            return (
-              modScale.keys?.[midiNumber % 12] && (
-                <InKeyMarker>{modScale.keys[midiNumber % 12]}</InKeyMarker>
+            if (isHardModeEnabled) {
+              if (midiNumber % 12 === 0) {
+                return (
+                  <InKeyMarker>{modScale.keys[midiNumber % 12]}</InKeyMarker>
+                )
+              }
+            } else {
+              return (
+                modScale.keys?.[midiNumber % 12] && (
+                  <InKeyMarker>{modScale.keys[midiNumber % 12]}</InKeyMarker>
+                )
               )
-            )
+            }
           }
         }}
       />

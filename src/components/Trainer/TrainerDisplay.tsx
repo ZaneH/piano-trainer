@@ -8,7 +8,8 @@ import {
   AVAILABLE_SCALES,
 } from '../../utils'
 import { TrainerContext } from '../TrainerProvider'
-import ArrowLeftRight from 'remixicon-react/ArrowLeftRightFillIcon'
+import ArrowLeftRightIcon from 'remixicon-react/ArrowLeftRightFillIcon'
+import SkullIcon from 'remixicon-react/SkullFillIcon'
 
 const TrainerDisplayContainer = styled.div`
   display: flex;
@@ -21,15 +22,30 @@ const TrainerDisplayContainer = styled.div`
 
 const TrainerSection = styled.div`
   width: 20vw;
+  min-width: 250px;
+`
+
+const TrainerSectionHeader = styled.div`
+  margin-bottom: 12px;
   & > h2 {
     color: white;
-    margin-bottom: 12px;
+    margin: 12px 0;
+    display: inline-block;
   }
 `
 
 const IconContainer = styled.div`
-  padding: 16px;
-  display: inline-block;
+  padding: 8px;
+  margin-left: 12px;
+  width: 2em;
+  height: 2em;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  background-color: white;
+  float: right;
+  cursor: pointer;
 `
 
 const TrainerDisplay = () => {
@@ -40,6 +56,8 @@ const TrainerDisplay = () => {
     setPracticeMode,
     isScalePingPong,
     setIsScalePingPong,
+    isHardModeEnabled,
+    setIsHardModeEnabled,
   } = useContext(TrainerContext)
 
   const scaleOptions = Object.keys(AVAILABLE_SCALES).map((s: string) => ({
@@ -55,7 +73,23 @@ const TrainerDisplay = () => {
   return (
     <TrainerDisplayContainer>
       <TrainerSection>
-        <h2>Scale</h2>
+        <TrainerSectionHeader>
+          <h2>Scale</h2>
+          <IconContainer
+            title='Toggle ping-pong scale practice'
+            onClick={() => setIsScalePingPong?.((isPingPong) => !isPingPong)}
+          >
+            <ArrowLeftRightIcon
+              color={isScalePingPong ? '#70bcd3' : '#1f1f20'}
+            />
+          </IconContainer>
+          <IconContainer
+            title='Toggle hard mode'
+            onClick={() => setIsHardModeEnabled?.((isHard) => !isHard)}
+          >
+            <SkullIcon color={isHardModeEnabled ? '#70bcd3' : '#1f1f20'} />
+          </IconContainer>
+        </TrainerSectionHeader>
         <Select
           options={scaleOptions}
           value={{
@@ -66,17 +100,12 @@ const TrainerDisplay = () => {
             setScale?.(AVAILABLE_SCALES[e?.value as AvailableScalesType])
           }}
         />
-        <IconContainer title='Enable ping-pong scale practice'>
-          <ArrowLeftRight
-            color={isScalePingPong ? '#70bcd3' : 'white'}
-            onClick={() => setIsScalePingPong?.((isPingPong) => !isPingPong)}
-            cursor='pointer'
-          />
-        </IconContainer>
       </TrainerSection>
 
       <TrainerSection>
-        <h2>Mode</h2>
+        <TrainerSectionHeader>
+          <h2>Mode</h2>
+        </TrainerSectionHeader>
         <Select
           value={{
             label: AVAILABLE_MODES[practiceMode!].label,

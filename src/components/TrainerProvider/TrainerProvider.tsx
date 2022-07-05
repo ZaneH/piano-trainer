@@ -14,16 +14,22 @@ import {
 
 type TrainerContextType = {
   children?: React.ReactNode
+
+  // Core functionality
   nextTargetNote?: number
   setNextTargetNote?: Dispatch<SetStateAction<number>>
   scale?: ScaleType
   setScale?: Dispatch<SetStateAction<ScaleType>>
   noteCounter?: number // responsible for resetting the target note when we reach the end of a scale sequence
   setNoteCounter?: Dispatch<SetStateAction<number>>
+
+  // Settings
   practiceMode?: AvailablePracticeModesType
   setPracticeMode?: Dispatch<SetStateAction<AvailablePracticeModesType>>
   isScalePingPong?: boolean
   setIsScalePingPong?: Dispatch<SetStateAction<boolean>>
+  isHardModeEnabled?: boolean
+  setIsHardModeEnabled?: Dispatch<SetStateAction<boolean>>
 }
 
 export const TrainerContext = createContext({} as TrainerContextType)
@@ -37,6 +43,7 @@ const TrainerProvider: FC<TrainerContextType> = ({ children }) => {
   const [practiceMode, setPracticeMode] =
     useState<AvailablePracticeModesType>('scales')
   const [isScalePingPong, setIsScalePingPong] = useState(false)
+  const [isHardModeEnabled, setIsHardModeEnabled] = useState(false)
 
   const [_isGoingDown, _setIsGoingDown] = useState(false)
 
@@ -51,6 +58,8 @@ const TrainerProvider: FC<TrainerContextType> = ({ children }) => {
     setPracticeMode,
     isScalePingPong,
     setIsScalePingPong,
+    isHardModeEnabled,
+    setIsHardModeEnabled,
   }
 
   useEffect(() => {

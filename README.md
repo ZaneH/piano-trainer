@@ -7,6 +7,7 @@ A cross-platform utility for learning the piano
 - [x] MIDI compatible
 - [x] Cross-platform support
 - [x] Interactive scale practice
+  - [x] Hardmode
 - [ ] Interactive chord practice
 - [ ] Interactive Circle of Fifths practice
 - [ ] Interactive fifths practice
