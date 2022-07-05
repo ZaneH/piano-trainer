@@ -4,7 +4,7 @@ import { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { KeyboardShortcuts, MidiNumbers, Piano } from 'react-piano'
 import 'react-piano/dist/styles.css'
 import styled from 'styled-components'
-import { getTriadChordFromMidiNote } from '../../utils'
+import { getFifthFromMidiNote, getTriadChordFromMidiNote } from '../../utils'
 import SoundfontProvider from '../SoundfontProvider'
 import { TrainerContext } from '../TrainerProvider'
 
@@ -69,12 +69,20 @@ const Keyboard = () => {
   }, [onLoadCallback, isListening])
 
   useEffect(() => {
-    const targetChord = getTriadChordFromMidiNote(nextTargetNote!, scale!)
-    const matches = targetChord.every((e) => chordStack?.includes(e))
-    if (matches) {
-      setNoteCounter?.((nc) => nc + 1)
+    if (practiceMode === 'chords') {
+      const targetChord = getTriadChordFromMidiNote(nextTargetNote!, scale!)
+      const matches = targetChord.every((e) => chordStack?.includes(e))
+      if (matches) {
+        setNoteCounter?.((nc) => nc + 1)
+      }
+    } else if (practiceMode === 'fifths') {
+      const targetFifth = getFifthFromMidiNote(nextTargetNote!, scale!)
+      const matches = targetFifth.every((e) => chordStack?.includes(e))
+      if (matches) {
+        setNoteCounter?.((nc) => nc + 1)
+      }
     }
-  }, [chordStack])
+  }, [chordStack, nextTargetNote, scale, practiceMode, setNoteCounter])
 
   useEffect(() => {
     const unlisten = async () => {
@@ -103,7 +111,10 @@ const Keyboard = () => {
                   practiceMode === 'scales'
                 ) {
                   setNoteCounter?.((nc) => nc + 1)
-                } else if (practiceMode === 'chords') {
+                } else if (
+                  practiceMode === 'chords' ||
+                  practiceMode === 'fifths'
+                ) {
                   setChordStack?.((cs) => [...cs, midiNumber])
                 }
 
@@ -112,7 +123,7 @@ const Keyboard = () => {
               stopNote={(midiNumber: number) => {
                 stopNote(midiNumber)
 
-                if (practiceMode === 'chords') {
+                if (practiceMode === 'chords' || practiceMode === 'fifths') {
                   // remove midiNumber from chordStack
                   setChordStack?.((cs) => {
                     const removalIdx = cs.indexOf(midiNumber)

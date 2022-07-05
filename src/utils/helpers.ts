@@ -1,4 +1,12 @@
-import { OCTAVE_LENGTH, ScaleType, SCALE_LENGTH, CIRCLE_OF_FIFTHS } from '.'
+import {
+  OCTAVE_LENGTH,
+  ScaleType,
+  SCALE_LENGTH,
+  CIRCLE_OF_FIFTHS,
+  SCALE_STEPS,
+  SCALE_STEP_VALUES,
+  ScaleStepsType,
+} from '.'
 import { MajorMinorType } from '../components/Quiz/Questions'
 
 export const ignoreOctave = (scale: ScaleType): ScaleType => {
@@ -10,6 +18,30 @@ export const ignoreOctave = (scale: ScaleType): ScaleType => {
   }
 
   return modKeys
+}
+
+export const getFifthFromMidiNote = (
+  midiNumber: number,
+  scale: ScaleType
+): number[] => {
+  const slicedKeys = Object.keys(scale.keys)
+  slicedKeys.slice(-1, 1)
+  const currentNoteIdx = slicedKeys.indexOf(midiNumber.toString())
+  let futureFifth = Number(slicedKeys[(currentNoteIdx + 4) % slicedKeys.length])
+  if (midiNumber > futureFifth) {
+    if (scale.value?.includes('major')) {
+      futureFifth +=
+        SCALE_STEP_VALUES[
+          SCALE_STEPS['Major'][currentNoteIdx] as ScaleStepsType
+        ] + OCTAVE_LENGTH
+    } else if (scale.value?.includes('minor')) {
+      futureFifth +=
+        SCALE_STEP_VALUES[
+          SCALE_STEPS['Minor'][currentNoteIdx] as ScaleStepsType
+        ] + OCTAVE_LENGTH
+    }
+  }
+  return [midiNumber, futureFifth]
 }
 
 export const getTriadChordFromMidiNote = (

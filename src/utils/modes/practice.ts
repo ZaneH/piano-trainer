@@ -1,5 +1,5 @@
 export type AvailableScreensType = 'practice' | 'quiz'
-export type AvailablePracticeModesType = 'scales' | 'chords'
+export type AvailablePracticeModesType = 'scales' | 'chords' | 'fifths'
 const AVAILABLE_MODES: {
   [key in AvailablePracticeModesType]: { value: string; label: string }
 } = {
@@ -10,6 +10,10 @@ const AVAILABLE_MODES: {
   chords: {
     label: 'Chords',
     value: 'chords',
+  },
+  fifths: {
+    label: 'Fifths',
+    value: 'fifths',
   },
 } as const
 

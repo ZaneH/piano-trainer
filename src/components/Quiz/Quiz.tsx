@@ -101,7 +101,6 @@ const Quiz = () => {
       // add random answer choices
       const newOptions = []
       while (newOptions.length < 4) {
-        console.log('1')
         const potentialOption = getRandomNote(
           currentQuestion.type,
           currentQuestion.majMin
@@ -125,7 +124,6 @@ const Quiz = () => {
           currentQuestion.type,
           currentQuestion.majMin
         )
-        console.log(currentQuestionKey, currentQuestion.majMin, randomNote)
         const isFifth = isAdjacentFifth(
           CIRCLE_OF_FIFTHS[currentQuestion.majMin],
           currentQuestionKey,

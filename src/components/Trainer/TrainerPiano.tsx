@@ -3,6 +3,7 @@ import { Keyboard, MidiNumbers } from 'react-piano'
 import styled from 'styled-components'
 import {
   AVAILABLE_MAJOR_SCALES,
+  getFifthFromMidiNote,
   getTriadChordFromMidiNote,
   ignoreOctave,
   OCTAVE_LENGTH,
@@ -45,6 +46,8 @@ const TrainerPiano = () => {
         }
       } else if (practiceMode === 'chords') {
         return getTriadChordFromMidiNote(nextNote, scale)
+      } else if (practiceMode === 'fifths') {
+        return getFifthFromMidiNote(nextNote, scale)
       }
     },
     [isHardModeEnabled, prevNote, nextTargetNote, practiceMode, scale]

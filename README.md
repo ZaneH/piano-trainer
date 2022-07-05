@@ -10,7 +10,7 @@ A cross-platform utility for learning the piano
   - [x] Hard mode
 - [x] Interactive chord practice
 - [ ] Interactive Circle of Fifths practice
-- [ ] Interactive fifths practice
+- [x] Interactive fifths practice
 - [ ] Interactive inversion practice
 - [x] Interactive quiz
 

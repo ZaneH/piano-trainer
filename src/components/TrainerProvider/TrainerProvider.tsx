@@ -103,11 +103,11 @@ const TrainerProvider: FC<TrainerContextType> = ({ children }) => {
         _setIsGoingDown(true)
       }
     }
-  }, [noteCounter, setNextTargetNote, scale])
+  }, [noteCounter, setNextTargetNote, scale, isScalePingPong])
 
   useEffect(() => {
     setNoteCounter(0)
-  }, [scale, isScalePingPong, currentScreen])
+  }, [scale, isScalePingPong, currentScreen, practiceMode])
 
   return (
     <TrainerContext.Provider value={context}>

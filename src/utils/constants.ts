@@ -1,4 +1,5 @@
 import { ScaleType } from '.'
+import { MajorMinorType } from '../components/Quiz/Questions'
 import {
   AvailableMajorScalesType,
   AVAILABLE_MAJOR_SCALES,
@@ -26,4 +27,14 @@ export const AVAILABLE_SCALES: {
   ...AVAILABLE_MAJOR_SCALES,
   ...AVAILABLE_MINOR_NATURAL_SCALES,
   ...AVAILABLE_MINOR_MELODIC_SCALES,
+}
+
+export type ScaleStepsType = 'w' | 'h'
+export const SCALE_STEP_VALUES: { [key in ScaleStepsType]: number } = {
+  w: 2,
+  h: 1,
+}
+export const SCALE_STEPS: { [key in MajorMinorType]: string[] } = {
+  Major: ['w', 'w', 'h', 'w', 'w', 'w', 'h', 'w'],
+  Minor: ['w', 'h', 'w', 'w', 'h', 'w', 'w', 'w'],
 }
