@@ -7,7 +7,7 @@
     "distDir": "../build"
   },
   "package": {
-    "productName": "midi-practice",
+    "productName": "scale-trainer",
     "version": "0.1.0"
   },
   "tauri": {
@@ -58,7 +58,7 @@
         "fullscreen": false,
         "height": 600,
         "resizable": true,
-        "title": "MIDI Practice",
+        "title": "Scale Trainer",
         "width": 800
       }
     ]

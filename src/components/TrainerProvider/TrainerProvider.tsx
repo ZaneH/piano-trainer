@@ -19,6 +19,8 @@ type TrainerContextType = {
   // Core functionality
   nextTargetNote?: number
   setNextTargetNote?: Dispatch<SetStateAction<number>>
+  prevNote?: number
+  setPrevNote?: Dispatch<SetStateAction<number>>
   scale?: ScaleType
   setScale?: Dispatch<SetStateAction<ScaleType>>
   noteCounter?: number // responsible for resetting the target note when we reach the end of a scale sequence
@@ -37,6 +39,7 @@ export const TrainerContext = createContext({} as TrainerContextType)
 
 const TrainerProvider: FC<TrainerContextType> = ({ children }) => {
   const [scale, setScale] = useState<ScaleType>(AVAILABLE_SCALES['c-major'])
+  const [prevNote, setPrevNote] = useState(Number(Object.keys(scale.keys)[0]))
   const [nextTargetNote, setNextTargetNote] = useState<number>(
     Number(Object.keys(scale)[0])
   )
@@ -51,6 +54,8 @@ const TrainerProvider: FC<TrainerContextType> = ({ children }) => {
   const context: TrainerContextType = {
     nextTargetNote,
     setNextTargetNote,
+    prevNote,
+    setPrevNote,
     scale,
     setScale,
     noteCounter,
@@ -64,6 +69,8 @@ const TrainerProvider: FC<TrainerContextType> = ({ children }) => {
   }
 
   useEffect(() => {
+    setPrevNote(nextTargetNote)
+
     if (isScalePingPong && _isGoingDown) {
       setNextTargetNote(
         Number(Object.keys(scale.keys).reverse()[noteCounter % SCALE_LENGTH])

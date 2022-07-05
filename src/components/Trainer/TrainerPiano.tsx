@@ -18,12 +18,12 @@ const InKeyMarker = styled.div`
   align-items: center;
   font-family: 'Arial', 'Helvetica', sans-serif;
   font-weight: 600;
-  padding: 4px;
+  padding: 5px;
   margin: 2vh auto;
 `
 
 const TrainerPiano = () => {
-  const { nextTargetNote, scale, isHardModeEnabled } =
+  const { nextTargetNote, scale, isHardModeEnabled, prevNote } =
     useContext(TrainerContext)
 
   return (
@@ -33,7 +33,7 @@ const TrainerPiano = () => {
           first: MidiNumbers.fromNote('c3'),
           last: MidiNumbers.fromNote('c5'),
         }}
-        activeNotes={[!isHardModeEnabled && nextTargetNote]}
+        activeNotes={isHardModeEnabled ? [prevNote] : [nextTargetNote]}
         onPlayNoteInput={() => {}}
         onStopNoteInput={() => {}}
         keyWidthToHeight={0.33}

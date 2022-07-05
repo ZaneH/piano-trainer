@@ -1,3 +1,5 @@
+// Based on SoundfontProvider
+// https://github.com/kevinsqi/react-piano/blob/master/demo/src/SoundfontProvider.js
 import { useEffect, useMemo, useState } from 'react'
 import Soundfont, { InstrumentName, Player } from 'soundfont-player'
 
@@ -21,7 +23,6 @@ const SoundfontProvider = ({
   hostname,
   format = 'mp3',
   soundfont = 'MusyngKite',
-  onLoad,
   render,
 }: SoundfontProviderProps) => {
   const [instrument, setInstrument] = useState<Player>()
