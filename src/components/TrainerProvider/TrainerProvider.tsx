@@ -8,6 +8,7 @@ import {
 } from 'react'
 import {
   AvailablePracticeModesType,
+  AvailableScreensType,
   AVAILABLE_SCALES,
   ScaleType,
   SCALE_LENGTH,
@@ -34,6 +35,8 @@ type TrainerContextType = {
   // Settings
   practiceMode?: AvailablePracticeModesType
   setPracticeMode?: Dispatch<SetStateAction<AvailablePracticeModesType>>
+  currentScreen?: AvailableScreensType
+  setCurrentScreen?: Dispatch<SetStateAction<AvailableScreensType>>
   isScalePingPong?: boolean
   setIsScalePingPong?: Dispatch<SetStateAction<boolean>>
   isHardModeEnabled?: boolean
@@ -52,6 +55,8 @@ const TrainerProvider: FC<TrainerContextType> = ({ children }) => {
   const [chordStack, setChordStack] = useState<number[]>([])
   const [practiceMode, setPracticeMode] =
     useState<AvailablePracticeModesType>('scales')
+  const [currentScreen, setCurrentScreen] =
+    useState<AvailableScreensType>('practice')
   const [isScalePingPong, setIsScalePingPong] = useState(false)
   const [isHardModeEnabled, setIsHardModeEnabled] = useState(false)
 
@@ -70,6 +75,8 @@ const TrainerProvider: FC<TrainerContextType> = ({ children }) => {
     setChordStack,
     practiceMode,
     setPracticeMode,
+    currentScreen,
+    setCurrentScreen,
     isScalePingPong,
     setIsScalePingPong,
     isHardModeEnabled,
@@ -100,7 +107,7 @@ const TrainerProvider: FC<TrainerContextType> = ({ children }) => {
 
   useEffect(() => {
     setNoteCounter(0)
-  }, [scale, isScalePingPong])
+  }, [scale, isScalePingPong, currentScreen])
 
   return (
     <TrainerContext.Provider value={context}>

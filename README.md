@@ -12,7 +12,7 @@ A cross-platform utility for learning the piano
 - [ ] Interactive Circle of Fifths practice
 - [ ] Interactive fifths practice
 - [ ] Interactive inversion practice
-- [ ] Interactive quiz
+- [x] Interactive quiz
 
 # Releases
 

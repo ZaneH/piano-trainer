@@ -10,12 +10,12 @@ import {
 import { TrainerContext } from '../TrainerProvider'
 import ArrowLeftRightIcon from 'remixicon-react/ArrowLeftRightFillIcon'
 import SkullIcon from 'remixicon-react/SkullFillIcon'
+import QuizIcon from 'remixicon-react/SurveyFillIcon'
 
 const TrainerDisplayContainer = styled.div`
   display: flex;
   z-index: 2;
   align-self: center;
-  font-family: 'Arial', 'Helvetica', sans-serif;
   flex-direction: row;
   gap: 12vw;
 `
@@ -54,6 +54,7 @@ const TrainerDisplay = () => {
     setScale,
     practiceMode,
     setPracticeMode,
+    setCurrentScreen,
     isScalePingPong,
     setIsScalePingPong,
     isHardModeEnabled,
@@ -107,6 +108,12 @@ const TrainerDisplay = () => {
       <TrainerSection>
         <TrainerSectionHeader>
           <h2>Mode</h2>
+          <IconContainer
+            title='Switch to quiz mode'
+            onClick={() => setCurrentScreen?.('quiz')}
+          >
+            <QuizIcon color='#1f1f20' />
+          </IconContainer>
         </TrainerSectionHeader>
         <Select
           value={{

@@ -1,4 +1,5 @@
-import { OCTAVE_LENGTH, ScaleType, SCALE_LENGTH } from '.'
+import { OCTAVE_LENGTH, ScaleType, SCALE_LENGTH, CIRCLE_OF_FIFTHS } from '.'
+import { MajorMinorType } from '../components/Quiz/Questions'
 
 export const ignoreOctave = (scale: ScaleType): ScaleType => {
   const scaleKeys: string[] = Object.keys(scale.keys || {})
@@ -41,4 +42,22 @@ export const getTriadChordFromMidiNote = (
   triadChordMidi.push(firstFinger, secondFinger, thirdFinger)
 
   return triadChordMidi
+}
+
+export const getRandomKey = () => {
+  const allKeys = 'ABCDEFG'
+  const allMods = ['', '#', 'b']
+  return `${allKeys[Math.floor(Math.random() * allKeys.length)]}${
+    allMods[Math.floor(Math.random() * allMods.length)]
+  }`
+}
+
+export const getRandomMajMin = (): MajorMinorType => {
+  const options: MajorMinorType[] = ['Minor', 'Major']
+  return options[Math.floor(Math.random() * options.length)]
+}
+
+export const getRandomFifth = (majMin: MajorMinorType) => {
+  const fifths = CIRCLE_OF_FIFTHS[majMin]
+  return fifths[Math.floor(Math.random() * fifths.length)]
 }

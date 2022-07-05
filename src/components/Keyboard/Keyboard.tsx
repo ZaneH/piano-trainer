@@ -1,6 +1,6 @@
 import { invoke } from '@tauri-apps/api'
-import { listen } from '@tauri-apps/api/event'
-import { useCallback, useContext, useEffect, useState } from 'react'
+import { listen, UnlistenFn } from '@tauri-apps/api/event'
+import { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { KeyboardShortcuts, MidiNumbers, Piano } from 'react-piano'
 import 'react-piano/dist/styles.css'
 import styled from 'styled-components'
@@ -21,6 +21,7 @@ const Keyboard = () => {
     setChordStack,
     scale,
   } = useContext(TrainerContext)
+  const unlistenRef = useRef<UnlistenFn>()
   const [activeNotes, setActiveNotes] = useState<{ [note: string]: boolean }>(
     {}
   )
@@ -55,7 +56,9 @@ const Keyboard = () => {
           [note]: false,
         }))
       }
-    }).catch(console.error)
+    })
+      .then((ul) => (unlistenRef.current = ul))
+      .catch(console.error)
 
     console.log('Connected & listening to MIDI device...')
     setIsListening(true)
@@ -72,6 +75,15 @@ const Keyboard = () => {
       setNoteCounter?.((nc) => nc + 1)
     }
   }, [chordStack])
+
+  useEffect(() => {
+    const unlisten = async () => {
+      unlistenRef.current?.()
+    }
+    return () => {
+      unlisten()
+    }
+  }, [])
 
   return (
     <SoundfontProvider

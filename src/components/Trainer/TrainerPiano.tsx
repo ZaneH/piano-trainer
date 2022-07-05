@@ -21,7 +21,6 @@ const InKeyMarker = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  font-family: 'Arial', 'Helvetica', sans-serif;
   font-weight: 600;
   padding: 5px;
   margin: 2vh auto;

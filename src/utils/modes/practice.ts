@@ -1,3 +1,4 @@
+export type AvailableScreensType = 'practice' | 'quiz'
 export type AvailablePracticeModesType = 'scales' | 'chords'
 const AVAILABLE_MODES: {
   [key in AvailablePracticeModesType]: { value: string; label: string }
@@ -12,4 +13,6 @@ const AVAILABLE_MODES: {
   },
 } as const
 
-export { AVAILABLE_MODES }
+const AVAILABLE_SCREENS: AvailableScreensType[] = ['practice', 'quiz']
+
+export { AVAILABLE_MODES, AVAILABLE_SCREENS }
