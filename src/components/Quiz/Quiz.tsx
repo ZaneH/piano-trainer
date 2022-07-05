@@ -2,11 +2,13 @@ import { invoke } from '@tauri-apps/api'
 import { listen, UnlistenFn } from '@tauri-apps/api/event'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
+import { MidiNumbers } from 'react-piano'
 import {
   CIRCLE_OF_FIFTHS,
   getRandomFifth,
   getRandomKey,
   isAdjacentFifth,
+  OCTAVE_LENGTH,
 } from '../../utils'
 import {
   formatQuestion,
@@ -83,6 +85,31 @@ const Quiz = () => {
     setIsListening(true)
   }, [isListening, setIsListening])
 
+  const gotoNextQuestion = useCallback(() => {
+    setCurrentQuestion(() => {
+      const newQ = getRandomQuizQuestion()
+      setCurrentQuestionKey(getRandomNote(newQ.type, newQ.majMin))
+      return newQ
+    })
+  }, [setCurrentQuestion, getRandomNote])
+
+  useEffect(() => {
+    if (currentQuestion.type === 'speed') {
+      const firstOctave = MidiNumbers.fromNote(
+        `${currentQuestionKey.toLowerCase()}0`
+      )
+      const allOctavesOfNote = []
+      for (let i = 0; i < 8; i++) {
+        allOctavesOfNote.push(firstOctave + OCTAVE_LENGTH * i)
+      }
+
+      const match = allOctavesOfNote.some((e) => activeNotes[e])
+      if (match) {
+        gotoNextQuestion()
+      }
+    }
+  }, [activeNotes, currentQuestion.type, currentQuestionKey, gotoNextQuestion])
+
   useEffect(() => {
     onLoadCallback()
   }, [onLoadCallback, isListening])
@@ -97,54 +124,86 @@ const Quiz = () => {
   }, [])
 
   useEffect(() => {
-    setCurrentOptions(() => {
-      // add random answer choices
-      const newOptions = []
-      while (newOptions.length < 4) {
-        const potentialOption = getRandomNote(
-          currentQuestion.type,
-          currentQuestion.majMin
-        )
-        if (
-          newOptions.indexOf(potentialOption) === -1 &&
-          !isAdjacentFifth(
+    if (currentQuestion.type === 'fifth') {
+      setCurrentOptions(() => {
+        // add random answer choices
+        const newOptions = []
+        while (newOptions.length < 4) {
+          const potentialOption = getRandomNote(
+            currentQuestion.type,
+            currentQuestion.majMin
+          )
+          if (
+            newOptions.indexOf(potentialOption) === -1 &&
+            !isAdjacentFifth(
+              CIRCLE_OF_FIFTHS[currentQuestion.majMin],
+              currentQuestionKey,
+              potentialOption
+            )
+          ) {
+            newOptions.push(potentialOption)
+          }
+        }
+
+        // add correct answer & shuffle
+        let correctAnswer = ''
+        while (correctAnswer === '') {
+          const randomNote = getRandomNote(
+            currentQuestion.type,
+            currentQuestion.majMin
+          )
+          const isFifth = isAdjacentFifth(
             CIRCLE_OF_FIFTHS[currentQuestion.majMin],
             currentQuestionKey,
-            potentialOption
+            randomNote
           )
-        ) {
-          newOptions.push(potentialOption)
+          if (isFifth) {
+            correctAnswer = randomNote
+            break
+          }
         }
-      }
 
-      // add correct answer & shuffle
-      let correctAnswer = ''
-      while (correctAnswer === '') {
-        const randomNote = getRandomNote(
-          currentQuestion.type,
-          currentQuestion.majMin
-        )
-        const isFifth = isAdjacentFifth(
-          CIRCLE_OF_FIFTHS[currentQuestion.majMin],
-          currentQuestionKey,
-          randomNote
-        )
-        if (isFifth) {
-          correctAnswer = randomNote
-          break
-        }
-      }
+        newOptions[Math.floor(Math.random() * newOptions.length)] =
+          correctAnswer
 
-      newOptions[Math.floor(Math.random() * newOptions.length)] = correctAnswer
-
-      return newOptions
-    })
+        return newOptions
+      })
+    }
   }, [
     currentQuestion.majMin,
     currentQuestionKey,
     getRandomNote,
     currentQuestion.type,
   ])
+
+  const displayQuestion = useCallback(() => {
+    if (currentQuestion.type === 'speed') {
+      return null
+    } else if (currentQuestion.type === 'fifth') {
+      return currentOptions.map((co, i) => {
+        const isCorrect = isAdjacentFifth(
+          CIRCLE_OF_FIFTHS[currentQuestion.majMin],
+          currentQuestionKey,
+          co
+        )
+
+        return (
+          <QuizOption
+            key={i}
+            isAnswer={isCorrect}
+            onClick={(value, isAnswer) => {
+              if (isAnswer) {
+                gotoNextQuestion()
+              }
+            }}
+            value={co}
+          >
+            {co}
+          </QuizOption>
+        )
+      })
+    }
+  }, [currentQuestion.type, currentOptions])
 
   return (
     <QuizPage>
@@ -154,34 +213,7 @@ const Quiz = () => {
           majMin: currentQuestion.majMin,
         })}
       </QuizQuestion>
-      <QuizOptionsContainer>
-        {currentOptions.map((co, i) => {
-          const isCorrect = isAdjacentFifth(
-            CIRCLE_OF_FIFTHS[currentQuestion.majMin],
-            currentQuestionKey,
-            co
-          )
-
-          return (
-            <QuizOption
-              key={i}
-              isAnswer={isCorrect}
-              onClick={(value, isAnswer) => {
-                if (isAnswer) {
-                  setCurrentQuestion(() => {
-                    const newQ = getRandomQuizQuestion()
-                    setCurrentQuestionKey(getRandomNote(newQ.type, newQ.majMin))
-                    return newQ
-                  })
-                }
-              }}
-              value={co}
-            >
-              {co}
-            </QuizOption>
-          )
-        })}
-      </QuizOptionsContainer>
+      <QuizOptionsContainer>{displayQuestion()}</QuizOptionsContainer>
     </QuizPage>
   )
 }

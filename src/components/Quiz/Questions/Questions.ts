@@ -1,6 +1,6 @@
 export type MajorMinorType = 'Major' | 'Minor'
 
-export type QuestionTypeType = 'fifth'
+export type QuestionTypeType = 'fifth' | 'speed'
 type QuizQuestionType = {
   type: QuestionTypeType
   majMin: MajorMinorType
@@ -17,6 +17,16 @@ export const QUIZ_QUESTIONS: QuizQuestionType[] = [
     type: 'fifth',
     majMin: 'Minor',
     questionFormat: 'Which is perfect fifth of {{key}} ({{majMin}})?',
+  },
+  {
+    type: 'speed',
+    majMin: 'Major',
+    questionFormat: 'Press {{key}} on your keyboard',
+  },
+  {
+    type: 'speed',
+    majMin: 'Minor',
+    questionFormat: 'Press {{key}} on your keyboard',
   },
 ]
 

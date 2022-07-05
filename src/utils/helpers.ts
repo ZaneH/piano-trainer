@@ -79,9 +79,21 @@ export const getTriadChordFromMidiNote = (
 export const getRandomKey = () => {
   const allKeys = 'ABCDEFG'
   const allMods = ['', '#', 'b']
-  return `${allKeys[Math.floor(Math.random() * allKeys.length)]}${
-    allMods[Math.floor(Math.random() * allMods.length)]
-  }`
+  let potentialKey = ''
+
+  while (
+    potentialKey === 'E#' ||
+    potentialKey === 'B#' ||
+    potentialKey === 'Fb' ||
+    potentialKey === 'Cb' ||
+    potentialKey === ''
+  ) {
+    potentialKey = `${allKeys[Math.floor(Math.random() * allKeys.length)]}${
+      allMods[Math.floor(Math.random() * allMods.length)]
+    }`
+  }
+
+  return potentialKey
 }
 
 export const getRandomMajMin = (): MajorMinorType => {
