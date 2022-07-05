@@ -1,7 +1,12 @@
-import { useContext } from 'react'
+import { useCallback, useContext } from 'react'
 import { Keyboard, MidiNumbers } from 'react-piano'
 import styled from 'styled-components'
-import { ignoreOctave, OCTAVE_LENGTH } from '../../utils'
+import {
+  AVAILABLE_MAJOR_SCALES,
+  getTriadChordFromMidiNote,
+  ignoreOctave,
+  OCTAVE_LENGTH,
+} from '../../utils'
 import { TrainerContext } from '../TrainerProvider'
 
 const PianoContainer = styled.div`
@@ -23,8 +28,28 @@ const InKeyMarker = styled.div`
 `
 
 const TrainerPiano = () => {
-  const { nextTargetNote, scale, isHardModeEnabled, prevNote } =
-    useContext(TrainerContext)
+  const {
+    nextTargetNote = 48,
+    scale = AVAILABLE_MAJOR_SCALES['c-major'],
+    isHardModeEnabled,
+    prevNote,
+    practiceMode,
+  } = useContext(TrainerContext)
+
+  const getActiveNotes = useCallback(
+    (nextNote: number) => {
+      if (practiceMode === 'scales') {
+        if (isHardModeEnabled) {
+          return [prevNote]
+        } else {
+          return [nextTargetNote]
+        }
+      } else if (practiceMode === 'chords') {
+        return getTriadChordFromMidiNote(nextNote, scale)
+      }
+    },
+    [isHardModeEnabled, prevNote, nextTargetNote, practiceMode, scale]
+  )
 
   return (
     <PianoContainer>
@@ -33,7 +58,7 @@ const TrainerPiano = () => {
           first: MidiNumbers.fromNote('c3'),
           last: MidiNumbers.fromNote('c5'),
         }}
-        activeNotes={isHardModeEnabled ? [prevNote] : [nextTargetNote]}
+        activeNotes={getActiveNotes(nextTargetNote)}
         onPlayNoteInput={() => {}}
         onStopNoteInput={() => {}}
         keyWidthToHeight={0.33}
