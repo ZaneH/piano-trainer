@@ -3,7 +3,7 @@ export type MajorMinorType = 'Major' | 'Minor'
 export type QuestionTypeType = 'fifth' | 'speed'
 type QuizQuestionType = {
   type: QuestionTypeType
-  majMin: MajorMinorType
+  majMin?: MajorMinorType
   questionFormat: string
 }
 
@@ -20,12 +20,10 @@ export const QUIZ_QUESTIONS: QuizQuestionType[] = [
   },
   {
     type: 'speed',
-    majMin: 'Major',
     questionFormat: 'Press {{key}} on your keyboard',
   },
   {
     type: 'speed',
-    majMin: 'Minor',
     questionFormat: 'Press {{key}} on your keyboard',
   },
 ]
@@ -36,11 +34,13 @@ export const getRandomQuizQuestion = () => {
 
 export const formatQuestion = (
   questionFormat: string,
-  keys: { [key in Partial<keyof QuizQuestionType> | string]: string }
+  keys: {
+    [key in Partial<keyof QuizQuestionType> | string]: string | undefined
+  }
 ) => {
   let formattedQuestion = questionFormat
   for (const k in keys) {
-    formattedQuestion = formattedQuestion.replace(`{{${k}}}`, keys[k])
+    formattedQuestion = formattedQuestion.replace(`{{${k}}}`, keys[k]!)
   }
 
   return formattedQuestion

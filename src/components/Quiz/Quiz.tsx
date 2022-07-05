@@ -45,8 +45,12 @@ const Quiz = () => {
     getRandomQuizQuestion()
   )
   const getRandomNote = useCallback(
-    (questionType: QuestionTypeType, majMin: MajorMinorType) => {
-      return questionType === 'fifth' ? getRandomFifth(majMin) : getRandomKey()
+    (questionType: QuestionTypeType, majMin?: MajorMinorType) => {
+      if (questionType === 'fifth') {
+        return getRandomFifth(majMin!)
+      } else {
+        return getRandomKey()
+      }
     },
     []
   )
@@ -136,7 +140,7 @@ const Quiz = () => {
           if (
             newOptions.indexOf(potentialOption) === -1 &&
             !isAdjacentFifth(
-              CIRCLE_OF_FIFTHS[currentQuestion.majMin],
+              CIRCLE_OF_FIFTHS[currentQuestion.majMin!],
               currentQuestionKey,
               potentialOption
             )
@@ -153,7 +157,7 @@ const Quiz = () => {
             currentQuestion.majMin
           )
           const isFifth = isAdjacentFifth(
-            CIRCLE_OF_FIFTHS[currentQuestion.majMin],
+            CIRCLE_OF_FIFTHS[currentQuestion.majMin!],
             currentQuestionKey,
             randomNote
           )
@@ -182,7 +186,7 @@ const Quiz = () => {
     } else if (currentQuestion.type === 'fifth') {
       return currentOptions.map((co, i) => {
         const isCorrect = isAdjacentFifth(
-          CIRCLE_OF_FIFTHS[currentQuestion.majMin],
+          CIRCLE_OF_FIFTHS[currentQuestion.majMin!],
           currentQuestionKey,
           co
         )
