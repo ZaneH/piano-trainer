@@ -1,14 +1,18 @@
 import { invoke } from '@tauri-apps/api'
 import { listen, UnlistenFn } from '@tauri-apps/api/event'
-import { useCallback, useEffect, useRef, useState } from 'react'
-import styled from 'styled-components'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { MidiNumbers } from 'react-piano'
+import styled from 'styled-components'
 import {
   CIRCLE_OF_FIFTHS,
+  convertKeyToScalesKey,
+  getBothFifthsFromMidiNote,
   getRandomFifth,
   getRandomKey,
   isAdjacentFifth,
   OCTAVE_LENGTH,
+  shuffle,
+  swapNoteWithSynonym,
 } from '../../utils'
 import {
   formatQuestion,
@@ -44,21 +48,26 @@ const Quiz = () => {
   const [currentQuestion, setCurrentQuestion] = useState(
     getRandomQuizQuestion()
   )
+
+  // Get a random note that's appropriate for the question type
   const getRandomNote = useCallback(
     (questionType: QuestionTypeType, majMin?: MajorMinorType) => {
       if (questionType === 'fifth') {
         return getRandomFifth(majMin!)
+      } else if (questionType === 'speed') {
+        return getRandomKey()
       } else {
         return getRandomKey()
       }
     },
     []
   )
+
   const [currentQuestionKey, setCurrentQuestionKey] = useState<string>(
     getRandomNote(currentQuestion.type, currentQuestion.majMin)
   )
 
-  const [currentOptions, setCurrentOptions] = useState<string[]>([])
+  const [answerChoices, setAnswerChoices] = useState<string[]>([])
 
   const onLoadCallback = useCallback(() => {
     if (isListening) return
@@ -90,29 +99,85 @@ const Quiz = () => {
   }, [isListening, setIsListening])
 
   const gotoNextQuestion = useCallback(() => {
+    setActiveNotes({})
     setCurrentQuestion(() => {
       const newQ = getRandomQuizQuestion()
-      setCurrentQuestionKey(getRandomNote(newQ.type, newQ.majMin))
+      let newKey = getRandomNote(newQ.type, newQ.majMin)
+      while (newKey === currentQuestionKey) {
+        newKey = getRandomNote(newQ.type, newQ.majMin)
+      }
+      setCurrentQuestionKey(newKey)
       return newQ
     })
-  }, [setCurrentQuestion, getRandomNote])
+  }, [getRandomNote, currentQuestionKey])
+
+  const answerOnManyOctaves = useCallback(
+    (notes: string[]) => {
+      // fill in 8 octaves as valid MIDI answers
+      const allOctavesOfNote: string[] = []
+      notes.forEach((n) => {
+        const firstOctave = MidiNumbers.fromNote(
+          `${swapNoteWithSynonym(
+            n,
+            currentQuestion.majMin || 'Major'
+          ).toLowerCase()}0`
+        )
+        for (let i = 0; i < 8; i++) {
+          allOctavesOfNote.push(firstOctave + OCTAVE_LENGTH * i)
+        }
+      })
+
+      return allOctavesOfNote
+    },
+    [currentQuestion.majMin]
+  )
+
+  const currentValidMidi = useMemo<number[]>(() => {
+    if (currentQuestion.type === 'fifth') {
+      return getBothFifthsFromMidiNote(
+        MidiNumbers.fromNote(
+          `${swapNoteWithSynonym(currentQuestionKey, currentQuestion.majMin!)}3`
+        ),
+        convertKeyToScalesKey(currentQuestionKey, currentQuestion.majMin)
+      )
+    } else if (currentQuestion.type === 'speed') {
+      return [MidiNumbers.fromNote(`${currentQuestionKey}3`)]
+    } else {
+      return []
+    }
+  }, [currentQuestionKey, currentQuestion.majMin, currentQuestion.type])
 
   useEffect(() => {
-    if (currentQuestion.type === 'speed') {
-      const firstOctave = MidiNumbers.fromNote(
-        `${currentQuestionKey.toLowerCase()}0`
-      )
-      const allOctavesOfNote = []
-      for (let i = 0; i < 8; i++) {
-        allOctavesOfNote.push(firstOctave + OCTAVE_LENGTH * i)
+    // Handle MIDI
+    if (currentQuestion.type === 'fifth') {
+      const validFifths = currentValidMidi.map((f) => {
+        // convert the midi fifths into notes (ex. c, b#)
+        // tto be read by MidiNumbers.fromNote
+        return MidiNumbers.getAttributes(f)
+          .note.toLowerCase()
+          .replace(/[0-9]/, '')
+      })
+      const match = answerOnManyOctaves(validFifths).some((e) => activeNotes[e])
+      if (match) {
+        gotoNextQuestion()
       }
-
-      const match = allOctavesOfNote.some((e) => activeNotes[e])
+    } else if (currentQuestion.type === 'speed') {
+      const match = answerOnManyOctaves([currentQuestionKey]).some(
+        (e) => activeNotes[e]
+      )
       if (match) {
         gotoNextQuestion()
       }
     }
-  }, [activeNotes, currentQuestion.type, currentQuestionKey, gotoNextQuestion])
+  }, [
+    activeNotes,
+    currentQuestion.type,
+    currentQuestion.majMin,
+    currentQuestionKey,
+    gotoNextQuestion,
+    answerOnManyOctaves,
+    currentValidMidi,
+  ])
 
   useEffect(() => {
     onLoadCallback()
@@ -128,8 +193,9 @@ const Quiz = () => {
   }, [])
 
   useEffect(() => {
+    // Populate the choices to the question
     if (currentQuestion.type === 'fifth') {
-      setCurrentOptions(() => {
+      setAnswerChoices(() => {
         // add random answer choices
         const newOptions = []
         while (newOptions.length < 4) {
@@ -170,44 +236,45 @@ const Quiz = () => {
         newOptions[Math.floor(Math.random() * newOptions.length)] =
           correctAnswer
 
-        return newOptions
+        return shuffle(newOptions)
       })
     }
   }, [
+    currentQuestion.type,
     currentQuestion.majMin,
     currentQuestionKey,
     getRandomNote,
-    currentQuestion.type,
   ])
 
-  const displayQuestion = useCallback(() => {
-    if (currentQuestion.type === 'speed') {
-      return null
-    } else if (currentQuestion.type === 'fifth') {
-      return currentOptions.map((co, i) => {
-        const isCorrect = isAdjacentFifth(
-          CIRCLE_OF_FIFTHS[currentQuestion.majMin!],
-          currentQuestionKey,
-          co
-        )
+  const fifthAnswers = useMemo(() => {
+    return answerChoices.map((co, i) => {
+      const isCorrect = isAdjacentFifth(
+        CIRCLE_OF_FIFTHS[currentQuestion.majMin!],
+        currentQuestionKey,
+        co
+      )
 
-        return (
-          <QuizOption
-            key={i}
-            isAnswer={isCorrect}
-            onClick={(value, isAnswer) => {
-              if (isAnswer) {
-                gotoNextQuestion()
-              }
-            }}
-            value={co}
-          >
-            {co}
-          </QuizOption>
-        )
-      })
-    }
-  }, [currentQuestion.type, currentOptions])
+      return (
+        <QuizOption
+          key={i}
+          isAnswer={isCorrect}
+          value={co}
+          onClick={(value, isAnswer) => {
+            if (isAnswer) {
+              gotoNextQuestion()
+            }
+          }}
+        >
+          {co}
+        </QuizOption>
+      )
+    })
+  }, [
+    gotoNextQuestion,
+    answerChoices,
+    currentQuestion.majMin,
+    currentQuestionKey,
+  ])
 
   return (
     <QuizPage>
@@ -217,7 +284,10 @@ const Quiz = () => {
           majMin: currentQuestion.majMin,
         })}
       </QuizQuestion>
-      <QuizOptionsContainer>{displayQuestion()}</QuizOptionsContainer>
+      <QuizOptionsContainer>
+        {currentQuestion.type === 'speed' && null}
+        {currentQuestion.type === 'fifth' && fifthAnswers}
+      </QuizOptionsContainer>
     </QuizPage>
   )
 }

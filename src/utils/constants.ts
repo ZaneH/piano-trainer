@@ -16,13 +16,13 @@ import {
 export const SCALE_LENGTH = 8
 export const OCTAVE_LENGTH = 12
 
-export type AvailableScalesType =
+export type AvailableAllScalesType =
   | AvailableMajorScalesType
   | AvailableMinorNaturalScalesType
   | AvailableMinorMelodicScalesType
 
 export const AVAILABLE_SCALES: {
-  [key in AvailableScalesType]: ScaleType
+  [key in AvailableAllScalesType]: ScaleType
 } = {
   ...AVAILABLE_MAJOR_SCALES,
   ...AVAILABLE_MINOR_NATURAL_SCALES,

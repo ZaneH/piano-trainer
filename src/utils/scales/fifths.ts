@@ -6,7 +6,12 @@ const CIRCLE_OF_FIFTHS: { [key in MajorMinorType]: string[] } = {
 }
 
 const isAdjacentFifth = (fifths: string[], base: string, test: string) => {
+  if (!Array.isArray(fifths)) {
+    return false
+  }
+
   const testFifthIdx = fifths.indexOf(test)
+
   let behindIdx = testFifthIdx - 1
   let frontIdx = testFifthIdx + 1
 

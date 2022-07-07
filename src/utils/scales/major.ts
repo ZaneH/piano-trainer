@@ -226,22 +226,23 @@ export type AvailableMajorScalesType =
   | 'b-flat-major'
   | 'b-major'
 
-const AVAILABLE_MAJOR_SCALES: { [key in AvailableMajorScalesType]: ScaleType } =
-  {
-    'c-flat-major': CFlatMajor,
-    'c-major': CMajor,
-    'c-sharp-major': CSharpMajor,
-    'd-major': DMajor,
-    'e-flat-major': EFlatMajor,
-    'e-major': EMajor,
-    'f-major': FMajor,
-    'f-sharp-major': FSharpMajor,
-    'g-flat-major': GFlatMajor,
-    'g-major': GMajor,
-    'a-flat-major': AFlatMajor,
-    'a-major': AMajor,
-    'b-flat-major': BFlatMajor,
-    'b-major': BMajor,
-  } as const
+const AVAILABLE_MAJOR_SCALES: {
+  [key in AvailableMajorScalesType]: ScaleType
+} = {
+  'c-flat-major': CFlatMajor,
+  'c-major': CMajor,
+  'c-sharp-major': CSharpMajor,
+  'd-major': DMajor,
+  'e-flat-major': EFlatMajor,
+  'e-major': EMajor,
+  'f-major': FMajor,
+  'f-sharp-major': FSharpMajor,
+  'g-flat-major': GFlatMajor,
+  'g-major': GMajor,
+  'a-flat-major': AFlatMajor,
+  'a-major': AMajor,
+  'b-flat-major': BFlatMajor,
+  'b-major': BMajor,
+} as const
 
 export { AVAILABLE_MAJOR_SCALES }

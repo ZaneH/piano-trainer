@@ -1,8 +1,8 @@
-import { AvailableScalesType } from './constants'
+import { AvailableAllScalesType } from './constants'
 
 export type ScaleType = {
   label?: string
-  value?: AvailableScalesType
+  value?: AvailableAllScalesType
   keys: {
     [midi: number]: string
   }

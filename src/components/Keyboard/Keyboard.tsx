@@ -76,8 +76,11 @@ const Keyboard = () => {
         setNoteCounter?.((nc) => nc + 1)
       }
     } else if (practiceMode === 'fifths') {
-      const targetFifth = getFifthFromMidiNote(nextTargetNote!, scale!)
-      const matches = targetFifth.every((e) => chordStack?.includes(e))
+      const targetFifths = [
+        nextTargetNote!,
+        getFifthFromMidiNote(nextTargetNote!, scale?.value!),
+      ]
+      const matches = targetFifths.every((e) => chordStack?.includes(e))
       if (matches) {
         setNoteCounter?.((nc) => nc + 1)
       }

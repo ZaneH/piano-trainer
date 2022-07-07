@@ -2,6 +2,7 @@ import { useCallback, useContext } from 'react'
 import { Keyboard, MidiNumbers } from 'react-piano'
 import styled from 'styled-components'
 import {
+  AvailableAllScalesType,
   AVAILABLE_MAJOR_SCALES,
   getFifthFromMidiNote,
   getTriadChordFromMidiNote,
@@ -47,7 +48,10 @@ const TrainerPiano = () => {
       } else if (practiceMode === 'chords') {
         return getTriadChordFromMidiNote(nextNote, scale)
       } else if (practiceMode === 'fifths') {
-        return getFifthFromMidiNote(nextNote, scale)
+        return [
+          nextNote,
+          getFifthFromMidiNote(nextNote, scale.value as AvailableAllScalesType),
+        ]
       }
     },
     [isHardModeEnabled, prevNote, nextTargetNote, practiceMode, scale]
