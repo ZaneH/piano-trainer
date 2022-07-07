@@ -54,7 +54,7 @@ const Quiz = () => {
     (questionType: QuestionTypeType, majMin?: MajorMinorType) => {
       if (questionType === 'fifth') {
         return getRandomFifth(majMin!)
-      } else if (questionType === 'speed') {
+      } else if (questionType === 'key') {
         return getRandomKey()
       } else {
         return getRandomKey()
@@ -140,7 +140,7 @@ const Quiz = () => {
         ),
         convertKeyToScalesKey(currentQuestionKey, currentQuestion.majMin)
       )
-    } else if (currentQuestion.type === 'speed') {
+    } else if (currentQuestion.type === 'key') {
       return [MidiNumbers.fromNote(`${currentQuestionKey}3`)]
     } else {
       return []
@@ -161,7 +161,7 @@ const Quiz = () => {
       if (match) {
         gotoNextQuestion()
       }
-    } else if (currentQuestion.type === 'speed') {
+    } else if (currentQuestion.type === 'key') {
       const match = answerOnManyOctaves([currentQuestionKey]).some(
         (e) => activeNotes[e]
       )
@@ -285,7 +285,7 @@ const Quiz = () => {
         })}
       </QuizQuestion>
       <QuizOptionsContainer>
-        {currentQuestion.type === 'speed' && null}
+        {currentQuestion.type === 'key' && null}
         {currentQuestion.type === 'fifth' && fifthAnswers}
       </QuizOptionsContainer>
     </QuizPage>

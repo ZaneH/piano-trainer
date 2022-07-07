@@ -34,6 +34,8 @@ export const SCALE_STEP_VALUES: { [key in ScaleStepsType]: number } = {
   w: 2,
   h: 1,
 }
+
+// TODO: Use these rules to calculate the major.ts, minor.natural.ts, etc.
 export const SCALE_STEPS: { [key in MajorMinorType]: string[] } = {
   Major: ['w', 'w', 'h', 'w', 'w', 'w', 'h', 'w'],
   Minor: ['w', 'h', 'w', 'w', 'h', 'w', 'w', 'w'],
