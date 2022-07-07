@@ -74,6 +74,7 @@ const Keyboard = () => {
       const matches = targetChord.every((e) => chordStack?.includes(e))
       if (matches) {
         setNoteCounter?.((nc) => nc + 1)
+        setChordStack?.([])
       }
     } else if (practiceMode === 'fifths') {
       const targetFifths = [
@@ -83,9 +84,17 @@ const Keyboard = () => {
       const matches = targetFifths.every((e) => chordStack?.includes(e))
       if (matches) {
         setNoteCounter?.((nc) => nc + 1)
+        setChordStack?.([])
       }
     }
-  }, [chordStack, nextTargetNote, scale, practiceMode, setNoteCounter])
+  }, [
+    chordStack,
+    nextTargetNote,
+    scale,
+    practiceMode,
+    setNoteCounter,
+    setChordStack,
+  ])
 
   useEffect(() => {
     const unlisten = async () => {

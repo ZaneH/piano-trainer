@@ -1,6 +1,6 @@
 // Based on SoundfontProvider
 // https://github.com/kevinsqi/react-piano/blob/master/demo/src/SoundfontProvider.js
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import Soundfont, { InstrumentName, Player } from 'soundfont-player'
 
 interface SoundfontProviderProps {
@@ -35,10 +35,6 @@ const SoundfontProvider = ({
     []
   )
 
-  useEffect(() => {
-    loadInstrument(instrumentName)?.then((i) => setInstrument(i))
-  }, [])
-
   const playNote = (midiNumber: string) => {
     resumeAudio().then(() => {
       const audioNode = instrument?.play(midiNumber)
@@ -72,20 +68,27 @@ const SoundfontProvider = ({
     }
   }
 
-  const loadInstrument = (name: InstrumentName) => {
-    if (!audioContext) {
-      console.error("Couldn't create an audio context")
-      return
-    }
+  const loadInstrument = useCallback(
+    (name: InstrumentName) => {
+      if (!audioContext) {
+        console.error("Couldn't create an audio context")
+        return
+      }
 
-    return Soundfont.instrument(audioContext, name, {
-      format,
-      soundfont,
-      nameToUrl: (name: string, soundfont: any, format: string) => {
-        return `${hostname}/${soundfont}/${name}-${format}.js`
-      },
-    })
-  }
+      return Soundfont.instrument(audioContext, name, {
+        format,
+        soundfont,
+        nameToUrl: (name: string, soundfont: any, format: string) => {
+          return `${hostname}/${soundfont}/${name}-${format}.js`
+        },
+      })
+    },
+    [audioContext, format, hostname, soundfont]
+  )
+
+  useEffect(() => {
+    loadInstrument(instrumentName)?.then((i) => setInstrument(i))
+  }, [instrumentName, loadInstrument])
 
   return render({ playNote, stopNote })
 }

@@ -86,13 +86,31 @@ const TrainerProvider: FC<TrainerContextType> = ({ children }) => {
   useEffect(() => {
     setPrevNote(nextTargetNote)
 
+    // TODO: Rework this logic. It's buggy
     if (isScalePingPong && _isGoingDown) {
-      setNextTargetNote(
-        Number(Object.keys(scale.keys).reverse()[noteCounter % SCALE_LENGTH])
-      )
+      // don't reverse if we're on the first note ever pressed
+      if (noteCounter === 0) {
+        setNextTargetNote(
+          Number(Object.keys(scale.keys)[noteCounter % SCALE_LENGTH])
+        )
+      } else {
+        setNextTargetNote(
+          Number(Object.keys(scale.keys).reverse()[noteCounter % SCALE_LENGTH])
+        )
+      }
 
       if ((noteCounter + 1) % SCALE_LENGTH === 0) {
         _setIsGoingDown(false)
+        setNoteCounter((nc) => nc + 1)
+      }
+    } else if (isScalePingPong) {
+      setNextTargetNote(
+        Number(Object.keys(scale.keys)[noteCounter % SCALE_LENGTH])
+      )
+
+      if ((noteCounter + 1) % SCALE_LENGTH === 0) {
+        _setIsGoingDown(true)
+        setNoteCounter((nc) => nc + 1)
       }
     } else {
       setNextTargetNote(
@@ -103,7 +121,14 @@ const TrainerProvider: FC<TrainerContextType> = ({ children }) => {
         _setIsGoingDown(true)
       }
     }
-  }, [noteCounter, setNextTargetNote, scale, isScalePingPong])
+  }, [
+    noteCounter,
+    setNextTargetNote,
+    scale,
+    isScalePingPong,
+    nextTargetNote,
+    _isGoingDown,
+  ])
 
   useEffect(() => {
     setNoteCounter(0)
