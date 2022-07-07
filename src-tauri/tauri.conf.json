@@ -7,8 +7,8 @@
     "distDir": "../build"
   },
   "package": {
-    "productName": "scale-trainer",
-    "version": "0.1.0"
+    "productName": "Piano Trainer",
+    "version": "1.0.0"
   },
   "tauri": {
     "allowlist": {
@@ -29,7 +29,7 @@
         "icons/icon.icns",
         "icons/icon.ico"
       ],
-      "identifier": "com.zane.scale-trainer",
+      "identifier": "com.zane.piano-trainer",
       "longDescription": "",
       "macOS": {
         "entitlements": null,
@@ -39,7 +39,7 @@
         "signingIdentity": null
       },
       "resources": [],
-      "shortDescription": "",
+      "shortDescription": "A MIDI utility for learning scales, chords, and more!",
       "targets": "all",
       "windows": {
         "certificateThumbprint": null,
@@ -55,7 +55,7 @@
       "dialog": true,
       "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDI5ODJFNDA4ODM4NkY4QjAKUldTdytJYURDT1NDS1FZV0lUS3doQURibmtaRGZqUzJxUmI3UzBXY0JxK1drcCtNLy92bUpEaVoK",
       "endpoints": [
-        "https://gist.githubusercontent.com/ZaneH/76ddde809ccd22c0ff77f2bd268c8293/raw/691f634e45be4d7cf1695a52903b2597bc1db41d/update-metadata.json"
+        "https://gist.github.com/ZaneH/2075e77e36940b6aebae001648a40e5b/raw"
       ]
     },
     "windows": [
@@ -63,7 +63,7 @@
         "fullscreen": false,
         "height": 600,
         "resizable": true,
-        "title": "Scale Trainer",
+        "title": "Piano Trainer",
         "width": 800
       }
     ]

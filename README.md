@@ -1,4 +1,4 @@
-# Scale Trainer
+# Piano Trainer
 
 A cross-platform utility for learning the piano
 
