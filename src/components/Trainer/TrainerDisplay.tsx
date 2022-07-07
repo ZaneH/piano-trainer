@@ -1,5 +1,5 @@
-import { useContext } from 'react'
-import Select from 'react-select'
+import { useContext, useMemo } from 'react'
+import Select, { createFilter } from 'react-select'
 import styled from 'styled-components'
 import {
   AvailablePracticeModesType,
@@ -71,6 +71,14 @@ const TrainerDisplay = () => {
     value: AVAILABLE_MODES[s as AvailablePracticeModesType].value,
   }))
 
+  const fromStartFilter = useMemo(
+    () =>
+      createFilter({
+        matchFrom: 'start',
+      }),
+    []
+  )
+
   return (
     <TrainerDisplayContainer>
       <TrainerSection>
@@ -92,6 +100,7 @@ const TrainerDisplay = () => {
           </IconContainer>
         </TrainerSectionHeader>
         <Select
+          filterOption={fromStartFilter}
           options={scaleOptions}
           value={{
             label:
