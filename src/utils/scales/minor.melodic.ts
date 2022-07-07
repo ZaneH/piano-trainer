@@ -15,6 +15,21 @@ const CMinorMelodic: ScaleType = {
   },
 } as const
 
+const CSharpMinorMelodic: ScaleType = {
+  label: 'C# Minor (Melodic)',
+  value: 'c-sharp-minor-melodic',
+  keys: {
+    49: 'i',
+    51: 'iiº',
+    52: 'III+',
+    54: 'IV',
+    56: 'V',
+    58: 'viº',
+    60: 'viiº',
+    61: 'i',
+  },
+} as const
+
 const DMinorMelodic: ScaleType = {
   label: 'D Minor (Melodic)',
   value: 'd-minor-melodic',
@@ -27,6 +42,36 @@ const DMinorMelodic: ScaleType = {
     59: 'viº',
     61: 'viiº',
     62: 'i',
+  },
+} as const
+
+const DSharpMinorMelodic: ScaleType = {
+  label: 'D# Minor (Melodic)',
+  value: 'd-sharp-minor-melodic',
+  keys: {
+    51: 'i',
+    53: 'iiº',
+    54: 'III+',
+    56: 'IV',
+    58: 'V',
+    60: 'viº',
+    62: 'viiº',
+    63: 'i',
+  },
+} as const
+
+const EFlatMinorMelodic: ScaleType = {
+  label: 'Eb Minor (Melodic)',
+  value: 'e-flat-minor-melodic',
+  keys: {
+    51: 'i',
+    53: 'iiº',
+    54: 'III+',
+    56: 'IV',
+    58: 'V',
+    60: 'viº',
+    62: 'viiº',
+    63: 'i',
   },
 } as const
 
@@ -60,6 +105,21 @@ const FMinorMelodic: ScaleType = {
   },
 } as const
 
+const FSharpMinorMelodic: ScaleType = {
+  label: 'F# Minor (Melodic)',
+  value: 'f-sharp-minor-melodic',
+  keys: {
+    54: 'i',
+    56: 'iiº',
+    57: 'III+',
+    59: 'IV',
+    61: 'V',
+    63: 'viº',
+    65: 'viiº',
+    66: 'i',
+  },
+} as const
+
 const GMinorMelodic: ScaleType = {
   label: 'G Minor (Melodic)',
   value: 'g-minor-melodic',
@@ -75,6 +135,36 @@ const GMinorMelodic: ScaleType = {
   },
 } as const
 
+const GSharpMinorMelodic: ScaleType = {
+  label: 'G# Minor (Melodic)',
+  value: 'g-sharp-minor-melodic',
+  keys: {
+    56: 'i',
+    58: 'iiº',
+    59: 'III+',
+    61: 'IV',
+    63: 'V',
+    65: 'viº',
+    67: 'viiº',
+    68: 'i',
+  },
+} as const
+
+const AFlatMinorMelodic: ScaleType = {
+  label: 'Ab Minor (Melodic)',
+  value: 'a-flat-minor-melodic',
+  keys: {
+    56: 'i',
+    58: 'iiº',
+    59: 'III+',
+    61: 'IV',
+    63: 'V',
+    65: 'viº',
+    67: 'viiº',
+    68: 'i',
+  },
+} as const
+
 const AMinorMelodic: ScaleType = {
   label: 'A Minor (Melodic)',
   value: 'a-minor-melodic',
@@ -87,6 +177,36 @@ const AMinorMelodic: ScaleType = {
     66: 'viº',
     68: 'viiº',
     69: 'i',
+  },
+} as const
+
+const ASharpMinorMelodic: ScaleType = {
+  label: 'A# Minor (Melodic)',
+  value: 'a-sharp-minor-melodic',
+  keys: {
+    58: 'i',
+    60: 'iiº',
+    61: 'III+',
+    63: 'IV',
+    65: 'V',
+    67: 'viº',
+    69: 'viiº',
+    70: 'i',
+  },
+} as const
+
+const BFlatMinorMelodic: ScaleType = {
+  label: 'Bb Minor (Melodic)',
+  value: 'b-flat-minor-melodic',
+  keys: {
+    58: 'i',
+    60: 'iiº',
+    61: 'III+',
+    63: 'IV',
+    65: 'V',
+    67: 'viº',
+    69: 'viiº',
+    70: 'i',
   },
 } as const
 
@@ -107,22 +227,38 @@ const BMinorMelodic: ScaleType = {
 
 export type AvailableMinorMelodicScalesType =
   | 'c-minor-melodic'
+  | 'c-sharp-minor-melodic'
   | 'd-minor-melodic'
+  | 'd-sharp-minor-melodic'
+  | 'e-flat-minor-melodic'
   | 'e-minor-melodic'
   | 'f-minor-melodic'
+  | 'f-sharp-minor-melodic'
   | 'g-minor-melodic'
+  | 'g-sharp-minor-melodic'
+  | 'a-flat-minor-melodic'
   | 'a-minor-melodic'
+  | 'a-sharp-minor-melodic'
+  | 'b-flat-minor-melodic'
   | 'b-minor-melodic'
 
 const AVAILABLE_MINOR_MELODIC_SCALES: {
   [key in AvailableMinorMelodicScalesType]: ScaleType
 } = {
   'c-minor-melodic': CMinorMelodic,
+  'c-sharp-minor-melodic': CSharpMinorMelodic,
   'd-minor-melodic': DMinorMelodic,
+  'd-sharp-minor-melodic': DSharpMinorMelodic,
+  'e-flat-minor-melodic': EFlatMinorMelodic,
   'e-minor-melodic': EMinorMelodic,
   'f-minor-melodic': FMinorMelodic,
+  'f-sharp-minor-melodic': FSharpMinorMelodic,
   'g-minor-melodic': GMinorMelodic,
+  'g-sharp-minor-melodic': GSharpMinorMelodic,
+  'a-flat-minor-melodic': AFlatMinorMelodic,
   'a-minor-melodic': AMinorMelodic,
+  'a-sharp-minor-melodic': ASharpMinorMelodic,
+  'b-flat-minor-melodic': BFlatMinorMelodic,
   'b-minor-melodic': BMinorMelodic,
 } as const
 
