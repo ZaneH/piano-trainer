@@ -3,6 +3,7 @@ import { AVAILABLE_SETTINGS } from '../../utils'
 import { useContext } from 'react'
 import { KVContext } from '../KVProvider'
 import SettingRow from './SettingRow'
+import { SidebarContext } from '../SidebarProvider'
 
 const CoverScreen = styled.div`
   position: absolute;
@@ -18,13 +19,13 @@ const CoverScreen = styled.div`
 const FadeOut = styled.div`
   flex: 2.5;
   background-color: rgba(0, 0, 0, 0.4);
-  z-index: 1;
+  z-index: 9;
 `
 
 const Sidebar = styled.div`
   flex: 2;
   background-color: #09090a;
-  z-index: 2;
+  z-index: 10;
 
   h1 {
     color: white;
@@ -33,15 +34,13 @@ const Sidebar = styled.div`
   }
 `
 
-interface SettingsSidebarProps {
-  closeSidebar: Function
-}
-
-const SettingsSidebar = ({ closeSidebar }: SettingsSidebarProps) => {
+const SettingsSidebar = () => {
   const { showKeyboard, muteSound } = useContext(KVContext)
+  const { setIsOpen } = useContext(SidebarContext)
+
   return (
     <CoverScreen>
-      <FadeOut onClick={() => closeSidebar()} />
+      <FadeOut onClick={() => setIsOpen?.(false)} />
       <Sidebar>
         <h1>Settings</h1>
         {AVAILABLE_SETTINGS.map((s) => (

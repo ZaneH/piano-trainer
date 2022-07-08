@@ -301,10 +301,7 @@ const Quiz = () => {
 
   return (
     <QuizPage>
-      <QuizHeader onSidebarOpen={() => setIsSidebarOpen((so) => !so)} />
-      {isSidebarOpen && (
-        <SettingsSidebar closeSidebar={() => setIsSidebarOpen(false)} />
-      )}
+      <QuizHeader />
       <QuizQuestion>
         {formatQuestion(currentQuestion.questionFormat, {
           key: currentQuestionKey,

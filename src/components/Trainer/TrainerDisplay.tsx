@@ -8,9 +8,11 @@ import {
   AVAILABLE_SCALES,
 } from '../../utils'
 import { TrainerContext } from '../TrainerProvider'
+import SettingsIcon from 'remixicon-react/Settings2FillIcon'
 import ArrowLeftRightIcon from 'remixicon-react/ArrowLeftRightFillIcon'
 import SkullIcon from 'remixicon-react/SkullFillIcon'
 import QuizIcon from 'remixicon-react/SurveyFillIcon'
+import { SidebarContext } from '../SidebarProvider'
 
 const TrainerDisplayContainer = styled.div`
   display: flex;
@@ -60,6 +62,7 @@ const TrainerDisplay = () => {
     isHardModeEnabled,
     setIsHardModeEnabled,
   } = useContext(TrainerContext)
+  const { setIsOpen } = useContext(SidebarContext)
 
   const scaleOptions = Object.keys(AVAILABLE_SCALES).map((s: string) => ({
     label: AVAILABLE_SCALES[s as AvailableMajorScalesType].label,
@@ -122,6 +125,12 @@ const TrainerDisplay = () => {
             onClick={() => setCurrentScreen?.('quiz')}
           >
             <QuizIcon color='#1f1f20' />
+          </IconContainer>
+          <IconContainer
+            title='Open settings'
+            onClick={() => setIsOpen?.(true)}
+          >
+            <SettingsIcon color='#1f1f20' />
           </IconContainer>
         </TrainerSectionHeader>
         <Select

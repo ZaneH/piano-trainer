@@ -3,14 +3,19 @@ import { listen, UnlistenFn } from '@tauri-apps/api/event'
 import { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { KeyboardShortcuts, MidiNumbers, Piano } from 'react-piano'
 import 'react-piano/dist/styles.css'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { getFifthFromMidiNote, getTriadChordFromMidiNote } from '../../utils'
 import { KVContext } from '../KVProvider'
 import SoundfontProvider from '../SoundfontProvider'
 import { TrainerContext } from '../TrainerProvider'
 
-const KeyboardContainer = styled.div`
+const KeyboardContainer = styled.div<{ hide: boolean }>`
   height: 25vh;
+  ${(p) =>
+    p.hide &&
+    css`
+      transform: translateY(25vh);
+    `}
 `
 
 const Keyboard = () => {
@@ -22,7 +27,7 @@ const Keyboard = () => {
     setChordStack,
     scale,
   } = useContext(TrainerContext)
-  const { muteSound } = useContext(KVContext)
+  const { muteSound, showKeyboard } = useContext(KVContext)
   const unlistenRef = useRef<UnlistenFn>()
   const [activeNotes, setActiveNotes] = useState<{ [note: string]: boolean }>(
     {}
@@ -127,7 +132,7 @@ const Keyboard = () => {
       onLoad={() => {}}
       render={({ playNote, stopNote }) => {
         return (
-          <KeyboardContainer>
+          <KeyboardContainer hide={!showKeyboard}>
             <Piano
               noteRange={{ first: firstNote, last: lastNote }}
               playNote={(midiNumber: number) => {

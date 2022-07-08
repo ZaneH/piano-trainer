@@ -3,6 +3,7 @@ import ArrowBack from 'remixicon-react/ArrowLeftFillIcon'
 import SettingsIcon from 'remixicon-react/Settings2FillIcon'
 import { useContext } from 'react'
 import { TrainerContext } from '../TrainerProvider'
+import { SidebarContext } from '../SidebarProvider'
 
 const HeaderContainer = styled.div`
   width: 100%;
@@ -42,12 +43,10 @@ const SettingsIconContainer = styled.div`
   margin-right: 32px;
 `
 
-interface QuizHeaderProps {
-  onSidebarOpen: Function
-}
-
-const QuizHeader = ({ onSidebarOpen }: QuizHeaderProps) => {
+const QuizHeader = () => {
   const { setCurrentScreen } = useContext(TrainerContext)
+  const { setIsOpen } = useContext(SidebarContext)
+
   return (
     <HeaderContainer>
       <BackIconContainer
@@ -57,7 +56,7 @@ const QuizHeader = ({ onSidebarOpen }: QuizHeaderProps) => {
         <ArrowBack color='#1f1f20' />
       </BackIconContainer>
       <h1>Quiz Mode</h1>
-      <SettingsIconContainer onClick={() => onSidebarOpen()}>
+      <SettingsIconContainer onClick={() => setIsOpen?.(true)}>
         <SettingsIcon color='#1f1f20' />
       </SettingsIconContainer>
     </HeaderContainer>

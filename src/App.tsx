@@ -1,8 +1,10 @@
+import { useState } from 'react'
 import styled from 'styled-components'
 import Keyboard from './components/Keyboard'
 import KVProvider from './components/KVProvider/KVProvider'
 import { Quiz, QuizHeader } from './components/Quiz'
 import ScreenManager from './components/ScreenManager/ScreenManager'
+import SidebarProvider from './components/SidebarProvider/SidebarProvider'
 import { TrainerDisplay, TrainerPiano } from './components/Trainer'
 import TrainerProvider from './components/TrainerProvider'
 
@@ -22,22 +24,24 @@ const QuizScreenLayout = styled.div`
 function App() {
   return (
     <KVProvider>
-      <TrainerProvider>
-        <ScreenManager
-          practice={
-            <PracticeScreenLayout>
-              <TrainerPiano />
-              <TrainerDisplay />
-              <Keyboard />
-            </PracticeScreenLayout>
-          }
-          quiz={
-            <QuizScreenLayout>
-              <Quiz />
-            </QuizScreenLayout>
-          }
-        />
-      </TrainerProvider>
+      <SidebarProvider>
+        <TrainerProvider>
+          <ScreenManager
+            practice={
+              <PracticeScreenLayout>
+                <TrainerPiano />
+                <TrainerDisplay />
+                <Keyboard />
+              </PracticeScreenLayout>
+            }
+            quiz={
+              <QuizScreenLayout>
+                <Quiz />
+              </QuizScreenLayout>
+            }
+          />
+        </TrainerProvider>
+      </SidebarProvider>
     </KVProvider>
   )
 }
