@@ -5,6 +5,7 @@ import { KeyboardShortcuts, MidiNumbers, Piano } from 'react-piano'
 import 'react-piano/dist/styles.css'
 import styled from 'styled-components'
 import { getFifthFromMidiNote, getTriadChordFromMidiNote } from '../../utils'
+import { KVContext } from '../KVProvider'
 import SoundfontProvider from '../SoundfontProvider'
 import { TrainerContext } from '../TrainerProvider'
 
@@ -21,6 +22,7 @@ const Keyboard = () => {
     setChordStack,
     scale,
   } = useContext(TrainerContext)
+  const { muteSound } = useContext(KVContext)
   const unlistenRef = useRef<UnlistenFn>()
   const [activeNotes, setActiveNotes] = useState<{ [note: string]: boolean }>(
     {}
@@ -145,7 +147,7 @@ const Keyboard = () => {
                   setChordStack?.((cs) => [...cs, midiNumber])
                 }
 
-                playNote(midiNumber)
+                !muteSound && playNote(midiNumber)
               }}
               stopNote={(midiNumber: number) => {
                 stopNote(midiNumber)

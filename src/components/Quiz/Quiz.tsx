@@ -59,7 +59,7 @@ const KeyboardContainer = styled.div`
 `
 
 const Quiz = () => {
-  const { showKeyboard } = useContext(KVContext)
+  const { showKeyboard, muteSound } = useContext(KVContext)
   const unlistenRef = useRef<UnlistenFn>()
   const [activeNotes, setActiveNotes] = useState<{ [note: string]: boolean }>(
     {}
@@ -331,7 +331,7 @@ const Quiz = () => {
                     ...an,
                     [midiNumber]: true,
                   }))
-                  playNote(midiNumber)
+                  !muteSound && playNote(midiNumber)
                 }}
                 stopNote={(midiNumber: number) => {
                   setActiveNotes((an) => ({

@@ -38,18 +38,22 @@ interface SettingsSidebarProps {
 }
 
 const SettingsSidebar = ({ closeSidebar }: SettingsSidebarProps) => {
-  const { showKeyboard } = useContext(KVContext)
+  const { showKeyboard, muteSound } = useContext(KVContext)
   return (
     <CoverScreen>
       <FadeOut onClick={() => closeSidebar()} />
       <Sidebar>
         <h1>Settings</h1>
-        {AVAILABLE_SETTINGS.map(
-          (s) =>
-            s.key === 'show-keyboard' && (
+        {AVAILABLE_SETTINGS.map((s) => (
+          <>
+            {s.key === 'show-keyboard' && (
               <SettingRow key={s.key} setting={s} value={showKeyboard} />
-            )
-        )}
+            )}
+            {s.key === 'mute-sound' && (
+              <SettingRow key={s.key} setting={s} value={muteSound} />
+            )}
+          </>
+        ))}
       </Sidebar>
     </CoverScreen>
   )
