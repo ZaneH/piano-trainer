@@ -2,7 +2,7 @@
   "$schema": "../node_modules/@tauri-apps/cli/schema.json",
   "build": {
     "beforeBuildCommand": "npm run build",
-    "beforeDevCommand": "npm run start",
+    "beforeDevCommand": "pkill MIDIServer; npm run start",
     "devPath": "http://localhost:3000",
     "distDir": "../build"
   },

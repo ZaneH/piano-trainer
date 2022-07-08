@@ -7,6 +7,7 @@ use midir::{Ignore, MidiInput, MidiInputConnection};
 use serde::Serialize;
 use std::sync::{Arc, Mutex};
 use tauri::{Manager, Window, Wry};
+use tauri_plugin_store::PluginBuilder;
 
 #[derive(Default)]
 pub struct MidiState {
@@ -58,6 +59,7 @@ fn open_midi_connection(
 fn main() {
   let context = tauri::generate_context!();
   tauri::Builder::default()
+    .plugin(PluginBuilder::default().build())
     .menu(if cfg!(target_os = "macos") {
       tauri::Menu::os_default(&context.package_info().name)
     } else {

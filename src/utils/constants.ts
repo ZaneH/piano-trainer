@@ -40,3 +40,30 @@ export const SCALE_STEPS: { [key in MajorMinorType]: string[] } = {
   Major: ['w', 'w', 'h', 'w', 'w', 'w', 'h', 'w'],
   Minor: ['w', 'h', 'w', 'w', 'h', 'w', 'w', 'w'],
 }
+
+export type PTSettingsKeyType = 'piano-sound' | 'show-keyboard' | 'mute-sound'
+export type PTSettingType = {
+  key: PTSettingsKeyType
+  label: string
+  type: 'select' | 'checkbox'
+  options?: readonly string[]
+}
+
+export const AVAILABLE_SETTINGS: readonly PTSettingType[] = [
+  {
+    key: 'piano-sound',
+    label: 'Sound',
+    type: 'select',
+    options: ['Piano Grand'],
+  },
+  {
+    key: 'show-keyboard',
+    label: 'Show keyboard',
+    type: 'checkbox',
+  },
+  {
+    key: 'mute-sound',
+    label: 'Mute sound',
+    type: 'checkbox',
+  },
+] as const

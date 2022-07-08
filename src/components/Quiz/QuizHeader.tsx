@@ -1,5 +1,6 @@
 import styled from 'styled-components'
 import ArrowBack from 'remixicon-react/ArrowLeftFillIcon'
+import SettingsIcon from 'remixicon-react/Settings2FillIcon'
 import { useContext } from 'react'
 import { TrainerContext } from '../TrainerProvider'
 
@@ -28,15 +29,24 @@ const BackIconContainer = styled.div`
   margin-left: 32px;
 `
 
-const TimerContainer = styled.div`
-  width: 2em;
+const SettingsIconContainer = styled.div`
   padding: 8px;
+  width: 2em;
   height: 2em;
-  background-color: clear;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  background-color: white;
+  cursor: pointer;
   margin-right: 32px;
 `
 
-const QuizHeader = () => {
+interface QuizHeaderProps {
+  onSidebarOpen: Function
+}
+
+const QuizHeader = ({ onSidebarOpen }: QuizHeaderProps) => {
   const { setCurrentScreen } = useContext(TrainerContext)
   return (
     <HeaderContainer>
@@ -47,7 +57,9 @@ const QuizHeader = () => {
         <ArrowBack color='#1f1f20' />
       </BackIconContainer>
       <h1>Quiz Mode</h1>
-      <TimerContainer />
+      <SettingsIconContainer onClick={() => onSidebarOpen()}>
+        <SettingsIcon color='#1f1f20' />
+      </SettingsIconContainer>
     </HeaderContainer>
   )
 }

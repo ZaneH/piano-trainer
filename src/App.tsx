@@ -1,5 +1,6 @@
 import styled from 'styled-components'
 import Keyboard from './components/Keyboard'
+import KVProvider from './components/KVProvider/KVProvider'
 import { Quiz, QuizHeader } from './components/Quiz'
 import ScreenManager from './components/ScreenManager/ScreenManager'
 import { TrainerDisplay, TrainerPiano } from './components/Trainer'
@@ -20,23 +21,24 @@ const QuizScreenLayout = styled.div`
 
 function App() {
   return (
-    <TrainerProvider>
-      <ScreenManager
-        practice={
-          <PracticeScreenLayout>
-            <TrainerPiano />
-            <TrainerDisplay />
-            <Keyboard />
-          </PracticeScreenLayout>
-        }
-        quiz={
-          <QuizScreenLayout>
-            <QuizHeader />
-            <Quiz />
-          </QuizScreenLayout>
-        }
-      />
-    </TrainerProvider>
+    <KVProvider>
+      <TrainerProvider>
+        <ScreenManager
+          practice={
+            <PracticeScreenLayout>
+              <TrainerPiano />
+              <TrainerDisplay />
+              <Keyboard />
+            </PracticeScreenLayout>
+          }
+          quiz={
+            <QuizScreenLayout>
+              <Quiz />
+            </QuizScreenLayout>
+          }
+        />
+      </TrainerProvider>
+    </KVProvider>
   )
 }
 

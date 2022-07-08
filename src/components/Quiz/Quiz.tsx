@@ -1,7 +1,14 @@
 import { invoke } from '@tauri-apps/api'
 import { listen, UnlistenFn } from '@tauri-apps/api/event'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { MidiNumbers } from 'react-piano'
+import {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
+import { MidiNumbers, Piano } from 'react-piano'
 import styled from 'styled-components'
 import {
   CIRCLE_OF_FIFTHS,
@@ -14,6 +21,9 @@ import {
   shuffle,
   swapNoteWithSynonym,
 } from '../../utils'
+import { KVContext } from '../KVProvider'
+import SettingsSidebar from '../SettingsSidebar/SettingsSidebar'
+import SoundfontProvider from '../SoundfontProvider'
 import {
   formatQuestion,
   getRandomQuizQuestion,
@@ -21,6 +31,7 @@ import {
   QuestionTypeType,
   QuizOption,
 } from './Questions'
+import QuizHeader from './QuizHeader'
 
 const QuizPage = styled.div`
   height: 100%;
@@ -39,7 +50,16 @@ const QuizOptionsContainer = styled.div`
   justify-content: space-evenly;
 `
 
+const KeyboardContainer = styled.div`
+  height: 25vh;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  left: 0;
+`
+
 const Quiz = () => {
+  const { showKeyboard } = useContext(KVContext)
   const unlistenRef = useRef<UnlistenFn>()
   const [activeNotes, setActiveNotes] = useState<{ [note: string]: boolean }>(
     {}
@@ -48,6 +68,9 @@ const Quiz = () => {
   const [currentQuestion, setCurrentQuestion] = useState(
     getRandomQuizQuestion()
   )
+  const firstNote = MidiNumbers.fromNote('c3')
+  const lastNote = MidiNumbers.fromNote('c5')
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
   // Get a random note that's appropriate for the question type
   const getRandomNote = useCallback(
@@ -278,6 +301,10 @@ const Quiz = () => {
 
   return (
     <QuizPage>
+      <QuizHeader onSidebarOpen={() => setIsSidebarOpen((so) => !so)} />
+      {isSidebarOpen && (
+        <SettingsSidebar closeSidebar={() => setIsSidebarOpen(false)} />
+      )}
       <QuizQuestion>
         {formatQuestion(currentQuestion.questionFormat, {
           key: currentQuestionKey,
@@ -288,6 +315,39 @@ const Quiz = () => {
         {currentQuestion.type === 'key' && null}
         {currentQuestion.type === 'fifth' && fifthAnswers}
       </QuizOptionsContainer>
+      {showKeyboard && currentQuestion.type === 'key' && (
+        <SoundfontProvider
+          instrumentName={'acoustic_grand_piano'}
+          hostname={'https://d1pzp51pvbm36p.cloudfront.net'}
+          format={'mp3'}
+          soundfont={'MusyngKite'}
+          onLoad={() => {}}
+          render={({ playNote, stopNote }) => (
+            <KeyboardContainer>
+              <Piano
+                noteRange={{ first: firstNote, last: lastNote }}
+                playNote={(midiNumber: number) => {
+                  setActiveNotes((an) => ({
+                    ...an,
+                    [midiNumber]: true,
+                  }))
+                  playNote(midiNumber)
+                }}
+                stopNote={(midiNumber: number) => {
+                  setActiveNotes((an) => ({
+                    ...an,
+                    [midiNumber]: false,
+                  }))
+                  stopNote(midiNumber)
+                }}
+                activeNotes={Object.keys(activeNotes)
+                  .filter((v: string) => activeNotes[v])
+                  .map((s: string) => Number(s))}
+              />
+            </KeyboardContainer>
+          )}
+        />
+      )}
     </QuizPage>
   )
 }
