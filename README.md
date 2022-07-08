@@ -19,6 +19,9 @@ A cross-platform utility for learning the piano
 
 - [ ] Computer keyboard support
 - [ ] Interactive inversion practice
+- [ ] Settings
+  - [ ] Toggle questions in quiz mode
+  - [ ] Change keyboard sound
 
 # Releases
 
