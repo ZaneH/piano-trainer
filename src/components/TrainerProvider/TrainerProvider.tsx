@@ -52,7 +52,7 @@ const TrainerProvider: FC<TrainerContextType> = ({ children }) => {
   const [noteTracker, setNoteTracker] = useState<NoteTracker>({
     currentMidiNumber: Number(Object.keys(scale.keys)[0]),
     noteCounter: 0,
-    prevNote: undefined,
+    prevNote: Number(Object.keys(scale.keys)[0]),
     nextTargetMidiNumber: Number(Object.keys(scale.keys)[0]),
   })
   const [chordStack, setChordStack] = useState<number[]>([])
@@ -83,41 +83,37 @@ const TrainerProvider: FC<TrainerContextType> = ({ children }) => {
   }
 
   useEffect(() => {
-    setNoteTracker((nt) => ({
-      ...nt,
-      prevNote: nt.nextTargetMidiNumber,
-    }))
+    const prevNote = noteTracker.currentMidiNumber
+    const scaleStartMidiNumber = Number(Object.keys(scale.keys)[0])
+    const scaleEndMidiNumber = Number(Object.keys(scale.keys).reverse()[0])
+    const nextTargetMidiNumber = Number(
+      Object.keys(scale.keys).reverse()[noteTracker.noteCounter % SCALE_LENGTH]
+    )
 
     if (isScalePingPong && _isGoingDown) {
-      if (
-        noteTracker.currentMidiNumber === Number(Object.keys(scale.keys)[0])
-      ) {
+      if (noteTracker.currentMidiNumber === scaleStartMidiNumber) {
         _setIsGoingDown(false)
       } else {
         setNoteTracker((nt) => ({
           ...nt,
-          nextTargetMidiNumber: Number(
-            Object.keys(scale.keys).reverse()[
-              noteTracker.noteCounter % SCALE_LENGTH
-            ]
-          ),
+          prevNote,
+          nextTargetMidiNumber,
         }))
       }
     } else {
-      if (
-        noteTracker.currentMidiNumber ===
-        Number(Object.keys(scale.keys).reverse()[0])
-      ) {
+      if (noteTracker.currentMidiNumber === scaleEndMidiNumber) {
         _setIsGoingDown(true)
         if (!isScalePingPong) {
           setNoteTracker((nt) => ({
             ...nt,
-            nextTargetMidiNumber: Number(Object.keys(scale.keys)[0]),
+            prevNote: isHardModeEnabled ? scaleStartMidiNumber : prevNote,
+            nextTargetMidiNumber: scaleStartMidiNumber,
           }))
         }
       } else {
         setNoteTracker((nt) => ({
           ...nt,
+          prevNote,
           nextTargetMidiNumber: Number(
             Object.keys(scale.keys)[noteTracker.noteCounter % SCALE_LENGTH]
           ),
@@ -131,6 +127,7 @@ const TrainerProvider: FC<TrainerContextType> = ({ children }) => {
     noteTracker.noteCounter,
     noteTracker.nextTargetMidiNumber,
     scale.keys,
+    isHardModeEnabled,
   ])
 
   useEffect(() => {
@@ -139,8 +136,9 @@ const TrainerProvider: FC<TrainerContextType> = ({ children }) => {
       noteCounter: 0,
       nextTargetMidiNumber: Number(Object.keys(scale.keys)[0]),
       currentMidiNumber: Number(Object.keys(scale.keys)[0]),
+      prevNote: Number(Object.keys(scale.keys)[0]),
     }))
-  }, [scale, isScalePingPong, currentScreen, practiceMode])
+  }, [scale, isScalePingPong, currentScreen, practiceMode, isHardModeEnabled])
 
   return (
     <TrainerContext.Provider value={context}>

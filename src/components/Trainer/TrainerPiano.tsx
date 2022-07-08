@@ -46,7 +46,7 @@ const TrainerPiano = () => {
         if (isHardModeEnabled) {
           return [noteTracker?.prevNote]
         } else {
-          return [noteTracker?.nextTargetMidiNumber]
+          return [nextNote]
         }
       } else if (practiceMode === 'chords') {
         return getTriadChordFromMidiNote(nextNote, scale)
@@ -57,13 +57,7 @@ const TrainerPiano = () => {
         ]
       }
     },
-    [
-      isHardModeEnabled,
-      noteTracker?.prevNote,
-      noteTracker?.nextTargetMidiNumber,
-      practiceMode,
-      scale,
-    ]
+    [isHardModeEnabled, noteTracker?.prevNote, practiceMode, scale]
   )
 
   return (
