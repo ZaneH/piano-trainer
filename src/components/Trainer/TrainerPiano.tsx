@@ -30,20 +30,23 @@ const InKeyMarker = styled.div`
 
 const TrainerPiano = () => {
   const {
-    nextTargetNote = 48,
     scale = AVAILABLE_MAJOR_SCALES['c-major'],
     isHardModeEnabled,
-    prevNote,
+    noteTracker,
     practiceMode,
   } = useContext(TrainerContext)
 
   const getActiveNotes = useCallback(
-    (nextNote: number) => {
+    (nextNote?: number) => {
+      if (!nextNote) {
+        return []
+      }
+
       if (practiceMode === 'scales') {
         if (isHardModeEnabled) {
-          return [prevNote]
+          return [noteTracker?.prevNote]
         } else {
-          return [nextTargetNote]
+          return [noteTracker?.nextTargetMidiNumber]
         }
       } else if (practiceMode === 'chords') {
         return getTriadChordFromMidiNote(nextNote, scale)
@@ -54,7 +57,13 @@ const TrainerPiano = () => {
         ]
       }
     },
-    [isHardModeEnabled, prevNote, nextTargetNote, practiceMode, scale]
+    [
+      isHardModeEnabled,
+      noteTracker?.prevNote,
+      noteTracker?.nextTargetMidiNumber,
+      practiceMode,
+      scale,
+    ]
   )
 
   return (
@@ -64,7 +73,7 @@ const TrainerPiano = () => {
           first: MidiNumbers.fromNote('c3'),
           last: MidiNumbers.fromNote('c5'),
         }}
-        activeNotes={getActiveNotes(nextTargetNote)}
+        activeNotes={getActiveNotes(noteTracker?.nextTargetMidiNumber)}
         onPlayNoteInput={() => {}}
         onStopNoteInput={() => {}}
         keyWidthToHeight={0.33}

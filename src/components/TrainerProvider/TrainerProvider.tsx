@@ -14,23 +14,25 @@ import {
   SCALE_LENGTH,
 } from '../../utils'
 
+interface NoteTracker {
+  currentMidiNumber: number
+  nextTargetMidiNumber: number
+  prevNote?: number
+  noteCounter: number
+}
+
 type TrainerContextType = {
   children?: React.ReactNode
 
   // Core functionality
-  nextTargetNote?: number
-  setNextTargetNote?: Dispatch<SetStateAction<number>>
-  /** Track the last key pressed for hard mode */
-  prevNote?: number
-  setPrevNote?: Dispatch<SetStateAction<number>>
   scale?: ScaleType
   setScale?: Dispatch<SetStateAction<ScaleType>>
-  /** Responsible for resetting the nextTargetNote when we reach the end of a scale sequence. Counts to infinity */
-  noteCounter?: number
-  setNoteCounter?: Dispatch<SetStateAction<number>>
-  /** Responsible for storing the current chord being played in Chord mode */
+  /** Responsible for storing the current chord being played */
   chordStack?: number[]
   setChordStack?: Dispatch<SetStateAction<number[]>>
+  /** Keeps track of where we are in the scale, etc. */
+  noteTracker?: NoteTracker
+  setNoteTracker?: Dispatch<SetStateAction<NoteTracker>>
 
   // Settings
   practiceMode?: AvailablePracticeModesType
@@ -47,11 +49,12 @@ export const TrainerContext = createContext({} as TrainerContextType)
 
 const TrainerProvider: FC<TrainerContextType> = ({ children }) => {
   const [scale, setScale] = useState<ScaleType>(AVAILABLE_SCALES['c-major'])
-  const [prevNote, setPrevNote] = useState(Number(Object.keys(scale.keys)[0]))
-  const [nextTargetNote, setNextTargetNote] = useState<number>(
-    Number(Object.keys(scale)[0])
-  )
-  const [noteCounter, setNoteCounter] = useState(0)
+  const [noteTracker, setNoteTracker] = useState<NoteTracker>({
+    currentMidiNumber: Number(Object.keys(scale.keys)[0]),
+    noteCounter: 0,
+    prevNote: undefined,
+    nextTargetMidiNumber: Number(Object.keys(scale.keys)[0]),
+  })
   const [chordStack, setChordStack] = useState<number[]>([])
   const [practiceMode, setPracticeMode] =
     useState<AvailablePracticeModesType>('scales')
@@ -63,14 +66,10 @@ const TrainerProvider: FC<TrainerContextType> = ({ children }) => {
   const [_isGoingDown, _setIsGoingDown] = useState(false)
 
   const context: TrainerContextType = {
-    nextTargetNote,
-    setNextTargetNote,
-    prevNote,
-    setPrevNote,
     scale,
     setScale,
-    noteCounter,
-    setNoteCounter,
+    noteTracker,
+    setNoteTracker,
     chordStack,
     setChordStack,
     practiceMode,
@@ -84,54 +83,63 @@ const TrainerProvider: FC<TrainerContextType> = ({ children }) => {
   }
 
   useEffect(() => {
-    setPrevNote(nextTargetNote)
+    setNoteTracker((nt) => ({
+      ...nt,
+      prevNote: nt.nextTargetMidiNumber,
+    }))
 
-    // TODO: Rework this logic. It's buggy
     if (isScalePingPong && _isGoingDown) {
-      // don't reverse if we're on the first note ever pressed
-      if (noteCounter === 0) {
-        setNextTargetNote(
-          Number(Object.keys(scale.keys)[noteCounter % SCALE_LENGTH])
-        )
-      } else {
-        setNextTargetNote(
-          Number(Object.keys(scale.keys).reverse()[noteCounter % SCALE_LENGTH])
-        )
-      }
-
-      if ((noteCounter + 1) % SCALE_LENGTH === 0) {
+      if (
+        noteTracker.currentMidiNumber === Number(Object.keys(scale.keys)[0])
+      ) {
         _setIsGoingDown(false)
-        setNoteCounter((nc) => nc + 1)
-      }
-    } else if (isScalePingPong) {
-      setNextTargetNote(
-        Number(Object.keys(scale.keys)[noteCounter % SCALE_LENGTH])
-      )
-
-      if ((noteCounter + 1) % SCALE_LENGTH === 0) {
-        _setIsGoingDown(true)
-        setNoteCounter((nc) => nc + 1)
+      } else {
+        setNoteTracker((nt) => ({
+          ...nt,
+          nextTargetMidiNumber: Number(
+            Object.keys(scale.keys).reverse()[
+              noteTracker.noteCounter % SCALE_LENGTH
+            ]
+          ),
+        }))
       }
     } else {
-      setNextTargetNote(
-        Number(Object.keys(scale.keys)[noteCounter % SCALE_LENGTH])
-      )
-
-      if ((noteCounter + 1) % SCALE_LENGTH === 0) {
+      if (
+        noteTracker.currentMidiNumber ===
+        Number(Object.keys(scale.keys).reverse()[0])
+      ) {
         _setIsGoingDown(true)
+        if (!isScalePingPong) {
+          setNoteTracker((nt) => ({
+            ...nt,
+            nextTargetMidiNumber: Number(Object.keys(scale.keys)[0]),
+          }))
+        }
+      } else {
+        setNoteTracker((nt) => ({
+          ...nt,
+          nextTargetMidiNumber: Number(
+            Object.keys(scale.keys)[noteTracker.noteCounter % SCALE_LENGTH]
+          ),
+        }))
       }
     }
   }, [
-    noteCounter,
-    setNextTargetNote,
-    scale,
-    isScalePingPong,
-    nextTargetNote,
     _isGoingDown,
+    isScalePingPong,
+    noteTracker.currentMidiNumber,
+    noteTracker.noteCounter,
+    noteTracker.nextTargetMidiNumber,
+    scale.keys,
   ])
 
   useEffect(() => {
-    setNoteCounter(0)
+    setNoteTracker((nt) => ({
+      ...nt,
+      noteCounter: 0,
+      nextTargetMidiNumber: Number(Object.keys(scale.keys)[0]),
+      currentMidiNumber: Number(Object.keys(scale.keys)[0]),
+    }))
   }, [scale, isScalePingPong, currentScreen, practiceMode])
 
   return (

@@ -14,8 +14,8 @@ const KeyboardContainer = styled.div`
 
 const Keyboard = () => {
   const {
-    nextTargetNote,
-    setNoteCounter,
+    noteTracker,
+    setNoteTracker,
     practiceMode,
     chordStack,
     setChordStack,
@@ -70,29 +70,40 @@ const Keyboard = () => {
 
   useEffect(() => {
     if (practiceMode === 'chords') {
-      const targetChord = getTriadChordFromMidiNote(nextTargetNote!, scale!)
+      const targetChord = getTriadChordFromMidiNote(
+        noteTracker?.nextTargetMidiNumber!,
+        scale!
+      )
       const matches = targetChord.every((e) => chordStack?.includes(e))
       if (matches) {
-        setNoteCounter?.((nc) => nc + 1)
+        setNoteTracker?.((nt) => ({
+          ...nt,
+          noteCounter: nt.noteCounter + 1,
+          currentMidiNumber: targetChord[0],
+        }))
         setChordStack?.([])
       }
     } else if (practiceMode === 'fifths') {
       const targetFifths = [
-        nextTargetNote!,
-        getFifthFromMidiNote(nextTargetNote!, scale?.value!),
+        noteTracker?.nextTargetMidiNumber!,
+        getFifthFromMidiNote(noteTracker?.nextTargetMidiNumber!, scale?.value!),
       ]
       const matches = targetFifths.every((e) => chordStack?.includes(e))
       if (matches) {
-        setNoteCounter?.((nc) => nc + 1)
+        setNoteTracker?.((nt) => ({
+          ...nt,
+          noteCounter: nt.noteCounter + 1,
+          currentMidiNumber: targetFifths[0],
+        }))
         setChordStack?.([])
       }
     }
   }, [
+    setNoteTracker,
     chordStack,
-    nextTargetNote,
+    noteTracker?.nextTargetMidiNumber,
     scale,
     practiceMode,
-    setNoteCounter,
     setChordStack,
   ])
 
@@ -119,10 +130,14 @@ const Keyboard = () => {
               noteRange={{ first: firstNote, last: lastNote }}
               playNote={(midiNumber: number) => {
                 if (
-                  midiNumber === nextTargetNote &&
+                  midiNumber === noteTracker?.nextTargetMidiNumber &&
                   practiceMode === 'scales'
                 ) {
-                  setNoteCounter?.((nc) => nc + 1)
+                  setNoteTracker?.((nt) => ({
+                    ...nt,
+                    noteCounter: nt.noteCounter + 1,
+                    currentMidiNumber: midiNumber,
+                  }))
                 } else if (
                   practiceMode === 'chords' ||
                   practiceMode === 'fifths'

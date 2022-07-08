@@ -152,7 +152,7 @@ const Quiz = () => {
     if (currentQuestion.type === 'fifth') {
       const validFifths = currentValidMidi.map((f) => {
         // convert the midi fifths into notes (ex. c, b#)
-        // tto be read by MidiNumbers.fromNote
+        // to be read by MidiNumbers.fromNote
         return MidiNumbers.getAttributes(f)
           .note.toLowerCase()
           .replace(/[0-9]/, '')
