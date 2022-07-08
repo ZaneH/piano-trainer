@@ -8891,6 +8891,13 @@ tapable@^2.0.0, tapable@^2.1.1, tapable@^2.2.0:
     "@tauri-apps/api" "1.0.1"
     tslib "2.4.0"
 
+"tauri-plugin-store-api@https://github.com/tauri-apps/tauri-plugin-store#dev":
+  version "0.1.0"
+  resolved "https://github.com/tauri-apps/tauri-plugin-store#9e3732e0cf53b72ced6903583660cd7c5f756781"
+  dependencies:
+    "@tauri-apps/api" "1.0.1"
+    tslib "2.4.0"
+
 temp-dir@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/temp-dir/-/temp-dir-2.0.0.tgz#bde92b05bdfeb1516e804c9c00ad45177f31321e"

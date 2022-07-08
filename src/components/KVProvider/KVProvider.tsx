@@ -41,6 +41,29 @@ const KVProvider: FC<KVContextType> = ({ children }) => {
   const [muteSound, setMuteSound] = useState(false)
 
   /**
+   * Map settings stored on-disk into the KVProvider's state
+   */
+  const loadSettingIntoState = useCallback(
+    (key: PTSettingsKeyType) => {
+      return store.get(key).then((value) => {
+        if (value === null) return
+        switch (key) {
+          case 'piano-sound':
+            setPianoSound(String(value))
+            break
+          case 'show-keyboard':
+            setShowKeyboard(Boolean(value))
+            break
+          case 'mute-sound':
+            setMuteSound(Boolean(value))
+            break
+        }
+      })
+    },
+    [setPianoSound, setShowKeyboard, setMuteSound, store]
+  )
+
+  /**
    * Store value on-disk
    */
   const saveSetting = useCallback(
@@ -65,31 +88,6 @@ const KVProvider: FC<KVContextType> = ({ children }) => {
   }, [muteSound, saveSetting])
 
   /**
-   * Map settings stored on-disk into the KVProvider's state
-   */
-  const loadSettingIntoState = useCallback(
-    async (key: PTSettingsKeyType) => {
-      const value: string | boolean | null = await store.get(key)
-      if (!value) {
-        return
-      }
-
-      switch (key) {
-        case 'piano-sound':
-          setPianoSound(String(value))
-          break
-        case 'show-keyboard':
-          setShowKeyboard(Boolean(value))
-          break
-        case 'mute-sound':
-          setMuteSound(Boolean(value))
-          break
-      }
-    },
-    [setPianoSound, setShowKeyboard, setMuteSound, store]
-  )
-
-  /**
    * We want to fetch all of the settings stored on-disk and
    * load them into the state when KVProvider is mounted
    */
@@ -97,8 +95,8 @@ const KVProvider: FC<KVContextType> = ({ children }) => {
     store
       .load()
       .then(async () => {
-        for (const key in AVAILABLE_SETTINGS) {
-          await loadSettingIntoState(key as PTSettingsKeyType)
+        for (const setting of AVAILABLE_SETTINGS) {
+          await loadSettingIntoState(setting.key as PTSettingsKeyType)
         }
       })
       .catch((e) => console.error(e))

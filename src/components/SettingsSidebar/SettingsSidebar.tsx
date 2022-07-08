@@ -1,6 +1,6 @@
 import styled from 'styled-components'
-import { AVAILABLE_SETTINGS } from '../../utils'
-import { useContext } from 'react'
+import { AVAILABLE_SETTINGS, PTSettingType } from '../../utils'
+import { useCallback, useContext } from 'react'
 import { KVContext } from '../KVProvider'
 import SettingRow from './SettingRow'
 import { SidebarContext } from '../SidebarProvider'
@@ -38,21 +38,24 @@ const SettingsSidebar = () => {
   const { showKeyboard, muteSound } = useContext(KVContext)
   const { setIsOpen } = useContext(SidebarContext)
 
+  const renderSettingRow = useCallback(
+    (s: PTSettingType) => {
+      switch (s.key) {
+        case 'show-keyboard':
+          return <SettingRow key={s.key} setting={s} value={showKeyboard} />
+        case 'mute-sound':
+          return <SettingRow key={s.key} setting={s} value={muteSound} />
+      }
+    },
+    [showKeyboard, muteSound]
+  )
+
   return (
     <CoverScreen>
       <FadeOut onClick={() => setIsOpen?.(false)} />
       <Sidebar>
         <h1>Settings</h1>
-        {AVAILABLE_SETTINGS.map((s) => (
-          <>
-            {s.key === 'show-keyboard' && (
-              <SettingRow key={s.key} setting={s} value={showKeyboard} />
-            )}
-            {s.key === 'mute-sound' && (
-              <SettingRow key={s.key} setting={s} value={muteSound} />
-            )}
-          </>
-        ))}
+        {AVAILABLE_SETTINGS.map((s) => renderSettingRow(s))}
       </Sidebar>
     </CoverScreen>
   )

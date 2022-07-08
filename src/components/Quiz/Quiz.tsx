@@ -69,7 +69,6 @@ const Quiz = () => {
   )
   const firstNote = MidiNumbers.fromNote('c3')
   const lastNote = MidiNumbers.fromNote('c5')
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
   // Get a random note that's appropriate for the question type
   const getRandomNote = useCallback(

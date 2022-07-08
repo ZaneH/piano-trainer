@@ -58,13 +58,14 @@ fn open_midi_connection(
 
 fn main() {
   let context = tauri::generate_context!();
+
   tauri::Builder::default()
-    .plugin(PluginBuilder::default().build())
     .menu(if cfg!(target_os = "macos") {
       tauri::Menu::os_default(&context.package_info().name)
     } else {
       tauri::Menu::default()
     })
+    .plugin(PluginBuilder::default().build())
     .invoke_handler(tauri::generate_handler![open_midi_connection])
     .manage(MidiState {
       ..Default::default()
