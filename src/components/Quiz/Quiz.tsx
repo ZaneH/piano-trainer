@@ -22,7 +22,6 @@ import {
   swapNoteWithSynonym,
 } from '../../utils'
 import { KVContext } from '../KVProvider'
-import SettingsSidebar from '../SettingsSidebar/SettingsSidebar'
 import SoundfontProvider from '../SoundfontProvider'
 import {
   formatQuestion,

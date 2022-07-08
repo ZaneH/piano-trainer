@@ -9,7 +9,6 @@ import {
   ignoreOctave,
   OCTAVE_LENGTH,
 } from '../../utils'
-import { KVContext } from '../KVProvider'
 import { TrainerContext } from '../TrainerProvider'
 
 const PianoContainer = styled.div`
