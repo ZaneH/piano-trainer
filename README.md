@@ -1,8 +1,10 @@
+<a href="https://www.producthunt.com/posts/piano-trainer?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-piano&#0045;trainer" target="_blank"><img align="right" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=351951&theme=light" alt="Piano&#0032;Trainer - Memorize&#0032;piano&#0032;scales&#0032;and&#0032;chords&#0032;with&#0032;ease | Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" /></a>
+
 # Piano Trainer
 
-A cross-platform utility for learning the piano
+Learn to play the piano at your own pace through various modes of practice.
 
-![Piano Trainer](https://i.imgur.com/k2y1Gr5.png)
+<p align="center"><img alt="Piano Trainer screenshot" src="https://i.imgur.com/k2y1Gr5.png" height="350px" /></p>
 
 ## Features
 
