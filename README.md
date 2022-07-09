@@ -22,8 +22,12 @@ Learn to play the piano at your own pace through various modes of practice.
 
 ## Coming Soon
 
-- [ ] Computer keyboard support
+- [x] Computer keyboard support
 - [ ] Interactive inversion practice
+- [ ] Ignore octave for MIDI input
+- [ ] Add crash reporting
+- [ ] Musical corrections
+- [ ] Change audio output (ASIO?)
 - [ ] Settings
   - [ ] Toggle questions in quiz mode
   - [ ] Change keyboard sound
