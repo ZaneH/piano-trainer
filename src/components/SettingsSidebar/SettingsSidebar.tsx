@@ -1,9 +1,9 @@
+import { useCallback, useContext } from 'react'
 import styled from 'styled-components'
 import { AVAILABLE_SETTINGS, PTSettingType } from '../../utils'
-import { useCallback, useContext } from 'react'
 import { KVContext } from '../KVProvider'
-import SettingRow from './SettingRow'
 import { SidebarContext } from '../SidebarProvider'
+import SettingRow from './SettingRow'
 
 const CoverScreen = styled.div`
   position: absolute;
@@ -35,7 +35,7 @@ const Sidebar = styled.div`
 `
 
 const SettingsSidebar = () => {
-  const { showKeyboard, muteSound } = useContext(KVContext)
+  const { showKeyboard, muteSound, midiDevice } = useContext(KVContext)
   const { setIsOpen } = useContext(SidebarContext)
 
   const renderSettingRow = useCallback(
@@ -45,9 +45,13 @@ const SettingsSidebar = () => {
           return <SettingRow key={s.key} setting={s} value={showKeyboard} />
         case 'mute-sound':
           return <SettingRow key={s.key} setting={s} value={muteSound} />
+        case 'midi-input-id':
+          return (
+            <SettingRow key={s.key} setting={s} value={midiDevice?.id || 0} />
+          )
       }
     },
-    [showKeyboard, muteSound]
+    [showKeyboard, muteSound, midiDevice?.id]
   )
 
   return (

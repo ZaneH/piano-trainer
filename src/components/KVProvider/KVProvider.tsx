@@ -9,7 +9,7 @@ import {
   useState,
 } from 'react'
 import { Store } from 'tauri-plugin-store-api'
-import { AVAILABLE_SETTINGS, PTSettingsKeyType } from '../../utils'
+import { AVAILABLE_SETTINGS, MidiDevice, PTSettingsKeyType } from '../../utils'
 
 type KVContextType = {
   children?: React.ReactNode
@@ -18,11 +18,13 @@ type KVContextType = {
   pianoSound?: string
   showKeyboard?: boolean
   muteSound?: boolean
+  midiDevice?: MidiDevice
 
   setIsLoading?: Dispatch<SetStateAction<boolean>>
   setPianoSound?: Dispatch<SetStateAction<string>>
   setShowKeyboard?: Dispatch<SetStateAction<boolean>>
   setMuteSound?: Dispatch<SetStateAction<boolean>>
+  setMidiDevice?: Dispatch<SetStateAction<MidiDevice>>
 
   saveSetting?: (key: PTSettingsKeyType, value: any) => void
 }
@@ -39,6 +41,10 @@ const KVProvider: FC<KVContextType> = ({ children }) => {
   const [pianoSound, setPianoSound] = useState('acoustic_grand_piano')
   const [showKeyboard, setShowKeyboard] = useState(true)
   const [muteSound, setMuteSound] = useState(false)
+  const [midiDevice, setMidiDevice] = useState<MidiDevice>({
+    id: 0,
+    name: 'default',
+  })
 
   /**
    * Map settings stored on-disk into the KVProvider's state
@@ -57,10 +63,15 @@ const KVProvider: FC<KVContextType> = ({ children }) => {
           case 'mute-sound':
             setMuteSound(Boolean(value))
             break
+          case 'midi-input-id':
+            setMidiDevice({
+              id: Number(value),
+            })
+            break
         }
       })
     },
-    [setPianoSound, setShowKeyboard, setMuteSound, store]
+    [setPianoSound, setShowKeyboard, setMuteSound, setMidiDevice, store]
   )
 
   /**
@@ -87,6 +98,10 @@ const KVProvider: FC<KVContextType> = ({ children }) => {
     saveSetting('mute-sound', muteSound)
   }, [muteSound, saveSetting])
 
+  useEffect(() => {
+    saveSetting('midi-input-id', midiDevice?.id || 0)
+  }, [midiDevice?.id, saveSetting])
+
   /**
    * We want to fetch all of the settings stored on-disk and
    * load them into the state when KVProvider is mounted
@@ -108,10 +123,12 @@ const KVProvider: FC<KVContextType> = ({ children }) => {
     pianoSound,
     showKeyboard,
     muteSound,
+    midiDevice,
     setIsLoading,
     setPianoSound,
     setShowKeyboard,
     setMuteSound,
+    setMidiDevice,
     saveSetting,
   }
 

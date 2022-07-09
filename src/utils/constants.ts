@@ -41,7 +41,12 @@ export const SCALE_STEPS: { [key in MajorMinorType]: string[] } = {
   Minor: ['w', 'h', 'w', 'w', 'h', 'w', 'w', 'w'],
 }
 
-export type PTSettingsKeyType = 'piano-sound' | 'show-keyboard' | 'mute-sound'
+export type PTSettingsKeyType =
+  | 'piano-sound'
+  | 'show-keyboard'
+  | 'mute-sound'
+  | 'midi-input-id'
+
 export type PTSettingType = {
   key: PTSettingsKeyType
   label: string
@@ -66,4 +71,11 @@ export const AVAILABLE_SETTINGS: readonly PTSettingType[] = [
     label: 'Mute sound',
     type: 'checkbox',
   },
+  {
+    key: 'midi-input-id',
+    label: 'MIDI Input',
+    type: 'select',
+  },
 ] as const
+
+export * from './midi'

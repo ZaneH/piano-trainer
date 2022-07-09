@@ -17,6 +17,7 @@ import {
   getRandomFifth,
   getRandomKey,
   isAdjacentFifth,
+  MidiDevice,
   OCTAVE_LENGTH,
   shuffle,
   swapNoteWithSynonym,
@@ -58,12 +59,12 @@ const KeyboardContainer = styled.div`
 `
 
 const Quiz = () => {
-  const { showKeyboard, muteSound } = useContext(KVContext)
+  const { showKeyboard, muteSound, midiDevice, setMidiDevice } =
+    useContext(KVContext)
   const unlistenRef = useRef<UnlistenFn>()
   const [activeNotes, setActiveNotes] = useState<{ [note: string]: boolean }>(
     {}
   )
-  const [isListening, setIsListening] = useState(false)
   const [currentQuestion, setCurrentQuestion] = useState(
     getRandomQuizQuestion()
   )
@@ -90,9 +91,30 @@ const Quiz = () => {
 
   const [answerChoices, setAnswerChoices] = useState<string[]>([])
 
-  const onLoadCallback = useCallback(() => {
-    if (isListening) return
-    invoke('open_midi_connection', { inputIdx: 0 })
+  const [listeningIdx, setListeningIdx] = useState(-1)
+
+  const onLoadCallback = useCallback(async () => {
+    if (midiDevice?.id !== listeningIdx) {
+      setListeningIdx(-1)
+    }
+
+    if (listeningIdx > -1) return
+
+    // TODO: Move this into a MIDIProvider / hook
+    const devicesObject = await invoke('list_midi_connections')
+    const deviceIds = Object.keys(devicesObject as {})
+    let midiInputIdx = 0
+    const foundMidiId = deviceIds.find((d) => Number(d) === midiDevice?.id)
+    let foundMidi: MidiDevice | undefined
+    if (foundMidiId) {
+      foundMidi = {
+        id: Number(foundMidiId),
+        name: Object.values(devicesObject as {})[Number(foundMidiId)],
+      } as MidiDevice | undefined
+      midiInputIdx = Number(foundMidiId)
+    }
+
+    invoke('open_midi_connection', { inputIdx: midiInputIdx })
 
     listen('midi_message', (event) => {
       const payload = event.payload as { message: number[] }
@@ -116,8 +138,13 @@ const Quiz = () => {
       .catch(console.error)
 
     console.log('Connected & listening to MIDI device...')
-    setIsListening(true)
-  }, [isListening, setIsListening])
+    setListeningIdx(midiInputIdx)
+    setMidiDevice?.(foundMidi || { id: 0 })
+  }, [setListeningIdx, midiDevice, setMidiDevice, listeningIdx])
+
+  useEffect(() => {
+    onLoadCallback()
+  }, [onLoadCallback])
 
   const gotoNextQuestion = useCallback(() => {
     setActiveNotes({})
@@ -202,7 +229,7 @@ const Quiz = () => {
 
   useEffect(() => {
     onLoadCallback()
-  }, [onLoadCallback, isListening])
+  }, [onLoadCallback])
 
   useEffect(() => {
     const unlisten = async () => {

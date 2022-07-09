@@ -4,7 +4,11 @@ import { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { KeyboardShortcuts, MidiNumbers, Piano } from 'react-piano'
 import 'react-piano/dist/styles.css'
 import styled, { css } from 'styled-components'
-import { getFifthFromMidiNote, getTriadChordFromMidiNote } from '../../utils'
+import {
+  getFifthFromMidiNote,
+  getTriadChordFromMidiNote,
+  MidiDevice,
+} from '../../utils'
 import { KVContext } from '../KVProvider'
 import SoundfontProvider from '../SoundfontProvider'
 import { TrainerContext } from '../TrainerProvider'
@@ -27,7 +31,8 @@ const Keyboard = () => {
     setChordStack,
     scale,
   } = useContext(TrainerContext)
-  const { muteSound, showKeyboard } = useContext(KVContext)
+  const { muteSound, showKeyboard, midiDevice, setMidiDevice } =
+    useContext(KVContext)
   const unlistenRef = useRef<UnlistenFn>()
   const [activeNotes, setActiveNotes] = useState<{ [note: string]: boolean }>(
     {}
@@ -40,11 +45,30 @@ const Keyboard = () => {
     keyboardConfig: KeyboardShortcuts.HOME_ROW,
   })
 
-  const [isListening, setIsListening] = useState(false)
+  const [listeningIdx, setListeningIdx] = useState(-1)
 
-  const onLoadCallback = useCallback(() => {
-    if (isListening) return
-    invoke('open_midi_connection', { inputIdx: 0 })
+  const onLoadCallback = useCallback(async () => {
+    if (midiDevice?.id !== listeningIdx) {
+      setListeningIdx(-1)
+    }
+
+    if (listeningIdx > -1) return
+
+    // TODO: Move this into a MIDIProvider / hook
+    const devicesObject = await invoke('list_midi_connections')
+    const deviceIds = Object.keys(devicesObject as {})
+    let midiInputIdx = 0
+    const foundMidiId = deviceIds.find((d) => Number(d) === midiDevice?.id)
+    let foundMidi: MidiDevice | undefined
+    if (foundMidiId) {
+      foundMidi = {
+        id: Number(foundMidiId),
+        name: Object.values(devicesObject as {})[Number(foundMidiId)],
+      } as MidiDevice | undefined
+      midiInputIdx = Number(foundMidiId)
+    }
+
+    invoke('open_midi_connection', { inputIdx: midiInputIdx })
 
     listen('midi_message', (event) => {
       const payload = event.payload as { message: number[] }
@@ -68,12 +92,13 @@ const Keyboard = () => {
       .catch(console.error)
 
     console.log('Connected & listening to MIDI device...')
-    setIsListening(true)
-  }, [isListening, setIsListening])
+    setListeningIdx(midiInputIdx)
+    setMidiDevice?.(foundMidi || { id: 0 })
+  }, [setListeningIdx, midiDevice, setMidiDevice, listeningIdx])
 
   useEffect(() => {
     onLoadCallback()
-  }, [onLoadCallback, isListening])
+  }, [onLoadCallback])
 
   useEffect(() => {
     if (practiceMode === 'chords') {

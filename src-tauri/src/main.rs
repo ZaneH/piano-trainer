@@ -5,6 +5,7 @@
 
 use midir::{Ignore, MidiInput, MidiInputConnection};
 use serde::Serialize;
+use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
 use tauri::{Manager, Window, Wry};
 use tauri_plugin_store::PluginBuilder;
@@ -20,15 +21,28 @@ struct MidiMessage {
 }
 
 #[tauri::command]
+fn list_midi_connections() -> HashMap<usize, String> {
+  let midi_in = MidiInput::new("piano-trainer-input").unwrap();
+  let mut devices = HashMap::new();
+  println!("Available input ports:");
+  for (i, p) in midi_in.ports().iter().enumerate() {
+    println!("{}: {}", i, midi_in.port_name(p).unwrap());
+    devices.insert(i, midi_in.port_name(p).unwrap());
+  }
+  return devices;
+}
+
+#[tauri::command]
 fn open_midi_connection(
   midi_state: tauri::State<'_, MidiState>,
   window: Window<Wry>,
   input_idx: usize,
 ) {
   let handle = Arc::new(window).clone();
-  let mut midi_in = MidiInput::new("default-1").unwrap();
+  let mut midi_in = MidiInput::new("piano-trainer-input").unwrap();
   midi_in.ignore(Ignore::None);
   let midi_in_ports = midi_in.ports();
+
   if let Some(in_port) = midi_in_ports.get(input_idx) {
     let conn_in = midi_in
       .connect(
@@ -66,7 +80,10 @@ fn main() {
       tauri::Menu::default()
     })
     .plugin(PluginBuilder::default().build())
-    .invoke_handler(tauri::generate_handler![open_midi_connection])
+    .invoke_handler(tauri::generate_handler![
+      open_midi_connection,
+      list_midi_connections
+    ])
     .manage(MidiState {
       ..Default::default()
     })

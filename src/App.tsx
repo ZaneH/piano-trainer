@@ -1,3 +1,4 @@
+import { useCallback, useEffect } from 'react'
 import styled from 'styled-components'
 import Keyboard from './components/Keyboard'
 import KVProvider from './components/KVProvider/KVProvider'
@@ -21,6 +22,27 @@ const QuizScreenLayout = styled.div`
 `
 
 function App() {
+  const handleKeyDown = useCallback((e: KeyboardEvent) => {
+    const { key, metaKey } = e
+    let preventDefault = true
+
+    if (key === 'q' && metaKey) {
+      preventDefault = false
+    }
+
+    if (preventDefault) {
+      e.preventDefault()
+    }
+  }, [])
+
+  useEffect(() => {
+    document.addEventListener('keydown', handleKeyDown)
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown)
+    }
+  })
+
   return (
     <KVProvider>
       <SidebarProvider>
