@@ -42,30 +42,29 @@ fn open_midi_connection(
   let mut midi_in = MidiInput::new("piano-trainer-input").unwrap();
   midi_in.ignore(Ignore::None);
   let midi_in_ports = midi_in.ports();
+  *midi_state.input.lock().unwrap() = None;
 
   if let Some(in_port) = midi_in_ports.get(input_idx) {
     let conn_in = midi_in
-      .connect(
-        in_port,
-        "midir",
-        move |stamp, message, _log| {
-          // The last of the three callback parameters is the object that we pass in as last parameter of `connect`.
+    .connect(
+      in_port,
+      "midir",
+      move |stamp, message, _log| {
+        // The last of the three callback parameters is the object that we pass in as last parameter of `connect`.
 
-          handle
-            .emit_all(
-              "midi_message",
-              MidiMessage {
-                message: message.to_vec(),
-              },
-            )
-            .map_err(|err| println!("{:?}", err))
-            .ok();
+        handle
+          .emit_all(
+            "midi_message",
+            MidiMessage {
+              message: message.to_vec(),
+            },
+          )
+          .map_err(|err| println!("{:?}", err))
+          .ok();
 
-          println!("{}: {:?} (len = {})", stamp, message, message.len());
-        },
-        (),
-      )
-      .unwrap();
+        println!("{}: {:?} (len = {})", stamp, message, message.len());
+      }, ()).unwrap();
+
     *midi_state.input.lock().unwrap() = Some(conn_in);
   }
 }

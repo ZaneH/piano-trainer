@@ -2,13 +2,13 @@
   "$schema": "../node_modules/@tauri-apps/cli/schema.json",
   "build": {
     "beforeBuildCommand": "npm run build",
-    "beforeDevCommand": "pkill MIDIServer; npm run start",
+    "beforeDevCommand": "npm run start",
     "devPath": "http://localhost:3000",
     "distDir": "../build"
   },
   "package": {
     "productName": "Piano Trainer",
-    "version": "1.0.2"
+    "version": "1.0.3"
   },
   "tauri": {
     "allowlist": {
