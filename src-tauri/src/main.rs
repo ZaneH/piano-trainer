@@ -46,24 +46,27 @@ fn open_midi_connection(
 
   if let Some(in_port) = midi_in_ports.get(input_idx) {
     let conn_in = midi_in
-    .connect(
-      in_port,
-      "midir",
-      move |stamp, message, _log| {
-        // The last of the three callback parameters is the object that we pass in as last parameter of `connect`.
+      .connect(
+        in_port,
+        "midir",
+        move |stamp, message, _log| {
+          // The last of the three callback parameters is the object that we pass in as last parameter of `connect`.
 
-        handle
-          .emit_all(
-            "midi_message",
-            MidiMessage {
-              message: message.to_vec(),
-            },
-          )
-          .map_err(|err| println!("{:?}", err))
-          .ok();
+          handle
+            .emit_all(
+              "midi_message",
+              MidiMessage {
+                message: message.to_vec(),
+              },
+            )
+            .map_err(|err| println!("{:?}", err))
+            .ok();
 
-        println!("{}: {:?} (len = {})", stamp, message, message.len());
-      }, ()).unwrap();
+          println!("{}: {:?} (len = {})", stamp, message, message.len());
+        },
+        (),
+      )
+      .unwrap();
 
     *midi_state.input.lock().unwrap() = Some(conn_in);
   }
@@ -71,21 +74,35 @@ fn open_midi_connection(
 
 fn main() {
   let context = tauri::generate_context!();
-
-  tauri::Builder::default()
-    .menu(if cfg!(target_os = "macos") {
-      tauri::Menu::os_default(&context.package_info().name)
-    } else {
-      tauri::Menu::default()
-    })
-    .plugin(PluginBuilder::default().build())
-    .invoke_handler(tauri::generate_handler![
-      open_midi_connection,
-      list_midi_connections
-    ])
-    .manage(MidiState {
-      ..Default::default()
-    })
-    .run(context)
-    .expect("error while running tauri application");
+  sentry_tauri::init(
+    sentry::release_name!(),
+    |_| {
+      sentry::init((
+        "https://36cfcf5f635d48d9bb4209bfcf05667e@o1312215.ingest.sentry.io/6561276",
+        sentry::ClientOptions {
+          release: sentry::release_name!(),
+          ..Default::default()
+        },
+      ))
+    },
+    |sentry_plugin| {
+      tauri::Builder::default()
+        .plugin(sentry_plugin)
+        .plugin(PluginBuilder::default().build())
+        .menu(if cfg!(target_os = "macos") {
+          tauri::Menu::os_default(&context.package_info().name)
+        } else {
+          tauri::Menu::default()
+        })
+        .invoke_handler(tauri::generate_handler![
+          open_midi_connection,
+          list_midi_connections
+        ])
+        .manage(MidiState {
+          ..Default::default()
+        })
+        .run(context)
+        .expect("error while running tauri application");
+    },
+  )
 }
