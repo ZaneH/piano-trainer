@@ -8,6 +8,7 @@ import {
   getFifthFromMidiNote,
   getTriadChordFromMidiNote,
   MidiDevice,
+  midiNumberToNote,
 } from '../../utils'
 import { KVContext } from '../KVProvider'
 import SoundfontProvider from '../SoundfontProvider'
@@ -101,12 +102,31 @@ const Keyboard = () => {
   }, [onLoadCallback])
 
   useEffect(() => {
-    if (practiceMode === 'chords') {
+    const targetScaleNote = midiNumberToNote(noteTracker!.nextTargetMidiNumber)
+
+    if (
+      chordStack!.length > 0 &&
+      midiNumberToNote(chordStack![0]) === targetScaleNote &&
+      practiceMode === 'scales'
+    ) {
+      setNoteTracker?.((nt) => ({
+        ...nt,
+        noteCounter: nt.noteCounter + 1,
+        currentMidiNumber: noteTracker!.nextTargetMidiNumber,
+      }))
+      setChordStack?.([])
+    } else if (practiceMode === 'chords') {
       const targetChord = getTriadChordFromMidiNote(
         noteTracker?.nextTargetMidiNumber!,
         scale!
       )
-      const matches = targetChord.every((e) => chordStack?.includes(e))
+
+      // turn the target numbers into target letters to ignore octave for matching
+      const targetChordNotes = targetChord.map((n) => midiNumberToNote(n))
+
+      const matches = targetChordNotes.every((e) =>
+        chordStack?.map((cs) => midiNumberToNote(cs)).includes(e)
+      )
       if (matches) {
         setNoteTracker?.((nt) => ({
           ...nt,
@@ -116,11 +136,17 @@ const Keyboard = () => {
         setChordStack?.([])
       }
     } else if (practiceMode === 'fifths') {
+      // turn the target numbers into target letters to ignore octave for matching
       const targetFifths = [
         noteTracker?.nextTargetMidiNumber!,
         getFifthFromMidiNote(noteTracker?.nextTargetMidiNumber!, scale?.value!),
       ]
-      const matches = targetFifths.every((e) => chordStack?.includes(e))
+
+      const targetFifthNotes = targetFifths.map((f) => midiNumberToNote(f))
+
+      const matches = targetFifthNotes.every((e) =>
+        chordStack?.map((cs) => midiNumberToNote(cs)).includes(e)
+      )
       if (matches) {
         setNoteTracker?.((nt) => ({
           ...nt,
@@ -137,6 +163,7 @@ const Keyboard = () => {
     scale,
     practiceMode,
     setChordStack,
+    noteTracker,
   ])
 
   useEffect(() => {
@@ -161,38 +188,22 @@ const Keyboard = () => {
             <Piano
               noteRange={{ first: firstNote, last: lastNote }}
               playNote={(midiNumber: number) => {
-                if (
-                  midiNumber === noteTracker?.nextTargetMidiNumber &&
-                  practiceMode === 'scales'
-                ) {
-                  setNoteTracker?.((nt) => ({
-                    ...nt,
-                    noteCounter: nt.noteCounter + 1,
-                    currentMidiNumber: midiNumber,
-                  }))
-                } else if (
-                  practiceMode === 'chords' ||
-                  practiceMode === 'fifths'
-                ) {
-                  setChordStack?.((cs) => [...cs, midiNumber])
-                }
+                setChordStack?.((cs) => [...cs, midiNumber])
 
                 !muteSound && playNote(midiNumber)
               }}
               stopNote={(midiNumber: number) => {
                 stopNote(midiNumber)
 
-                if (practiceMode === 'chords' || practiceMode === 'fifths') {
-                  // remove midiNumber from chordStack
-                  setChordStack?.((cs) => {
-                    const removalIdx = cs.indexOf(midiNumber)
-                    if (removalIdx > -1) {
-                      cs.splice(removalIdx, 1)
-                    }
+                // remove midiNumber from chordStack
+                setChordStack?.((cs) => {
+                  const removalIdx = cs.indexOf(midiNumber)
+                  if (removalIdx > -1) {
+                    cs.splice(removalIdx, 1)
+                  }
 
-                    return cs
-                  })
-                }
+                  return cs
+                })
               }}
               keyboardShortcuts={keyboardShortcuts}
               renderNoteLabel={({ midiNumber }: { midiNumber: number }) => (

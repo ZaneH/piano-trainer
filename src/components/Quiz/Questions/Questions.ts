@@ -11,12 +11,12 @@ export const QUIZ_QUESTIONS: QuizQuestionType[] = [
   {
     type: 'fifth',
     majMin: 'Major',
-    questionFormat: 'Which is a perfect fifth of {{key}} ({{majMin}})?',
+    questionFormat: 'Which is a perfect fifth of {{key}}',
   },
   {
     type: 'fifth',
     majMin: 'Minor',
-    questionFormat: 'Which is a perfect fifth of {{key}} ({{majMin}})?',
+    questionFormat: 'Which is a perfect fifth of {{key}}',
   },
   {
     type: 'key',

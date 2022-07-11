@@ -18,12 +18,13 @@ import {
   getRandomKey,
   isAdjacentFifth,
   MidiDevice,
-  OCTAVE_LENGTH,
+  midiNumberToNote,
   shuffle,
   swapNoteWithSynonym,
 } from '../../utils'
 import { KVContext } from '../KVProvider'
 import SoundfontProvider from '../SoundfontProvider'
+import { TrainerContext } from '../TrainerProvider'
 import {
   formatQuestion,
   getRandomQuizQuestion,
@@ -61,6 +62,7 @@ const KeyboardContainer = styled.div`
 const Quiz = () => {
   const { showKeyboard, muteSound, midiDevice, setMidiDevice } =
     useContext(KVContext)
+  const { chordStack, setChordStack } = useContext(TrainerContext)
   const unlistenRef = useRef<UnlistenFn>()
   const [activeNotes, setActiveNotes] = useState<{ [note: string]: boolean }>(
     {}
@@ -121,6 +123,7 @@ const Quiz = () => {
       const [command, note] = payload.message
 
       if (command === 144) {
+        setChordStack?.((cs) => [...cs, note])
         setActiveNotes((an) => ({
           ...an,
           [note]: true,
@@ -128,6 +131,16 @@ const Quiz = () => {
       }
 
       if (command === 128) {
+        // remove midiNumber from chordStack
+        setChordStack?.((cs) => {
+          const removalIdx = cs.indexOf(note)
+          if (removalIdx > -1) {
+            cs.splice(removalIdx, 1)
+          }
+
+          return cs
+        })
+
         setActiveNotes((an) => ({
           ...an,
           [note]: false,
@@ -140,7 +153,7 @@ const Quiz = () => {
     console.log('Connected & listening to MIDI device...')
     setListeningIdx(midiInputIdx)
     setMidiDevice?.(foundMidi || { id: 0 })
-  }, [setListeningIdx, midiDevice, setMidiDevice, listeningIdx])
+  }, [setListeningIdx, midiDevice, setMidiDevice, listeningIdx, setChordStack])
 
   useEffect(() => {
     onLoadCallback()
@@ -159,37 +172,20 @@ const Quiz = () => {
     })
   }, [getRandomNote, currentQuestionKey])
 
-  const answerOnManyOctaves = useCallback(
-    (notes: string[]) => {
-      // fill in 8 octaves as valid MIDI answers
-      const allOctavesOfNote: string[] = []
-      notes.forEach((n) => {
-        const firstOctave = MidiNumbers.fromNote(
-          `${swapNoteWithSynonym(
-            n,
-            currentQuestion.majMin || 'Major'
-          ).toLowerCase()}0`
-        )
-        for (let i = 0; i < 8; i++) {
-          allOctavesOfNote.push(firstOctave + OCTAVE_LENGTH * i)
-        }
-      })
-
-      return allOctavesOfNote
-    },
-    [currentQuestion.majMin]
-  )
-
   const currentValidMidi = useMemo<number[]>(() => {
     if (currentQuestion.type === 'fifth') {
       return getBothFifthsFromMidiNote(
         MidiNumbers.fromNote(
-          `${swapNoteWithSynonym(currentQuestionKey, currentQuestion.majMin!)}3`
+          `${swapNoteWithSynonym(currentQuestionKey, currentQuestion.majMin)}3`
         ),
         convertKeyToScalesKey(currentQuestionKey, currentQuestion.majMin)
       )
     } else if (currentQuestion.type === 'key') {
-      return [MidiNumbers.fromNote(`${currentQuestionKey}3`)]
+      return [
+        MidiNumbers.fromNote(
+          `${swapNoteWithSynonym(currentQuestionKey, currentQuestion.majMin)}3`
+        ),
+      ]
     } else {
       return []
     }
@@ -197,33 +193,30 @@ const Quiz = () => {
 
   useEffect(() => {
     // Handle MIDI
+    const chordStackNotes = chordStack?.map((cs) => midiNumberToNote(cs)) || []
     if (currentQuestion.type === 'fifth') {
-      const validFifths = currentValidMidi.map((f) => {
-        // convert the midi fifths into notes (ex. c, b#)
-        // to be read by MidiNumbers.fromNote
-        return MidiNumbers.getAttributes(f)
-          .note.toLowerCase()
-          .replace(/[0-9]/, '')
-      })
-      const match = answerOnManyOctaves(validFifths).some((e) => activeNotes[e])
+      const validFifthsNotes = currentValidMidi.map((f) => midiNumberToNote(f))
+      const match = validFifthsNotes.some((e) => chordStackNotes.includes(e))
       if (match) {
         gotoNextQuestion()
+        setChordStack?.([])
       }
     } else if (currentQuestion.type === 'key') {
-      const match = answerOnManyOctaves([currentQuestionKey]).some(
-        (e) => activeNotes[e]
-      )
+      const validMidiNotes = currentValidMidi.map((m) => midiNumberToNote(m))
+      const match = chordStackNotes?.some((c) => validMidiNotes.includes(c))
       if (match) {
         gotoNextQuestion()
+        setChordStack?.([])
       }
     }
   }, [
     activeNotes,
+    chordStack,
+    setChordStack,
     currentQuestion.type,
     currentQuestion.majMin,
     currentQuestionKey,
     gotoNextQuestion,
-    answerOnManyOctaves,
     currentValidMidi,
   ])
 
@@ -349,17 +342,9 @@ const Quiz = () => {
               <Piano
                 noteRange={{ first: firstNote, last: lastNote }}
                 playNote={(midiNumber: number) => {
-                  setActiveNotes((an) => ({
-                    ...an,
-                    [midiNumber]: true,
-                  }))
                   !muteSound && playNote(midiNumber)
                 }}
                 stopNote={(midiNumber: number) => {
-                  setActiveNotes((an) => ({
-                    ...an,
-                    [midiNumber]: false,
-                  }))
                   stopNote(midiNumber)
                 }}
                 activeNotes={Object.keys(activeNotes)
