@@ -6,7 +6,7 @@ Learn to play the piano at your own pace through various modes of practice.
 
 <p align="center">
 <img alt="Piano Trainer screenshot" src="https://i.imgur.com/k2y1Gr5.png" height="250px" />
-<img alt="Piano Trainer screenshot #2" src="https://i.imgur.com/RY8NpCZ.png" height="250px" />
+<img alt="Piano Trainer screenshot #2" src="https://i.imgur.com/mBg1fjH.png" height="250px" />
 </p>
 
 ## Features
@@ -24,7 +24,7 @@ Learn to play the piano at your own pace through various modes of practice.
 
 - [x] Computer keyboard support
 - [ ] Interactive inversion practice
-- [ ] Ignore octave for MIDI input
+- [x] Ignore octave for MIDI input
 - [ ] Add crash reporting
 - [ ] Musical corrections
 - [ ] Change audio output (ASIO?)

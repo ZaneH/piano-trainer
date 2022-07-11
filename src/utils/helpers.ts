@@ -10,6 +10,7 @@ import {
   SCALE_STEP_VALUES,
 } from '.'
 import { MajorMinorType } from '../components/Quiz/Questions'
+import { MidiNumbers } from 'react-piano'
 
 export const ignoreOctave = (scale: ScaleType): ScaleType => {
   const scaleKeys: string[] = Object.keys(scale.keys || {})
@@ -147,14 +148,14 @@ const swapKeyWithSynonym = (key: string): AvailableAllScalesType => {
 }
 
 /**
- * Certain keys are only in the circle of fifths as their synonym.
- * This replaces any potential "wrong" notes looked up in the CIRCLE_OF_FIFTHS
+ * This is for safety when passing to MidiNumbers.
+ * Some keys aren't recognized so we'll pass them as their synonym
  * @param key A potential "wrong" key (ex. c#, f#, Db)
  * @param majMin Minor or major circle of fifths?
  */
 export const swapNoteWithSynonym = (
   key: string,
-  majMin: MajorMinorType
+  majMin: MajorMinorType = 'Major'
 ): string => {
   if (majMin === 'Major') {
     switch (key.toLowerCase()) {
@@ -257,4 +258,10 @@ export function shuffle<T>(array: T[]): T[] {
   }
 
   return array
+}
+
+export const midiNumberToNote = (midiNumber: number): string => {
+  return MidiNumbers.getAttributes(midiNumber)
+    .note.toLowerCase()
+    .replace(/[0-9]/, '')
 }
