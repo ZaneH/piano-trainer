@@ -19,12 +19,12 @@ Learn to play the piano at your own pace through various modes of practice.
 - [x] Interactive Circle of Fifths practice
 - [x] Interactive fifths practice
 - [x] Interactive quiz
+- [x] Computer keyboard support
+- [x] Ignore octave for MIDI input
 
 ## Coming Soon
 
-- [x] Computer keyboard support
 - [ ] Interactive inversion practice
-- [x] Ignore octave for MIDI input
 - [ ] Add crash reporting
 - [ ] Musical corrections
 - [ ] Change audio output (ASIO?)
