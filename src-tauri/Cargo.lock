@@ -3003,7 +3003,7 @@ dependencies = [
 [[package]]
 name = "sentry-tauri"
 version = "0.1.0"
-source = "git+https://github.com/ZaneH/sentry-tauri?branch=disable-sentry#70990e60c0e97c30bedf89e7cfe3a2823ef3f7b1"
+source = "git+https://github.com/ZaneH/sentry-tauri?branch=disable-sentry#3dd4e4621c3010c18cb00258dc19b4ccd37221b3"
 dependencies = [
  "sentry",
  "sentry-rust-minidump",

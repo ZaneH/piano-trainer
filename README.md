@@ -24,7 +24,7 @@ Learn to play the piano at your own pace through various modes of practice.
 ## Coming Soon
 
 - [ ] Interactive inversion practice
-- [ ] Add crash reporting
+- [x] Add crash reporting
 - [ ] Change audio output (ASIO?)
 - [ ] Settings
   - [ ] Toggle questions in quiz mode
@@ -43,7 +43,7 @@ You'll need to setup Rust and Tauri CLI by following the [Getting Started guide 
 ```bash
 $ git clone https://github.com/ZaneH/scale-trainer.git
 $ cd scale-trainer
-$ yarn && yarn tauri dev
+$ yarn && sh ./start-dev.sh
 ```
 
 ## Build target binary
