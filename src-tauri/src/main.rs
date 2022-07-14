@@ -87,19 +87,19 @@ fn main() {
     },
     |sentry_plugin| {
       tauri::Builder::default()
-        .plugin(sentry_plugin)
         .plugin(PluginBuilder::default().build())
-        .menu(if cfg!(target_os = "macos") {
-          tauri::Menu::os_default(&context.package_info().name)
-        } else {
-          tauri::Menu::default()
+        .plugin(sentry_plugin)
+        .manage(MidiState {
+          ..Default::default()
         })
         .invoke_handler(tauri::generate_handler![
           open_midi_connection,
           list_midi_connections
         ])
-        .manage(MidiState {
-          ..Default::default()
+        .menu(if cfg!(target_os = "macos") {
+          tauri::Menu::os_default(&context.package_info().name)
+        } else {
+          tauri::Menu::default()
         })
         .run(context)
         .expect("error while running tauri application");
