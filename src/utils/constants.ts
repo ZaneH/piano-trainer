@@ -46,6 +46,7 @@ export type PTSettingsKeyType =
   | 'show-keyboard'
   | 'mute-sound'
   | 'midi-input-id'
+  | 'is-sentry-on'
 
 export type PTSettingType = {
   key: PTSettingsKeyType
@@ -75,6 +76,11 @@ export const AVAILABLE_SETTINGS: readonly PTSettingType[] = [
     key: 'midi-input-id',
     label: 'MIDI Input',
     type: 'select',
+  },
+  {
+    key: 'is-sentry-on',
+    label: 'Send crash reports',
+    type: 'checkbox',
   },
 ] as const
 

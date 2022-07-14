@@ -31,6 +31,7 @@ const SettingRow = ({ setting, value }: SettingRowProps) => {
     setMuteSound,
     setShowKeyboard,
     setMidiDevice: setConnectedMidiDevice,
+    setIsSentryOn,
   } = useContext(KVContext)
 
   const [midiDevices, setMidiDevices] = useState<MidiDevice[]>([])
@@ -95,6 +96,9 @@ const SettingRow = ({ setting, value }: SettingRowProps) => {
             break
           case 'show-keyboard':
             setShowKeyboard?.((v) => !v)
+            break
+          case 'is-sentry-on':
+            setIsSentryOn?.((v) => !v)
             break
         }
       }}

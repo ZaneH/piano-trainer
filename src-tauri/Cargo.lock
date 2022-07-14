@@ -3003,8 +3003,7 @@ dependencies = [
 [[package]]
 name = "sentry-tauri"
 version = "0.1.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a13a2132c1f33f471f3842001c1aee74df0b94c10628833da798275285bcf0f9"
+source = "git+https://github.com/ZaneH/sentry-tauri?branch=disable-sentry#70990e60c0e97c30bedf89e7cfe3a2823ef3f7b1"
 dependencies = [
  "sentry",
  "sentry-rust-minidump",
@@ -3399,9 +3398,9 @@ dependencies = [
 
 [[package]]
 name = "tauri"
-version = "1.0.3"
+version = "1.0.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d61fc211e0bd2c04c0aecd202d2cd72dd797a89da02989a39e1b9691462386d6"
+checksum = "827f61bd3dd40276694be5c7ffc40d65b94ab00d9f8c1a4a4db07f2cdc306c83"
 dependencies = [
  "anyhow",
  "attohttpc",
@@ -3456,9 +3455,9 @@ dependencies = [
 
 [[package]]
 name = "tauri-build"
-version = "1.0.3"
+version = "1.0.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2f2b32e551ec810ba4ab2ad735de5e3576e54bf0322ab0f4b7ce41244bc65ecf"
+checksum = "acafb1c515c5d14234a294461bd43c723639a84891a45f6a250fd3441ad2e8ed"
 dependencies = [
  "anyhow",
  "cargo_toml",
@@ -3472,9 +3471,9 @@ dependencies = [
 
 [[package]]
 name = "tauri-codegen"
-version = "1.0.3"
+version = "1.0.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f6f1f7928dd040fc03c94207adfad506c0cf5b152982fd1dc0a621f7fd777e22"
+checksum = "16d62a3c8790d6cba686cea6e3f7f569d12c662c3274c2d165a4fd33e3871b72"
 dependencies = [
  "base64",
  "brotli",
@@ -3498,9 +3497,9 @@ dependencies = [
 
 [[package]]
 name = "tauri-macros"
-version = "1.0.3"
+version = "1.0.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e50b9f52871c088857360319a37472d59f4644f1ed004489599d62831a1b6996"
+checksum = "7296fa17996629f43081e1c66d554703900187ed900c5bf46f97f0bcfb069278"
 dependencies = [
  "heck 0.4.0",
  "proc-macro2",

@@ -19,12 +19,14 @@ type KVContextType = {
   showKeyboard?: boolean
   muteSound?: boolean
   midiDevice?: MidiDevice
+  isSentryOn?: boolean
 
   setIsLoading?: Dispatch<SetStateAction<boolean>>
   setPianoSound?: Dispatch<SetStateAction<string>>
   setShowKeyboard?: Dispatch<SetStateAction<boolean>>
   setMuteSound?: Dispatch<SetStateAction<boolean>>
   setMidiDevice?: Dispatch<SetStateAction<MidiDevice>>
+  setIsSentryOn?: Dispatch<SetStateAction<boolean>>
 
   saveSetting?: (key: PTSettingsKeyType, value: any) => void
 }
@@ -45,6 +47,7 @@ const KVProvider: FC<KVContextType> = ({ children }) => {
     id: 0,
     name: 'default',
   })
+  const [isSentryOn, setIsSentryOn] = useState(true)
 
   /**
    * Map settings stored on-disk into the KVProvider's state
@@ -68,10 +71,20 @@ const KVProvider: FC<KVContextType> = ({ children }) => {
               id: Number(value),
             })
             break
+          case 'is-sentry-on':
+            setIsSentryOn(Boolean(value))
+            break
         }
       })
     },
-    [setPianoSound, setShowKeyboard, setMuteSound, setMidiDevice, store]
+    [
+      setPianoSound,
+      setShowKeyboard,
+      setMuteSound,
+      setMidiDevice,
+      setIsSentryOn,
+      store,
+    ]
   )
 
   /**
@@ -102,6 +115,10 @@ const KVProvider: FC<KVContextType> = ({ children }) => {
     saveSetting('midi-input-id', midiDevice?.id || 0)
   }, [midiDevice?.id, saveSetting])
 
+  useEffect(() => {
+    saveSetting('is-sentry-on', isSentryOn)
+  }, [isSentryOn, saveSetting])
+
   /**
    * We want to fetch all of the settings stored on-disk and
    * load them into the state when KVProvider is mounted
@@ -124,11 +141,13 @@ const KVProvider: FC<KVContextType> = ({ children }) => {
     showKeyboard,
     muteSound,
     midiDevice,
+    isSentryOn,
     setIsLoading,
     setPianoSound,
     setShowKeyboard,
     setMuteSound,
     setMidiDevice,
+    setIsSentryOn,
     saveSetting,
   }
 

@@ -24,7 +24,7 @@ Learn to play the piano at your own pace through various modes of practice.
 ## Coming Soon
 
 - [ ] Interactive inversion practice
-- [ ] Add crash reporting
+- [x] Add crash reporting
 - [ ] Change audio output (ASIO?)
 - [ ] Settings
   - [ ] Toggle questions in quiz mode
