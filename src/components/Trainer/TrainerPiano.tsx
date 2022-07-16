@@ -49,15 +49,32 @@ const TrainerPiano = () => {
           return [nextNote]
         }
       } else if (practiceMode === 'chords') {
-        return getTriadChordFromMidiNote(nextNote, scale)
+        if (isHardModeEnabled) {
+          return getTriadChordFromMidiNote(noteTracker!.prevNote!, scale)
+        } else {
+          return getTriadChordFromMidiNote(nextNote, scale)
+        }
       } else if (practiceMode === 'fifths') {
-        return [
-          nextNote,
-          getFifthFromMidiNote(nextNote, scale.value as AvailableAllScalesType),
-        ]
+        if (isHardModeEnabled) {
+          return [
+            noteTracker!.prevNote!,
+            getFifthFromMidiNote(
+              noteTracker!.prevNote!,
+              scale.value as AvailableAllScalesType
+            ),
+          ]
+        } else {
+          return [
+            nextNote,
+            getFifthFromMidiNote(
+              nextNote,
+              scale.value as AvailableAllScalesType
+            ),
+          ]
+        }
       }
     },
-    [isHardModeEnabled, noteTracker?.prevNote, practiceMode, scale]
+    [isHardModeEnabled, practiceMode, scale, noteTracker]
   )
 
   return (
@@ -73,27 +90,36 @@ const TrainerPiano = () => {
         keyWidthToHeight={0.33}
         renderNoteLabel={({ midiNumber }: { midiNumber: number }) => {
           const isMidiNumbers = false
+          // modScale will be the midi numbers in-scale starting from c0
           const modScale = ignoreOctave(scale || { keys: {} })
           if (isMidiNumbers) {
             return <InKeyMarker>{midiNumber}</InKeyMarker>
           } else {
             if (isHardModeEnabled) {
-              // only add the first marker in hard mode
-              if (midiNumber % OCTAVE_LENGTH === 0) {
+              // only add the roman numeral if it's the first note in the scale
+              const noOctaveFirstNoteInScale = Number(
+                Object.keys(modScale[0])[0]
+              )
+              if (midiNumber % OCTAVE_LENGTH === noOctaveFirstNoteInScale) {
                 return (
-                  <InKeyMarker>
-                    {modScale.keys[midiNumber % OCTAVE_LENGTH]}
-                  </InKeyMarker>
+                  <InKeyMarker>{Object.values(modScale[0])[0]}</InKeyMarker>
                 )
               }
             } else {
-              return (
-                modScale.keys?.[midiNumber % OCTAVE_LENGTH] && (
+              // TODO: Refactor this to be more readable
+              // Basically checking if the midiNumber is in the modScale array of Objects
+              const modKeyIdx = modScale.findIndex(
+                (m) => Object.keys(m)[0] === String(midiNumber % OCTAVE_LENGTH)
+              )
+
+              // if it is, display the roman numeral
+              if (modKeyIdx > -1) {
+                return (
                   <InKeyMarker>
-                    {modScale.keys[midiNumber % OCTAVE_LENGTH]}
+                    {Object.values(modScale[modKeyIdx] || {})?.[0]}
                   </InKeyMarker>
                 )
-              )
+              }
             }
           }
         }}

@@ -105,9 +105,9 @@ const Keyboard = () => {
     const targetScaleNote = midiNumberToNote(noteTracker!.nextTargetMidiNumber)
 
     if (
+      practiceMode === 'scales' &&
       chordStack!.length > 0 &&
-      midiNumberToNote(chordStack![0]) === targetScaleNote &&
-      practiceMode === 'scales'
+      chordStack?.map((cs) => midiNumberToNote(cs)).includes(targetScaleNote)
     ) {
       setNoteTracker?.((nt) => ({
         ...nt,

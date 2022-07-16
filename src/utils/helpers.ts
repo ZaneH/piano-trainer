@@ -3,6 +3,7 @@ import {
   AVAILABLE_SCALES,
   CIRCLE_OF_FIFTHS,
   OCTAVE_LENGTH,
+  ScaleKeyType,
   ScaleStepsType,
   ScaleType,
   SCALE_LENGTH,
@@ -12,15 +13,20 @@ import {
 import { MajorMinorType } from '../components/Quiz/Questions'
 import { MidiNumbers } from 'react-piano'
 
-export const ignoreOctave = (scale: ScaleType): ScaleType => {
+/**
+ * Returns the keys for a given `ScaleType` starting at c0 in midi numbers.
+ */
+export const ignoreOctave = (scale: ScaleType): ScaleKeyType[] => {
   const scaleKeys: string[] = Object.keys(scale.keys || {})
-  const modKeys: ScaleType = { keys: {} }
+  const moduloKeys: ScaleKeyType[] = []
 
   for (const k of scaleKeys) {
-    modKeys.keys[Number(k) % OCTAVE_LENGTH] = scale!.keys![Number(k)]
+    moduloKeys.push({
+      [Number(k) % OCTAVE_LENGTH]: scale.keys[Number(k)],
+    })
   }
 
-  return modKeys
+  return moduloKeys
 }
 
 export const getFifthFromMidiNote = (
@@ -28,7 +34,6 @@ export const getFifthFromMidiNote = (
   scale: AvailableAllScalesType
 ): number => {
   const slicedKeys = Object.keys(AVAILABLE_SCALES[scale].keys)
-  slicedKeys.slice(-1, 1)
   const currentNoteIdx = slicedKeys.indexOf(midiNumber.toString())
   let futureFifth = Number(
     slicedKeys[(currentNoteIdx + SCALE_LENGTH / 2) % slicedKeys.length]

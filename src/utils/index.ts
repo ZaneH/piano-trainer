@@ -1,11 +1,10 @@
 import { AvailableAllScalesType } from './constants'
 
+export type ScaleKeyType = { [midi: number]: string }
 export type ScaleType = {
   label?: string
   value?: AvailableAllScalesType
-  keys: {
-    [midi: number]: string
-  }
+  keys: ScaleKeyType
 }
 
 export * from './constants'

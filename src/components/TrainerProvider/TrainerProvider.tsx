@@ -113,7 +113,7 @@ const TrainerProvider: FC<TrainerContextType> = ({ children }) => {
       } else {
         setNoteTracker((nt) => ({
           ...nt,
-          prevNote,
+          prevNote: noteTracker.currentMidiNumber,
           nextTargetMidiNumber: Number(
             Object.keys(scale.keys)[noteTracker.noteCounter % SCALE_LENGTH]
           ),
