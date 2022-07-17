@@ -4,8 +4,8 @@ import styled from 'styled-components'
 import {
   AvailableAllScalesType,
   AVAILABLE_MAJOR_SCALES,
-  getFifthFromMidiNote,
-  getTriadChordFromMidiNote,
+  getFifthFromMidiNumber,
+  getTriadChordFromMidiNumber,
   ignoreOctave,
   OCTAVE_LENGTH,
 } from '../../utils'
@@ -50,15 +50,15 @@ const TrainerPiano = () => {
         }
       } else if (practiceMode === 'chords') {
         if (isHardModeEnabled) {
-          return getTriadChordFromMidiNote(noteTracker!.prevNote!, scale)
+          return getTriadChordFromMidiNumber(noteTracker!.prevNote!, scale)
         } else {
-          return getTriadChordFromMidiNote(nextNote, scale)
+          return getTriadChordFromMidiNumber(nextNote, scale)
         }
       } else if (practiceMode === 'fifths') {
         if (isHardModeEnabled) {
           return [
             noteTracker!.prevNote!,
-            getFifthFromMidiNote(
+            getFifthFromMidiNumber(
               noteTracker!.prevNote!,
               scale.value as AvailableAllScalesType
             ),
@@ -66,7 +66,7 @@ const TrainerPiano = () => {
         } else {
           return [
             nextNote,
-            getFifthFromMidiNote(
+            getFifthFromMidiNumber(
               nextNote,
               scale.value as AvailableAllScalesType
             ),

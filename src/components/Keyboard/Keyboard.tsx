@@ -5,8 +5,8 @@ import { KeyboardShortcuts, MidiNumbers, Piano } from 'react-piano'
 import 'react-piano/dist/styles.css'
 import styled, { css } from 'styled-components'
 import {
-  getFifthFromMidiNote,
-  getTriadChordFromMidiNote,
+  getFifthFromMidiNumber,
+  getTriadChordFromMidiNumber,
   MidiDevice,
   midiNumberToNote,
 } from '../../utils'
@@ -116,7 +116,7 @@ const Keyboard = () => {
       }))
       setChordStack?.([])
     } else if (practiceMode === 'chords') {
-      const targetChord = getTriadChordFromMidiNote(
+      const targetChord = getTriadChordFromMidiNumber(
         noteTracker?.nextTargetMidiNumber!,
         scale!
       )
@@ -139,7 +139,10 @@ const Keyboard = () => {
       // turn the target numbers into target letters to ignore octave for matching
       const targetFifths = [
         noteTracker?.nextTargetMidiNumber!,
-        getFifthFromMidiNote(noteTracker?.nextTargetMidiNumber!, scale?.value!),
+        getFifthFromMidiNumber(
+          noteTracker?.nextTargetMidiNumber!,
+          scale?.value!
+        ),
       ]
 
       const targetFifthNotes = targetFifths.map((f) => midiNumberToNote(f))

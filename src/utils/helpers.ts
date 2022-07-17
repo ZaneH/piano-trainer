@@ -15,6 +15,8 @@ import { MidiNumbers } from 'react-piano'
 
 /**
  * Returns the keys for a given `ScaleType` starting at c0 in midi numbers.
+ * @param scale A `ScaleType` including the keys to ignore  the octave of
+ * @returns An array of objects with midi numbers as key and their roman numerals as value
  */
 export const ignoreOctave = (scale: ScaleType): ScaleKeyType[] => {
   const scaleKeys: string[] = Object.keys(scale.keys || {})
@@ -29,7 +31,13 @@ export const ignoreOctave = (scale: ScaleType): ScaleKeyType[] => {
   return moduloKeys
 }
 
-export const getFifthFromMidiNote = (
+/**
+ * Given a midi number, return another midi number that's a fifth away.
+ * @param midiNumber A midi number to get the fifth of
+ * @param scale The scale to follow for this fifth (unnecessary?)
+ * @returns A single midi number that is a fifth from the given midi number
+ */
+export const getFifthFromMidiNumber = (
   midiNumber: number,
   scale: AvailableAllScalesType
 ): number => {
@@ -61,7 +69,7 @@ export const getFifthFromMidiNote = (
  * @param scale The fifths will fall in this key
  * @returns An array with 2 fifths as midi numbers
  */
-export const getBothFifthsFromMidiNote = (
+export const getBothFifthsFromMidiNumber = (
   midiNumber: number,
   scale: AvailableAllScalesType
 ): number[] => {
@@ -184,7 +192,14 @@ export const swapNoteWithSynonym = (
   }
 }
 
-export const getTriadChordFromMidiNote = (
+/**
+ * Given a midi number, return three midi numbers that make up a chord with the
+ * provided scale.
+ * @param midiNumber A midi number to start the triad from
+ * @param scale The scale to follow for this chord
+ * @returns 3 midi numbers in an array that make up a triad starting from midiNumber
+ */
+export const getTriadChordFromMidiNumber = (
   midiNumber: number,
   scale: ScaleType
 ): number[] => {
@@ -216,7 +231,11 @@ export const getTriadChordFromMidiNote = (
   return triadChordMidi
 }
 
-export const getRandomKey = () => {
+/**
+ * Returns a random piano note as a string.
+ * @returns A random note (ex. C#, Db, F#, Gb)
+ */
+export const getRandomKey = (): string => {
   const allKeys = 'ABCDEFG'
   const allMods = ['', '#', 'b']
   let potentialKey = ''
@@ -235,16 +254,30 @@ export const getRandomKey = () => {
   return potentialKey
 }
 
+/**
+ * Helper function to generate a random `MajorMinorType` value.
+ * @returns Either 'Major' or 'Minor'
+ */
 export const getRandomMajMin = (): MajorMinorType => {
   const options: MajorMinorType[] = ['Minor', 'Major']
   return options[Math.floor(Math.random() * options.length)]
 }
 
+/**
+ * Helper function to generate a random note that will be on the Circle of Fifths.
+ * @param majMin Which scale to use to generate a random fifth note (unnecessary?)
+ * @returns A random note that's on the Circle of Fifths (ex. C, A, E, F#, etc.)
+ */
 export const getRandomFifth = (majMin: MajorMinorType) => {
   const fifths = CIRCLE_OF_FIFTHS[majMin]
   return fifths[Math.floor(Math.random() * fifths.length)]
 }
 
+/**
+ * Helper function to shuffle an array.
+ * @param array An array to shuffle
+ * @returns A shuffled array
+ */
 export function shuffle<T>(array: T[]): T[] {
   let currentIndex = array.length,
     randomIndex
@@ -265,6 +298,11 @@ export function shuffle<T>(array: T[]): T[] {
   return array
 }
 
+/**
+ * Converts a given midi number to it's corresponding letter form. (ex. 48 = C)
+ * @param midiNumber A midi number to convert to a note
+ * @returns A note represented as a string without the octave.
+ */
 export const midiNumberToNote = (midiNumber: number): string => {
   return MidiNumbers.getAttributes(midiNumber)
     .note.toLowerCase()

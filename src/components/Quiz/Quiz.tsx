@@ -13,7 +13,7 @@ import styled from 'styled-components'
 import {
   CIRCLE_OF_FIFTHS,
   convertKeyToScalesKey,
-  getBothFifthsFromMidiNote,
+  getBothFifthsFromMidiNumber,
   getRandomFifth,
   getRandomKey,
   isAdjacentFifth,
@@ -174,7 +174,7 @@ const Quiz = () => {
 
   const currentValidMidi = useMemo<number[]>(() => {
     if (currentQuestion.type === 'fifth') {
-      return getBothFifthsFromMidiNote(
+      return getBothFifthsFromMidiNumber(
         MidiNumbers.fromNote(
           `${swapNoteWithSynonym(currentQuestionKey, currentQuestion.majMin)}3`
         ),
