@@ -55,7 +55,7 @@ const QuizHeader = () => {
       >
         <ArrowBack color='#1f1f20' />
       </BackIconContainer>
-      <h1>Quiz Mode</h1>
+      <h1>Quiz</h1>
       <SettingsIconContainer onClick={() => setIsOpen?.(true)}>
         <SettingsIcon color='#1f1f20' />
       </SettingsIconContainer>

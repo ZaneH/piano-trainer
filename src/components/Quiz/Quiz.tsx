@@ -342,9 +342,23 @@ const Quiz = () => {
               <Piano
                 noteRange={{ first: firstNote, last: lastNote }}
                 playNote={(midiNumber: number) => {
+                  setActiveNotes((an) => ({ ...an, [midiNumber]: true }))
+                  setChordStack?.((cs) => [...cs, midiNumber])
                   !muteSound && playNote(midiNumber)
                 }}
                 stopNote={(midiNumber: number) => {
+                  setActiveNotes((an) => ({ ...an, [midiNumber]: false }))
+
+                  // remove midiNumber from chordStack
+                  setChordStack?.((cs) => {
+                    const removalIdx = cs.indexOf(midiNumber)
+                    if (removalIdx > -1) {
+                      cs.splice(removalIdx, 1)
+                    }
+
+                    return cs
+                  })
+
                   stopNote(midiNumber)
                 }}
                 activeNotes={Object.keys(activeNotes)
