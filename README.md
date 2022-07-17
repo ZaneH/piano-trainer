@@ -2,7 +2,7 @@
 
 # Piano Trainer
 
-Learn to play the piano at your own pace through various modes of practice.
+Learn to play the piano at your own pace through various modes of practice. [Watch video](https://vimeo.com/730642802)
 
 <p align="center">
 <img alt="Piano Trainer screenshot" src="https://i.imgur.com/k2y1Gr5.png" height="250px" />
@@ -24,7 +24,6 @@ Learn to play the piano at your own pace through various modes of practice.
 ## Coming Soon
 
 - [ ] Interactive inversion practice
-- [x] Add crash reporting
 - [ ] Change audio output (ASIO?)
 - [ ] Settings
   - [ ] Toggle questions in quiz mode
@@ -46,9 +45,9 @@ $ cd scale-trainer
 $ yarn && sh ./start-dev.sh
 ```
 
-## Build target binary
+## Build Target Binary
 
-Outputs to `/src-tauri/target/release/bundle`
+Outputs to `./src-tauri/target/release/bundle`
 
 ```bash
 $ yarn tauri build
