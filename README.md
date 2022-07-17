@@ -55,11 +55,11 @@ $ yarn tauri build
 
 # Contributions
 
-Contributions are more than welcome.
+Contributions are more than welcome. Read the [Technical Breakdown here](https://github.com/ZaneH/piano-trainer/wiki/Technical-Breakdown) to learn about the codebase.
 
 Create a PR pointing to the `dev` branch. Stable builds will be merged into `master`.
 
-Code formatting is handled with Git Hooks.
+Code formatting is automically handled with Git Hooks.
 
 # Credit
 

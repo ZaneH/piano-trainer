@@ -30,8 +30,8 @@ import {
   getRandomQuizQuestion,
   MajorMinorType,
   QuestionTypeType,
-  QuizOption,
 } from './Questions'
+import { QuizOption } from './QuizOption'
 import QuizHeader from './QuizHeader'
 
 const QuizPage = styled.div`
