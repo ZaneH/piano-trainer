@@ -120,7 +120,7 @@ const Quiz = () => {
 
     listen('midi_message', (event) => {
       const payload = event.payload as { message: number[] }
-      const [command, note] = payload.message
+      const [command, note, velocity] = payload.message
 
       if (command === 144) {
         setChordStack?.((cs) => [...cs, note])
@@ -130,7 +130,7 @@ const Quiz = () => {
         }))
       }
 
-      if (command === 128) {
+      if (command === 128 || velocity === 0) {
         // remove midiNumber from chordStack
         setChordStack?.((cs) => {
           const removalIdx = cs.indexOf(note)
