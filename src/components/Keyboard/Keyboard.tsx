@@ -7,6 +7,7 @@ import styled, { css } from 'styled-components'
 import {
   getFifthFromMidiNumber,
   getTriadChordFromMidiNumber,
+  getSeventhChordFromMidiNumber,
   MidiDevice,
   midiNumberToNote,
 } from '../../utils'
@@ -119,6 +120,26 @@ const Keyboard = () => {
       setChordStack?.([])
     } else if (practiceMode === 'chords') {
       const targetChord = getTriadChordFromMidiNumber(
+        noteTracker?.nextTargetMidiNumber!,
+        scale!
+      )
+
+      // turn the target numbers into target letters to ignore octave for matching
+      const targetChordNotes = targetChord.map((n) => midiNumberToNote(n))
+
+      const matches = targetChordNotes.every((e) =>
+        chordStack?.map((cs) => midiNumberToNote(cs)).includes(e)
+      )
+      if (matches) {
+        setNoteTracker?.((nt) => ({
+          ...nt,
+          noteCounter: nt.noteCounter + 1,
+          currentMidiNumber: targetChord[0],
+        }))
+        setChordStack?.([])
+      }
+    } else if (practiceMode === 'seventhChords') {
+      const targetChord = getSeventhChordFromMidiNumber(
         noteTracker?.nextTargetMidiNumber!,
         scale!
       )

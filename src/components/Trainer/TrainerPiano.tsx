@@ -6,6 +6,7 @@ import {
   AVAILABLE_MAJOR_SCALES,
   getFifthFromMidiNumber,
   getTriadChordFromMidiNumber,
+  getSeventhChordFromMidiNumber,
   ignoreOctave,
   OCTAVE_LENGTH,
 } from '../../utils'
@@ -53,6 +54,12 @@ const TrainerPiano = () => {
           return getTriadChordFromMidiNumber(noteTracker!.prevNote!, scale)
         } else {
           return getTriadChordFromMidiNumber(nextNote, scale)
+        }
+      } else if (practiceMode === 'seventhChords') {
+        if (isHardModeEnabled) {
+          return getSeventhChordFromMidiNumber(noteTracker!.prevNote!, scale)
+        } else {
+          return getSeventhChordFromMidiNumber(nextNote, scale)
         }
       } else if (practiceMode === 'fifths') {
         if (isHardModeEnabled) {
