@@ -15,11 +15,10 @@ Learn to play the piano at your own pace through various modes of practice. [Wat
   - [x] Home row keyboard input
 - [x] Cross-platform support
 - [x] Interactive scale practice
-  - [x] Hard mode
 - [x] Interactive chord practice
-- [x] Interactive Circle of Fifths practice
 - [x] Interactive fifths practice
 - [x] Interactive quiz
+- [x] Hard mode
 
 ## Coming Soon
 
