@@ -232,6 +232,52 @@ export const getTriadChordFromMidiNumber = (
 }
 
 /**
+ * Given a midi number, return four midi numbers that make up a seventh chord with the
+ * provided scale.
+ * @param midiNumber A midi number to start the seventh chord from
+ * @param scale The scale to follow for this chord
+ * @returns 4 midi numbers in an array that make up a seventh chord starting from midiNumber
+ */
+export const getSeventhChordFromMidiNumber = (
+  midiNumber: number,
+  scale: ScaleType
+): number[] => {
+  const scaleKeys = Object.keys(scale.keys)
+  const firstFingerIdx = scaleKeys.indexOf(midiNumber.toString())
+  const firstFinger = Number(scaleKeys[firstFingerIdx])
+  let secondFinger: number
+  let thirdFinger: number
+  let fourthFinger: number
+  const seventhChordMidi: number[] = []
+
+  if (firstFingerIdx < 0) {
+    return seventhChordMidi
+  } else {
+    secondFinger = Number(scaleKeys[(firstFingerIdx + 2) % (SCALE_LENGTH - 1)])
+    const secondFingerIdx = scaleKeys.indexOf(secondFinger.toString())
+    thirdFinger = Number(scaleKeys[(secondFingerIdx + 2) % (SCALE_LENGTH - 1)])
+    const thirdFingerIdx = scaleKeys.indexOf(thirdFinger.toString())
+    fourthFinger = Number(scaleKeys[(thirdFingerIdx + 2) % (SCALE_LENGTH - 1)])
+  }
+
+  if (secondFinger < firstFinger) {
+    secondFinger += OCTAVE_LENGTH
+  }
+
+  if (thirdFinger < secondFinger) {
+    thirdFinger += OCTAVE_LENGTH
+  }
+
+  if (fourthFinger < thirdFinger) {
+    fourthFinger += OCTAVE_LENGTH
+  }
+
+  seventhChordMidi.push(firstFinger, secondFinger, thirdFinger, fourthFinger)
+
+  return seventhChordMidi
+}
+
+/**
  * Returns a random piano note as a string.
  * @returns A random note (ex. C#, Db, F#, Gb)
  */
