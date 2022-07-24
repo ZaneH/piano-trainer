@@ -72,7 +72,9 @@ const TrainerDisplay = () => {
   }))
 
   const modeOptions = Object.keys(AVAILABLE_MODES).map((s: string) => ({
-    label: AVAILABLE_MODES[s as AvailablePracticeModesType].label,
+    label: t(
+      `practiceModes.${AVAILABLE_MODES[s as AvailablePracticeModesType].value}`
+    ),
     value: AVAILABLE_MODES[s as AvailablePracticeModesType].value,
   }))
 
@@ -140,7 +142,7 @@ const TrainerDisplay = () => {
         </TrainerSectionHeader>
         <Select
           value={{
-            label: AVAILABLE_MODES[practiceMode!].label,
+            label: t(`practiceModes.${AVAILABLE_MODES[practiceMode!].value}`),
             value: AVAILABLE_MODES[practiceMode!].value,
           }}
           options={modeOptions}
