@@ -1,6 +1,7 @@
 import { invoke } from '@tauri-apps/api'
 import { listen, UnlistenFn } from '@tauri-apps/api/event'
 import { useCallback, useContext, useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { KeyboardShortcuts, MidiNumbers, Piano } from 'react-piano'
 import 'react-piano/dist/styles.css'
 import styled, { css } from 'styled-components'
@@ -10,6 +11,7 @@ import {
   getSeventhChordFromMidiNumber,
   MidiDevice,
   midiNumberToNote,
+  swapNoteWithSynonym,
 } from '../../utils'
 import { KVContext } from '../KVProvider'
 import SoundfontProvider from '../SoundfontProvider'
@@ -46,6 +48,7 @@ const Keyboard = () => {
     lastNote,
     keyboardConfig: KeyboardShortcuts.HOME_ROW,
   })
+  const { t } = useTranslation()
 
   const [listeningIdx, setListeningIdx] = useState(-1)
 
@@ -234,9 +237,13 @@ const Keyboard = () => {
               keyboardShortcuts={keyboardShortcuts}
               renderNoteLabel={({ midiNumber }: { midiNumber: number }) => (
                 <p className='ReactPiano__NoteLabel'>
-                  {MidiNumbers.getAttributes(midiNumber).note.replace(
-                    /[0-9]/,
-                    ''
+                  {t(
+                    swapNoteWithSynonym(
+                      MidiNumbers.getAttributes(midiNumber).note.replace(
+                        /[0-9]/,
+                        ''
+                      )
+                    )
                   )}
                 </p>
               )}

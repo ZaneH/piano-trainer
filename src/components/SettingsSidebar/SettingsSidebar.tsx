@@ -1,4 +1,5 @@
 import { useCallback, useContext } from 'react'
+import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 import { AVAILABLE_SETTINGS, PTSettingType } from '../../utils'
 import { KVContext } from '../KVProvider'
@@ -38,6 +39,7 @@ const SettingsSidebar = () => {
   const { showKeyboard, muteSound, midiDevice, isSentryOn } =
     useContext(KVContext)
   const { setIsOpen } = useContext(SidebarContext)
+  const { t } = useTranslation()
 
   const renderSettingRow = useCallback(
     (s: PTSettingType) => {
@@ -61,7 +63,7 @@ const SettingsSidebar = () => {
     <CoverScreen>
       <FadeOut onClick={() => setIsOpen?.(false)} />
       <Sidebar>
-        <h1>Settings</h1>
+        <h1>{t('settings.title')}</h1>
         {AVAILABLE_SETTINGS.map((s) => renderSettingRow(s))}
       </Sidebar>
     </CoverScreen>

@@ -33,6 +33,7 @@ import {
 } from './Questions'
 import { QuizOption } from './QuizOption'
 import QuizHeader from './QuizHeader'
+import { useTranslation } from 'react-i18next'
 
 const QuizPage = styled.div`
   height: 100%;
@@ -72,6 +73,7 @@ const Quiz = () => {
   )
   const firstNote = MidiNumbers.fromNote('c3')
   const lastNote = MidiNumbers.fromNote('c5')
+  const { t } = useTranslation()
 
   // Get a random note that's appropriate for the question type
   const getRandomNote = useCallback(
@@ -300,13 +302,13 @@ const Quiz = () => {
           key={i}
           isAnswer={isCorrect}
           value={co}
-          onClick={(value, isAnswer) => {
+          onClick={(_value, isAnswer) => {
             if (isAnswer) {
               gotoNextQuestion()
             }
           }}
         >
-          {co}
+          {t(`piano.note.${co}`)}
         </QuizOption>
       )
     })
@@ -321,7 +323,7 @@ const Quiz = () => {
     <QuizPage>
       <QuizHeader />
       <QuizQuestion>
-        {formatQuestion(currentQuestion.questionFormat, {
+        {formatQuestion(t(`pages.quiz.questions.${currentQuestion.type}`), {
           key: currentQuestionKey,
           majMin: currentQuestion.majMin,
         })}

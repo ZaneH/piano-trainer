@@ -13,6 +13,7 @@ import ArrowLeftRightIcon from 'remixicon-react/ArrowLeftRightFillIcon'
 import SkullIcon from 'remixicon-react/SkullFillIcon'
 import QuizIcon from 'remixicon-react/SurveyFillIcon'
 import { SidebarContext } from '../SidebarProvider'
+import { useTranslation } from 'react-i18next'
 
 const TrainerDisplayContainer = styled.div`
   display: flex;
@@ -63,9 +64,10 @@ const TrainerDisplay = () => {
     setIsHardModeEnabled,
   } = useContext(TrainerContext)
   const { setIsOpen } = useContext(SidebarContext)
+  const { t } = useTranslation()
 
   const scaleOptions = Object.keys(AVAILABLE_SCALES).map((s: string) => ({
-    label: AVAILABLE_SCALES[s as AvailableMajorScalesType].label,
+    label: t(`scales.${AVAILABLE_SCALES[s as AvailableMajorScalesType].value}`),
     value: AVAILABLE_SCALES[s as AvailableMajorScalesType].value,
   }))
 
@@ -86,9 +88,9 @@ const TrainerDisplay = () => {
     <TrainerDisplayContainer>
       <TrainerSection>
         <TrainerSectionHeader>
-          <h2>Scale</h2>
+          <h2>{t('pages.practice.scale.title')}</h2>
           <IconContainer
-            title='Toggle ping-pong scale practice'
+            title={t('pages.practice.scale.pingPongHint')}
             onClick={() => setIsScalePingPong?.((isPingPong) => !isPingPong)}
           >
             <ArrowLeftRightIcon
@@ -96,7 +98,7 @@ const TrainerDisplay = () => {
             />
           </IconContainer>
           <IconContainer
-            title='Toggle hard mode'
+            title={t('pages.practice.scale.hardModeHint')}
             onClick={() => setIsHardModeEnabled?.((isHard) => !isHard)}
           >
             <SkullIcon color={isHardModeEnabled ? '#70bcd3' : '#1f1f20'} />
@@ -106,8 +108,11 @@ const TrainerDisplay = () => {
           filterOption={fromStartFilter}
           options={scaleOptions}
           value={{
-            label:
-              AVAILABLE_SCALES[scale?.value as AvailableMajorScalesType].label,
+            label: t(
+              `scales.${
+                AVAILABLE_SCALES[scale?.value as AvailableMajorScalesType].value
+              }`
+            ),
             value:
               AVAILABLE_SCALES[scale?.value as AvailableMajorScalesType].value,
           }}
@@ -119,9 +124,9 @@ const TrainerDisplay = () => {
 
       <TrainerSection>
         <TrainerSectionHeader>
-          <h2>Mode</h2>
+          <h2>{t('pages.practice.mode.title')}</h2>
           <IconContainer
-            title='Switch to quiz mode'
+            title={t('pages.practice.mode.quizModeHint')}
             onClick={() => setCurrentScreen?.('quiz')}
           >
             <QuizIcon color='#1f1f20' />

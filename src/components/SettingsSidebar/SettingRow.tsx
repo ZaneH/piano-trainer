@@ -6,6 +6,7 @@ import { useContext, useEffect, useState } from 'react'
 import { KVContext } from '../KVProvider'
 import { invoke } from '@tauri-apps/api'
 import Select from 'react-select'
+import { useTranslation } from 'react-i18next'
 
 const SettingRowContainer = styled.div`
   margin: 24px 42px;
@@ -33,6 +34,7 @@ const SettingRow = ({ setting, value }: SettingRowProps) => {
     setMidiDevice: setConnectedMidiDevice,
     setIsSentryOn,
   } = useContext(KVContext)
+  const { t } = useTranslation()
 
   const [midiDevices, setMidiDevices] = useState<MidiDevice[]>([])
 
@@ -62,7 +64,9 @@ const SettingRow = ({ setting, value }: SettingRowProps) => {
 
     return (
       <SettingRowContainer>
-        <span className='settings-row-label'>{setting.label}</span>
+        <span className='settings-row-label'>
+          {t(`settings.options.${setting.key}`)}
+        </span>
         <Select
           options={midiDevices.map((d) => ({
             value: d.id,
@@ -103,7 +107,9 @@ const SettingRow = ({ setting, value }: SettingRowProps) => {
         }
       }}
     >
-      <span className='settings-row-label'>{setting.label}</span>
+      <span className='settings-row-label'>
+        {t(`settings.options.${setting.key}`)}
+      </span>
 
       {value ? (
         <CheckedIcon color='white' size={32} />

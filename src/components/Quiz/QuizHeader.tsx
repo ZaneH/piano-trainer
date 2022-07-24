@@ -4,6 +4,7 @@ import SettingsIcon from 'remixicon-react/Settings2FillIcon'
 import { useContext } from 'react'
 import { TrainerContext } from '../TrainerProvider'
 import { SidebarContext } from '../SidebarProvider'
+import { useTranslation } from 'react-i18next'
 
 const HeaderContainer = styled.div`
   width: 100%;
@@ -46,6 +47,7 @@ const SettingsIconContainer = styled.div`
 const QuizHeader = () => {
   const { setCurrentScreen } = useContext(TrainerContext)
   const { setIsOpen } = useContext(SidebarContext)
+  const { t } = useTranslation()
 
   return (
     <HeaderContainer>
@@ -55,7 +57,7 @@ const QuizHeader = () => {
       >
         <ArrowBack color='#1f1f20' />
       </BackIconContainer>
-      <h1>Quiz</h1>
+      <h1>{t('pages.quiz.title')}</h1>
       <SettingsIconContainer onClick={() => setIsOpen?.(true)}>
         <SettingsIcon color='#1f1f20' />
       </SettingsIconContainer>
