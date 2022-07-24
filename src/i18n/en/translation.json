@@ -1,0 +1,45 @@
+{
+  "piano": {
+    "note": {
+      "Cb": "Cb",
+      "C": "C",
+      "C#": "C#",
+      "Db": "Db",
+      "D": "D",
+      "D#": "D#",
+      "Eb": "Eb",
+      "E": "E",
+      "E#": "E#",
+      "Fb": "Fb",
+      "F": "F",
+      "F#": "F#",
+      "Gb": "Gb",
+      "G": "G",
+      "G#": "G#",
+      "Ab": "Ab",
+      "A": "A",
+      "A#": "A#",
+      "Bb": "Bb",
+      "B": "B",
+      "B#": "B#"
+    },
+    "numeral": {
+      "i": "i",
+      "I": "I",
+      "ii": "ii",
+      "iiº": "iiº",
+      "II": "II",
+      "iii": "iii",
+      "III": "III",
+      "iv": "iv",
+      "IV": "IV",
+      "v": "v",
+      "V": "V",
+      "vi": "vi",
+      "viº": "viº",
+      "VI": "VI",
+      "viiº": "viiº",
+      "VII": "VII"
+    }
+  }
+}

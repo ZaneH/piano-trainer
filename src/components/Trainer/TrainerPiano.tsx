@@ -1,4 +1,5 @@
 import { useCallback, useContext } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Keyboard, MidiNumbers } from 'react-piano'
 import styled from 'styled-components'
 import {
@@ -36,6 +37,7 @@ const TrainerPiano = () => {
     noteTracker,
     practiceMode,
   } = useContext(TrainerContext)
+  const { t } = useTranslation()
 
   const getActiveNotes = useCallback(
     (nextNote?: number) => {
@@ -123,7 +125,11 @@ const TrainerPiano = () => {
               if (modKeyIdx > -1) {
                 return (
                   <InKeyMarker>
-                    {Object.values(modScale[modKeyIdx] || {})?.[0]}
+                    {t(
+                      `piano.numeral.${
+                        Object.values(modScale[modKeyIdx] || {})?.[0]
+                      }`
+                    )}
                   </InKeyMarker>
                 )
               }

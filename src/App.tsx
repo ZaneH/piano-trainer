@@ -7,6 +7,7 @@ import ScreenManager from './components/ScreenManager/ScreenManager'
 import SidebarProvider from './components/SidebarProvider/SidebarProvider'
 import { TrainerDisplay, TrainerPiano } from './components/Trainer'
 import TrainerProvider from './components/TrainerProvider'
+import './i18n/config'
 
 const PracticeScreenLayout = styled.div`
   display: flex;
