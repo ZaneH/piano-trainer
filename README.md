@@ -5,7 +5,7 @@
 Learn to play the piano at your own pace through various modes of practice. [Watch the video](https://vimeo.com/730642802)
 
 <p align="center">
-<img alt="Piano Trainer screenshot" src="https://i.imgur.com/k2y1Gr5.png" height="250px" />
+<img alt="Piano Trainer screenshot" src="https://i.imgur.com/Nxg1706.png" height="250px" />
 <img alt="Piano Trainer screenshot #2" src="https://i.imgur.com/mBg1fjH.png" height="250px" />
 </p>
 

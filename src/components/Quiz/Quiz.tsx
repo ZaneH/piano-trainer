@@ -317,6 +317,7 @@ const Quiz = () => {
     answerChoices,
     currentQuestion.majMin,
     currentQuestionKey,
+    t,
   ])
 
   return (
@@ -324,7 +325,7 @@ const Quiz = () => {
       <QuizHeader />
       <QuizQuestion>
         {formatQuestion(t(`pages.quiz.questions.${currentQuestion.type}`), {
-          key: currentQuestionKey,
+          key: t(`piano.note.${currentQuestionKey}`),
           majMin: currentQuestion.majMin,
         })}
       </QuizQuestion>
