@@ -1,12 +1,16 @@
-import styled from 'styled-components'
-import { MidiDevice, PTSettingType } from '../../utils'
+import { invoke } from '@tauri-apps/api'
+import { useContext, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import Select from 'react-select'
 import UncheckedIcon from 'remixicon-react/CheckboxBlankCircleLineIcon'
 import CheckedIcon from 'remixicon-react/CheckboxCircleFillIcon'
-import { useContext, useEffect, useState } from 'react'
+import styled from 'styled-components'
+import { MidiDevice, PTSettingType } from '../../utils'
+import {
+  AVAILABLE_LANGUAGES,
+  SupportedLanguagesType,
+} from '../../utils/languages'
 import { KVContext } from '../KVProvider'
-import { invoke } from '@tauri-apps/api'
-import Select from 'react-select'
-import { useTranslation } from 'react-i18next'
 
 const SettingRowContainer = styled.div`
   margin: 24px 42px;
@@ -32,6 +36,7 @@ const SettingRow = ({ setting, value }: SettingRowProps) => {
     setMuteSound,
     setShowKeyboard,
     setMidiDevice: setConnectedMidiDevice,
+    setLanguage,
     setIsSentryOn,
   } = useContext(KVContext)
   const { t } = useTranslation()
@@ -85,6 +90,27 @@ const SettingRow = ({ setting, value }: SettingRowProps) => {
             } catch (e) {
               console.error('There was an error connecting to MIDI', e)
             }
+          }}
+        />
+      </SettingRowContainer>
+    )
+  } else if (setting.key === 'language') {
+    return (
+      <SettingRowContainer>
+        <span className='settings-row-label'>
+          {t(`settings.options.${setting.key}`)}
+        </span>
+        <Select
+          options={Object.keys(AVAILABLE_LANGUAGES).map((code) => ({
+            label: AVAILABLE_LANGUAGES[code as SupportedLanguagesType].name,
+            value: code,
+          }))}
+          value={{
+            label: AVAILABLE_LANGUAGES[value as SupportedLanguagesType].name,
+            value,
+          }}
+          onChange={(e) => {
+            setLanguage?.(e?.value as SupportedLanguagesType)
           }}
         />
       </SettingRowContainer>

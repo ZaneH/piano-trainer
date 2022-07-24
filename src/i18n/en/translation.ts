@@ -1,4 +1,4 @@
-export default {
+const en = {
   piano: {
     note: {
       Cb: 'Cb',
@@ -140,7 +140,10 @@ export default {
       'show-keyboard': 'Show keyboard',
       'mute-sound': 'Mute sound',
       'midi-input-id': 'MIDI input',
+      language: 'Language',
       'is-sentry-on': 'Send crash reports',
     },
   },
 }
+
+export default en

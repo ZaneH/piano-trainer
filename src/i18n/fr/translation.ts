@@ -1,4 +1,4 @@
-export default {
+const fr = {
   piano: {
     note: {
       Cb: 'Do♭',
@@ -117,7 +117,7 @@ export default {
     practice: {
       scale: {
         title: 'Gamme',
-        pingPongHint: 'Mode ping-pong de pratique des gammes",
+        pingPongHint: 'Mode ping-pong de pratique des gammes',
         hardModeHint: 'Mode difficile',
       },
       mode: {
@@ -140,7 +140,10 @@ export default {
       'show-keyboard': 'Afficher le clavier',
       'mute-sound': 'Couper le son',
       'midi-input-id': 'Entrée MIDI',
+      language: 'Langue',
       'is-sentry-on': 'Envoyer les rapports de bug',
     },
   },
 }
+
+export default fr

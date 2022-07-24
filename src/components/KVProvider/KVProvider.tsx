@@ -8,8 +8,13 @@ import {
   useMemo,
   useState,
 } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Store } from 'tauri-plugin-store-api'
 import { AVAILABLE_SETTINGS, MidiDevice, PTSettingsKeyType } from '../../utils'
+import {
+  AVAILABLE_LANGUAGES,
+  SupportedLanguagesType,
+} from '../../utils/languages'
 
 type KVContextType = {
   children?: React.ReactNode
@@ -19,6 +24,7 @@ type KVContextType = {
   showKeyboard?: boolean
   muteSound?: boolean
   midiDevice?: MidiDevice
+  language?: SupportedLanguagesType
   isSentryOn?: boolean
 
   setIsLoading?: Dispatch<SetStateAction<boolean>>
@@ -26,6 +32,7 @@ type KVContextType = {
   setShowKeyboard?: Dispatch<SetStateAction<boolean>>
   setMuteSound?: Dispatch<SetStateAction<boolean>>
   setMidiDevice?: Dispatch<SetStateAction<MidiDevice>>
+  setLanguage?: Dispatch<SetStateAction<SupportedLanguagesType>>
   setIsSentryOn?: Dispatch<SetStateAction<boolean>>
 
   saveSetting?: (key: PTSettingsKeyType, value: any) => void
@@ -47,7 +54,11 @@ const KVProvider: FC<KVContextType> = ({ children }) => {
     id: 0,
     name: 'default',
   })
+  const [language, setLanguage] = useState(
+    AVAILABLE_LANGUAGES.en.code as SupportedLanguagesType
+  )
   const [isSentryOn, setIsSentryOn] = useState(true)
+  const { i18n } = useTranslation()
 
   /**
    * Map settings stored on-disk into the KVProvider's state
@@ -71,6 +82,9 @@ const KVProvider: FC<KVContextType> = ({ children }) => {
               id: Number(value),
             })
             break
+          case 'language':
+            setLanguage(value as SupportedLanguagesType)
+            break
           case 'is-sentry-on':
             setIsSentryOn(Boolean(value))
             break
@@ -82,6 +96,7 @@ const KVProvider: FC<KVContextType> = ({ children }) => {
       setShowKeyboard,
       setMuteSound,
       setMidiDevice,
+      setLanguage,
       setIsSentryOn,
       store,
     ]
@@ -116,6 +131,14 @@ const KVProvider: FC<KVContextType> = ({ children }) => {
   }, [midiDevice?.id, saveSetting])
 
   useEffect(() => {
+    if (language in AVAILABLE_LANGUAGES) {
+      i18n.changeLanguage(language)
+    }
+
+    saveSetting('language', language)
+  }, [language, saveSetting, i18n])
+
+  useEffect(() => {
     saveSetting('is-sentry-on', isSentryOn)
   }, [isSentryOn, saveSetting])
 
@@ -141,12 +164,15 @@ const KVProvider: FC<KVContextType> = ({ children }) => {
     showKeyboard,
     muteSound,
     midiDevice,
+    language,
     isSentryOn,
+
     setIsLoading,
     setPianoSound,
     setShowKeyboard,
     setMuteSound,
     setMidiDevice,
+    setLanguage,
     setIsSentryOn,
     saveSetting,
   }

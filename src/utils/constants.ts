@@ -46,11 +46,11 @@ export type PTSettingsKeyType =
   | 'show-keyboard'
   | 'mute-sound'
   | 'midi-input-id'
+  | 'language'
   | 'is-sentry-on'
 
 export type PTSettingType = {
   key: PTSettingsKeyType
-  label: string
   type: 'select' | 'checkbox'
   options?: readonly string[]
 }
@@ -58,28 +58,27 @@ export type PTSettingType = {
 export const AVAILABLE_SETTINGS: readonly PTSettingType[] = [
   {
     key: 'piano-sound',
-    label: 'Sound',
     type: 'select',
     options: ['Piano Grand'],
   },
   {
     key: 'show-keyboard',
-    label: 'Show keyboard',
     type: 'checkbox',
   },
   {
     key: 'mute-sound',
-    label: 'Mute sound',
     type: 'checkbox',
   },
   {
     key: 'midi-input-id',
-    label: 'MIDI Input',
     type: 'select',
   },
   {
+    key: 'language',
+    type: 'checkbox',
+  },
+  {
     key: 'is-sentry-on',
-    label: 'Send crash reports',
     type: 'checkbox',
   },
 ] as const

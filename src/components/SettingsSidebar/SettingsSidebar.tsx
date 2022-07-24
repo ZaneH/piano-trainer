@@ -36,7 +36,7 @@ const Sidebar = styled.div`
 `
 
 const SettingsSidebar = () => {
-  const { showKeyboard, muteSound, midiDevice, isSentryOn } =
+  const { showKeyboard, muteSound, midiDevice, language, isSentryOn } =
     useContext(KVContext)
   const { setIsOpen } = useContext(SidebarContext)
   const { t } = useTranslation()
@@ -48,6 +48,8 @@ const SettingsSidebar = () => {
           return <SettingRow key={s.key} setting={s} value={showKeyboard} />
         case 'mute-sound':
           return <SettingRow key={s.key} setting={s} value={muteSound} />
+        case 'language':
+          return <SettingRow key={s.key} setting={s} value={language} />
         case 'midi-input-id':
           return (
             <SettingRow key={s.key} setting={s} value={midiDevice?.id || 0} />
@@ -56,7 +58,7 @@ const SettingsSidebar = () => {
           return <SettingRow key={s.key} setting={s} value={isSentryOn} />
       }
     },
-    [showKeyboard, muteSound, isSentryOn, midiDevice?.id]
+    [showKeyboard, muteSound, isSentryOn, midiDevice?.id, language]
   )
 
   return (
