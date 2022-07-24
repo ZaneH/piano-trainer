@@ -1,9 +1,9 @@
+export type SupportedLanguagesType = 'en' | 'fr'
+
 export type LanguageOptionType = {
   name: string
-  code: string
+  code: SupportedLanguagesType
 }
-
-export type SupportedLanguagesType = 'en' | 'fr'
 
 export const AVAILABLE_LANGUAGES: {
   [key in SupportedLanguagesType]: LanguageOptionType

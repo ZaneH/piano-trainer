@@ -54,9 +54,7 @@ const KVProvider: FC<KVContextType> = ({ children }) => {
     id: 0,
     name: 'default',
   })
-  const [language, setLanguage] = useState(
-    AVAILABLE_LANGUAGES.en.code as SupportedLanguagesType
-  )
+  const [language, setLanguage] = useState(AVAILABLE_LANGUAGES.en.code)
   const [isSentryOn, setIsSentryOn] = useState(true)
   const { i18n } = useTranslation()
 
