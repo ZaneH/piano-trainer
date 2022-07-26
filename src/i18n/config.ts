@@ -11,6 +11,9 @@ export const resources = {
   fr: {
     translation: frTranslation,
   },
+  br: {
+    translation: brTranslation,
+  },
 } as const
 
 i18n.use(initReactI18next).init({
