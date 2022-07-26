@@ -1,4 +1,4 @@
-export type SupportedLanguagesType = 'en' | 'fr'
+export type SupportedLanguagesType = 'en' | 'fr' | 'br'
 
 export type LanguageOptionType = {
   name: string
@@ -15,5 +15,9 @@ export const AVAILABLE_LANGUAGES: {
   fr: {
     name: 'Français',
     code: 'fr',
+  },
+  br: {
+    name: 'Português',
+    code: 'br',
   },
 } as const

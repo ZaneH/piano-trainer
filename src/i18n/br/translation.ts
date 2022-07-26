@@ -1,6 +1,6 @@
 const br = {
   piano: {
-    nota: {
+    note: {
       Cb: 'Cb',
       C: 'C',
       'C#': 'C#',
@@ -43,7 +43,7 @@ const br = {
       VII: 'VII',
     },
   },
-  scalas: {
+  scales: {
     // Maior
     'c-flat-major': 'Cb Maior',
     'c-major': 'C Major',
@@ -145,3 +145,5 @@ const br = {
     },
   },
 }
+
+export default br
