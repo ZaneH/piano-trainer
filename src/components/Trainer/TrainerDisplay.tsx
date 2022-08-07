@@ -134,7 +134,7 @@ const TrainerDisplay = () => {
             <QuizIcon color='#1f1f20' />
           </IconContainer>
           <IconContainer
-            title='Open settings'
+            title={t('pages.practice.mode.settingsHint')}
             onClick={() => setIsOpen?.(true)}
           >
             <SettingsIcon color='#1f1f20' />
