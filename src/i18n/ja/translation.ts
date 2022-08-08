@@ -117,7 +117,7 @@ const ja = {
     practice: {
       scale: {
         title: 'スケール',
-        pingPongHint: 'Toggle ping-pong scale practice',
+        pingPongHint: 'ピンポンモード\n往復練習ができます',
         hardModeHint: 'ハードモード',
       },
       mode: {
