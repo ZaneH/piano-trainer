@@ -3,6 +3,7 @@ import enTranslation from './en/translation'
 import frTranslation from './fr/translation'
 import brTranslation from './br/translation'
 import jaTranslation from './ja/translation'
+import deTranslation from './de/translation'
 import { initReactI18next } from 'react-i18next'
 import { AVAILABLE_LANGUAGES } from '../utils/languages'
 
@@ -18,6 +19,9 @@ export const resources = {
   },
   ja: {
     translation: jaTranslation,
+  },
+  de: {
+    translation: deTranslation,
   },
 } as const
 
