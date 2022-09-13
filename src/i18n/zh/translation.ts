@@ -129,8 +129,8 @@ const zh = {
     quiz: {
       title: '测验',
       questions: {
-        key: '在键盘上按 {{key}} ',
-        fifth: '哪一个 {{key}} 是纯五度 ',
+        key: '在键盘上按 {{key}}',
+        fifth: '哪一个 {{key}} 是纯五度',
       },
     },
   },
