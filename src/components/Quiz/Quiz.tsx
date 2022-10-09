@@ -8,6 +8,7 @@ import {
   useRef,
   useState,
 } from 'react'
+import { useTranslation } from 'react-i18next'
 import { MidiNumbers, Piano } from 'react-piano'
 import styled from 'styled-components'
 import {
@@ -23,7 +24,6 @@ import {
   swapNoteWithSynonym,
 } from '../../utils'
 import { KVContext } from '../KVProvider'
-import SoundfontProvider from '../SoundfontProvider'
 import { TrainerContext } from '../TrainerProvider'
 import {
   formatQuestion,
@@ -31,9 +31,8 @@ import {
   MajorMinorType,
   QuestionTypeType,
 } from './Questions'
-import { QuizOption } from './QuizOption'
 import QuizHeader from './QuizHeader'
-import { useTranslation } from 'react-i18next'
+import { QuizOption } from './QuizOption'
 
 const QuizPage = styled.div`
   height: 100%;
@@ -61,8 +60,7 @@ const KeyboardContainer = styled.div`
 `
 
 const Quiz = () => {
-  const { showKeyboard, muteSound, midiDevice, setMidiDevice, pianoSound } =
-    useContext(KVContext)
+  const { showKeyboard, midiDevice, setMidiDevice } = useContext(KVContext)
   const { chordStack, setChordStack } = useContext(TrainerContext)
   const unlistenRef = useRef<UnlistenFn>()
   const [activeNotes, setActiveNotes] = useState<{ [note: string]: boolean }>(
