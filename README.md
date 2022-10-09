@@ -23,10 +23,9 @@ Learn to play the piano at your own pace through various modes of practice. [Wat
 ## Coming Soon
 
 - [ ] Interactive inversion practice
-- [ ] Change audio output (ASIO?)
 - [ ] Settings
   - [ ] Toggle questions in quiz mode
-  - [ ] Change keyboard sound
+  - [x] Change keyboard sound
 
 # Releases
 

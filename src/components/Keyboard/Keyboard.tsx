@@ -7,8 +7,8 @@ import 'react-piano/dist/styles.css'
 import styled, { css } from 'styled-components'
 import {
   getFifthFromMidiNumber,
-  getTriadChordFromMidiNumber,
   getSeventhChordFromMidiNumber,
+  getTriadChordFromMidiNumber,
   MidiDevice,
   midiNumberToNote,
   swapNoteWithSynonym,
@@ -35,7 +35,8 @@ const Keyboard = () => {
     setChordStack,
     scale,
   } = useContext(TrainerContext)
-  const { muteSound, showKeyboard, midiDevice, setMidiDevice } =
+
+  const { muteSound, showKeyboard, midiDevice, setMidiDevice, pianoSound } =
     useContext(KVContext)
   const unlistenRef = useRef<UnlistenFn>()
   const [activeNotes, setActiveNotes] = useState<{ [note: string]: boolean }>(
@@ -206,7 +207,7 @@ const Keyboard = () => {
 
   return (
     <SoundfontProvider
-      instrumentName={'acoustic_grand_piano'}
+      instrumentName={pianoSound || 'acoustic_grand_piano'}
       hostname={'https://d1pzp51pvbm36p.cloudfront.net'}
       format={'mp3'}
       soundfont={'MusyngKite'}

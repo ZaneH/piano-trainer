@@ -61,7 +61,7 @@ const KeyboardContainer = styled.div`
 `
 
 const Quiz = () => {
-  const { showKeyboard, muteSound, midiDevice, setMidiDevice } =
+  const { showKeyboard, muteSound, midiDevice, setMidiDevice, pianoSound } =
     useContext(KVContext)
   const { chordStack, setChordStack } = useContext(TrainerContext)
   const unlistenRef = useRef<UnlistenFn>()
@@ -156,10 +156,6 @@ const Quiz = () => {
     setListeningIdx(midiInputIdx)
     setMidiDevice?.(foundMidi || { id: 0 })
   }, [setListeningIdx, midiDevice, setMidiDevice, listeningIdx, setChordStack])
-
-  useEffect(() => {
-    onLoadCallback()
-  }, [onLoadCallback])
 
   const gotoNextQuestion = useCallback(() => {
     setActiveNotes({})
@@ -334,43 +330,31 @@ const Quiz = () => {
         {currentQuestion.type === 'fifth' && fifthAnswers}
       </QuizOptionsContainer>
       {showKeyboard && currentQuestion.type === 'key' && (
-        <SoundfontProvider
-          instrumentName={'acoustic_grand_piano'}
-          hostname={'https://d1pzp51pvbm36p.cloudfront.net'}
-          format={'mp3'}
-          soundfont={'MusyngKite'}
-          onLoad={() => {}}
-          render={({ playNote, stopNote }) => (
-            <KeyboardContainer>
-              <Piano
-                noteRange={{ first: firstNote, last: lastNote }}
-                playNote={(midiNumber: number) => {
-                  setActiveNotes((an) => ({ ...an, [midiNumber]: true }))
-                  setChordStack?.((cs) => [...cs, midiNumber])
-                  !muteSound && playNote(midiNumber)
-                }}
-                stopNote={(midiNumber: number) => {
-                  setActiveNotes((an) => ({ ...an, [midiNumber]: false }))
+        <KeyboardContainer>
+          <Piano
+            noteRange={{ first: firstNote, last: lastNote }}
+            playNote={(midiNumber: number) => {
+              setActiveNotes((an) => ({ ...an, [midiNumber]: true }))
+              setChordStack?.((cs) => [...cs, midiNumber])
+            }}
+            stopNote={(midiNumber: number) => {
+              setActiveNotes((an) => ({ ...an, [midiNumber]: false }))
 
-                  // remove midiNumber from chordStack
-                  setChordStack?.((cs) => {
-                    const removalIdx = cs.indexOf(midiNumber)
-                    if (removalIdx > -1) {
-                      cs.splice(removalIdx, 1)
-                    }
+              // remove midiNumber from chordStack
+              setChordStack?.((cs) => {
+                const removalIdx = cs.indexOf(midiNumber)
+                if (removalIdx > -1) {
+                  cs.splice(removalIdx, 1)
+                }
 
-                    return cs
-                  })
-
-                  stopNote(midiNumber)
-                }}
-                activeNotes={Object.keys(activeNotes)
-                  .filter((v: string) => activeNotes[v])
-                  .map((s: string) => Number(s))}
-              />
-            </KeyboardContainer>
-          )}
-        />
+                return cs
+              })
+            }}
+            activeNotes={Object.keys(activeNotes)
+              .filter((v: string) => activeNotes[v])
+              .map((s: string) => Number(s))}
+          />
+        </KeyboardContainer>
       )}
     </QuizPage>
   )

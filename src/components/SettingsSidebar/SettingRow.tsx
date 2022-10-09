@@ -4,8 +4,9 @@ import { useTranslation } from 'react-i18next'
 import Select from 'react-select'
 import UncheckedIcon from 'remixicon-react/CheckboxBlankCircleLineIcon'
 import CheckedIcon from 'remixicon-react/CheckboxCircleFillIcon'
+import { InstrumentName } from 'soundfont-player'
 import styled from 'styled-components'
-import { MidiDevice, PTSettingType } from '../../utils'
+import { AVAILABLE_SOUNDS, MidiDevice, PTSettingType } from '../../utils'
 import {
   AVAILABLE_LANGUAGES,
   SupportedLanguagesType,
@@ -38,6 +39,7 @@ const SettingRow = ({ setting, value }: SettingRowProps) => {
     setMidiDevice: setConnectedMidiDevice,
     setLanguage,
     setIsSentryOn,
+    setPianoSound,
   } = useContext(KVContext)
   const { t } = useTranslation()
 
@@ -63,6 +65,7 @@ const SettingRow = ({ setting, value }: SettingRowProps) => {
     }
   }, [setting.key])
 
+  // Render Dropdown inputs
   if (setting.key === 'midi-input-id') {
     if (!Array.isArray(midiDevices)) return null
     const connectedMidiDevice = midiDevices[Number(value)]
@@ -115,8 +118,30 @@ const SettingRow = ({ setting, value }: SettingRowProps) => {
         />
       </SettingRowContainer>
     )
+  } else if (setting.key === 'piano-sound') {
+    return (
+      <SettingRowContainer>
+        <span className='settings-row-label'>
+          {t(`settings.options.${setting.key}`)}
+        </span>
+        <Select
+          options={Object.keys(AVAILABLE_SOUNDS).map((code) => ({
+            label: AVAILABLE_SOUNDS[code as InstrumentName]?.name || 'N/A',
+            value: code,
+          }))}
+          value={{
+            label: AVAILABLE_SOUNDS[value as InstrumentName]?.name || 'N/A',
+            value,
+          }}
+          onChange={(e) => {
+            setPianoSound?.(e?.value as InstrumentName)
+          }}
+        />
+      </SettingRowContainer>
+    )
   }
 
+  // Render boolean options
   return (
     <SettingRowContainer
       onClick={() => {

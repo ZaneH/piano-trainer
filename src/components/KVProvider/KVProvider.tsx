@@ -9,6 +9,7 @@ import {
   useState,
 } from 'react'
 import { useTranslation } from 'react-i18next'
+import { InstrumentName } from 'soundfont-player'
 import { Store } from 'tauri-plugin-store-api'
 import { AVAILABLE_SETTINGS, MidiDevice, PTSettingsKeyType } from '../../utils'
 import {
@@ -20,7 +21,7 @@ type KVContextType = {
   children?: React.ReactNode
 
   isLoading?: boolean
-  pianoSound?: string
+  pianoSound?: InstrumentName
   showKeyboard?: boolean
   muteSound?: boolean
   midiDevice?: MidiDevice
@@ -28,7 +29,7 @@ type KVContextType = {
   isSentryOn?: boolean
 
   setIsLoading?: Dispatch<SetStateAction<boolean>>
-  setPianoSound?: Dispatch<SetStateAction<string>>
+  setPianoSound?: Dispatch<SetStateAction<InstrumentName>>
   setShowKeyboard?: Dispatch<SetStateAction<boolean>>
   setMuteSound?: Dispatch<SetStateAction<boolean>>
   setMidiDevice?: Dispatch<SetStateAction<MidiDevice>>
@@ -47,7 +48,9 @@ export const KVContext = createContext({} as KVContextType)
 const KVProvider: FC<KVContextType> = ({ children }) => {
   const store = useMemo(() => new Store('.settings.dat'), [])
   const [isLoading, setIsLoading] = useState(true)
-  const [pianoSound, setPianoSound] = useState('acoustic_grand_piano')
+  const [pianoSound, setPianoSound] = useState(
+    'acoustic_grand_piano' as InstrumentName
+  )
   const [showKeyboard, setShowKeyboard] = useState(true)
   const [muteSound, setMuteSound] = useState(false)
   const [midiDevice, setMidiDevice] = useState<MidiDevice>({
@@ -67,7 +70,7 @@ const KVProvider: FC<KVContextType> = ({ children }) => {
         if (value === null) return
         switch (key) {
           case 'piano-sound':
-            setPianoSound(String(value))
+            setPianoSound(value as InstrumentName)
             break
           case 'show-keyboard':
             setShowKeyboard(Boolean(value))

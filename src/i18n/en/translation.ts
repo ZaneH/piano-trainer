@@ -142,6 +142,7 @@ const en = {
       'midi-input-id': 'MIDI input',
       language: 'Language',
       'is-sentry-on': 'Send crash reports',
+      'piano-sound': 'Piano sound',
     },
   },
 }

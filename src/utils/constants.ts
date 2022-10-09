@@ -84,3 +84,4 @@ export const AVAILABLE_SETTINGS: readonly PTSettingType[] = [
 ] as const
 
 export * from './midi'
+export * from './sounds'
