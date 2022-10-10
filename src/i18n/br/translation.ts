@@ -111,7 +111,7 @@ const br = {
     scales: 'Escalas',
     chords: 'Acordes',
     seventhChords: 'Acordes com sétima',
-    fifths: 'Fifths',
+    fifths: 'Quintas',
   },
   pages: {
     practice: {
