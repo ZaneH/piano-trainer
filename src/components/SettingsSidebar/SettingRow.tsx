@@ -125,12 +125,15 @@ const SettingRow = ({ setting, value }: SettingRowProps) => {
           {t(`settings.options.${setting.key}`)}
         </span>
         <Select
-          options={Object.keys(AVAILABLE_SOUNDS).map((code) => ({
-            label: AVAILABLE_SOUNDS[code as InstrumentName]?.name || 'N/A',
-            value: code,
+          options={Object.keys(AVAILABLE_SOUNDS).map((soundKey) => ({
+            label:
+              t(`settings.options.sounds.${soundKey as InstrumentName}`) ||
+              'N/A',
+            value: soundKey,
           }))}
           value={{
-            label: AVAILABLE_SOUNDS[value as InstrumentName]?.name || 'N/A',
+            label:
+              t(`settings.options.sounds.${value as InstrumentName}`) || 'N/A',
             value,
           }}
           onChange={(e) => {
