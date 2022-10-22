@@ -59,7 +59,6 @@ export const AVAILABLE_SETTINGS: readonly PTSettingType[] = [
   {
     key: 'piano-sound',
     type: 'select',
-    options: ['Piano Grand'],
   },
   {
     key: 'show-keyboard',
@@ -75,7 +74,7 @@ export const AVAILABLE_SETTINGS: readonly PTSettingType[] = [
   },
   {
     key: 'language',
-    type: 'checkbox',
+    type: 'select',
   },
   {
     key: 'is-sentry-on',
