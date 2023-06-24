@@ -23,10 +23,20 @@ export const QUIZ_QUESTIONS: QuizQuestionType[] = [
   },
 ]
 
+/**
+ * Get a random quiz question type from QUIZ_QUESTIONS.
+ * @returns {QuizQuestionType} Returns a random type of question
+ */
 export const getRandomQuizQuestion = () => {
   return QUIZ_QUESTIONS[Math.floor(Math.random() * QUIZ_QUESTIONS.length)]
 }
 
+/**
+ * Format a question and replace the placeholders with the provided values.
+ * @param questionFormat The wording of the question, replace {{key}} with string from keys
+ * @param keys Dictionary of keys to replace {{key}} with
+ * @returns Returns a string formatted with the keys
+ */
 export const formatQuestion = (
   questionFormat: string,
   keys: {
