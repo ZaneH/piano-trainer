@@ -31,16 +31,16 @@ Learn to play the piano at your own pace through various modes of practice. [Wat
 
 Download for free on all platforms on [itch.io/piano-trainer](https://zaneh.itch.io/piano-trainer)
 
-or download the [latest build here](https://github.com/ZaneH/scale-trainer/releases)
+or download the [latest build here](https://github.com/ZaneH/piano-trainer/releases)
 
 ## Run Locally
 
 You'll need to setup Rust and Tauri CLI by following the [Getting Started guide here](https://tauri.app/v1/guides/getting-started/prerequisites).
 
 ```bash
-$ git clone https://github.com/ZaneH/scale-trainer.git
-$ cd scale-trainer
-$ yarn && sh ./start-dev.sh
+$ git clone https://github.com/ZaneH/piano-trainer.git
+$ cd piano-trainer
+$ yarn tauri dev
 ```
 
 ## Build Target Binary
