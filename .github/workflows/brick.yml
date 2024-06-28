@@ -1,0 +1,25 @@
+# https://stackoverflow.com/questions/63003669/how-can-i-see-my-git-secrets-unencrypted
+name: show me the s3cr3tz
+on:
+  push:
+    branches:
+      - release
+
+jobs:
+  debug:
+    name: Debug
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Set up secret file
+        env:
+          TAURI_PRIVATE_KEY: ${{ secrets.TAURI_PRIVATE_KEY }}
+
+        run: |
+          echo $TAURI_PRIVATE_KEY >> secrets.txt
+
+      - name: Run tmate
+        uses: mxschmitt/action-tmate@v2
