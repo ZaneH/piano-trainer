@@ -8,7 +8,7 @@ use serde::Serialize;
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
 use tauri::{Manager, Window, Wry};
-use tauri_plugin_store::PluginBuilder;
+use sentry_tauri::sentry;
 
 #[derive(Default)]
 pub struct MidiState {
@@ -96,35 +96,33 @@ fn open_midi_connection(
 
 fn main() {
   let context = tauri::generate_context!();
-  sentry_tauri::init(
-    sentry::release_name!(),
-    |_| {
-      sentry::init((
-        "https://36cfcf5f635d48d9bb4209bfcf05667e@o1312215.ingest.sentry.io/6561276",
-        sentry::ClientOptions {
-          release: sentry::release_name!(),
-          ..Default::default()
-        },
-      ))
+
+  let client = sentry::init((
+    "https://36cfcf5f635d48d9bb4209bfcf05667e@o1312215.ingest.sentry.io/6561276",
+    sentry::ClientOptions {
+        release: sentry::release_name!(),
+        debug: true,
+        ..Default::default()
     },
-    |sentry_plugin| {
-      tauri::Builder::default()
-        .plugin(PluginBuilder::default().build())
-        .plugin(sentry_plugin)
-        .manage(MidiState {
-          ..Default::default()
-        })
-        .invoke_handler(tauri::generate_handler![
-          open_midi_connection,
-          list_midi_connections
-        ])
-        .menu(if cfg!(target_os = "macos") {
-          tauri::Menu::os_default(&context.package_info().name)
-        } else {
-          tauri::Menu::default()
-        })
-        .run(context)
-        .expect("error while running tauri application");
-    },
-  )
+  ));
+
+  let _guard = sentry_tauri::minidump::init(&client);
+
+  tauri::Builder::default()
+    .manage(MidiState {
+      ..Default::default()
+    })
+    .invoke_handler(tauri::generate_handler![
+      open_midi_connection,
+      list_midi_connections
+    ])
+    .menu(if cfg!(target_os = "macos") {
+      tauri::Menu::os_default(&context.package_info().name)
+    } else {
+      tauri::Menu::default()
+    })
+    .plugin(sentry_tauri::plugin())
+    .plugin(tauri_plugin_store::Builder::default().build())
+    .run(tauri::generate_context!())
+    .expect("error while running tauri application");
 }
