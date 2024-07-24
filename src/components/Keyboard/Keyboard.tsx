@@ -82,8 +82,6 @@ const Keyboard = () => {
 
       const command = status & 0xf0
 
-      console.log(status, command)
-
       if (command === 0x90) {
         // Note on
         setActiveNotes((an) => ({
