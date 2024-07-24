@@ -78,9 +78,14 @@ const Keyboard = () => {
 
     listen('midi_message', (event) => {
       const payload = event.payload as { message: number[] }
-      const [command, note, velocity] = payload.message
+      const [status, note, velocity] = payload.message
 
-      if (command === 144 || command === 155) {
+      const command = status & 0xf0
+
+      console.log(status, command)
+
+      if (command === 0x90) {
+        // Note on
         setActiveNotes((an) => ({
           ...an,
           [note]: true,
@@ -89,7 +94,8 @@ const Keyboard = () => {
 
       // some midi keyboards don't send the off signal,
       // they just set the velocity to 0
-      if (command === 128 || command === 139 || velocity === 0) {
+      if (command === 0x80 || velocity === 0) {
+        // Note off
         setActiveNotes((an) => ({
           ...an,
           [note]: false,
