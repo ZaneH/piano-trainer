@@ -1,6 +1,6 @@
 // Based on SoundfontProvider
 // https://github.com/kevinsqi/react-piano/blob/master/demo/src/SoundfontProvider.js
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { JSX, useCallback, useEffect, useMemo, useState } from 'react'
 import Soundfont, { InstrumentName, Player } from 'soundfont-player'
 
 interface SoundfontProviderProps {

@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { JSX, useContext } from 'react'
 import { TrainerContext } from '../TrainerProvider'
 
 interface ScreenManagerProps {
