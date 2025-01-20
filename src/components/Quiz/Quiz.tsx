@@ -62,7 +62,7 @@ const KeyboardContainer = styled.div`
 const Quiz = () => {
   const { showKeyboard, midiDevice, setMidiDevice } = useContext(KVContext)
   const { chordStack, setChordStack } = useContext(TrainerContext)
-  const unlistenRef = useRef<UnlistenFn>()
+  const unlistenRef = useRef<UnlistenFn>(null)
   const [activeNotes, setActiveNotes] = useState<{ [note: string]: boolean }>(
     {}
   )

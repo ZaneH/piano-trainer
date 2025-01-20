@@ -38,7 +38,7 @@ const Keyboard = () => {
 
   const { muteSound, showKeyboard, midiDevice, setMidiDevice, pianoSound } =
     useContext(KVContext)
-  const unlistenRef = useRef<UnlistenFn>()
+  const unlistenRef = useRef<UnlistenFn>(null)
   const [activeNotes, setActiveNotes] = useState<{ [note: string]: boolean }>(
     {}
   )
