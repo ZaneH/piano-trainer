@@ -10,7 +10,7 @@ import {
 } from 'react'
 import { useTranslation } from 'react-i18next'
 import { InstrumentName } from 'soundfont-player'
-import { Store } from 'tauri-plugin-store-api'
+import { Store } from '@tauri-apps/plugin-store'
 import { AVAILABLE_SETTINGS, MidiDevice, PTSettingsKeyType } from '../../utils'
 import {
   AVAILABLE_LANGUAGES,
@@ -46,7 +46,7 @@ export const KVContext = createContext({} as KVContextType)
  * modified states (Settings)
  */
 const KVProvider: FC<KVContextType> = ({ children }) => {
-  const store = useMemo(() => new Store('.settings.dat'), [])
+  const [store, setStore] = useState<Store | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [pianoSound, setPianoSound] = useState(
     'acoustic_grand_piano' as InstrumentName
@@ -61,45 +61,54 @@ const KVProvider: FC<KVContextType> = ({ children }) => {
   const [isSentryOn, setIsSentryOn] = useState(true)
   const { i18n } = useTranslation()
 
+  useEffect(() => {
+    const initStore = async () => {
+      const storeInstance = await Store.load('.settings.dat')
+      setStore(storeInstance)
+    }
+    initStore()
+  }, [])
+
   /**
    * Map settings stored on-disk into the KVProvider's state
    */
   const loadSettingIntoState = useCallback(
-    (key: PTSettingsKeyType) => {
-      return store.get(key).then((value) => {
-        if (value === null) return
-        switch (key) {
-          case 'piano-sound':
-            setPianoSound(value as InstrumentName)
-            break
-          case 'show-keyboard':
-            setShowKeyboard(Boolean(value))
-            break
-          case 'mute-sound':
-            setMuteSound(Boolean(value))
-            break
-          case 'midi-input-id':
-            setMidiDevice({
-              id: Number(value),
-            })
-            break
-          case 'language':
-            setLanguage(value as SupportedLanguagesType)
-            break
-          case 'is-sentry-on':
-            setIsSentryOn(Boolean(value))
-            break
-        }
-      })
+    async (key: PTSettingsKeyType) => {
+      if (!store) return
+      const value = await store.get(key)
+      if (value === null) return
+
+      switch (key) {
+        case 'piano-sound':
+          setPianoSound(value as InstrumentName)
+          break
+        case 'show-keyboard':
+          setShowKeyboard(Boolean(value))
+          break
+        case 'mute-sound':
+          setMuteSound(Boolean(value))
+          break
+        case 'midi-input-id':
+          setMidiDevice({
+            id: Number(value),
+          })
+          break
+        case 'language':
+          setLanguage(value as SupportedLanguagesType)
+          break
+        case 'is-sentry-on':
+          setIsSentryOn(Boolean(value))
+          break
+      }
     },
     [
+      store,
       setPianoSound,
       setShowKeyboard,
       setMuteSound,
       setMidiDevice,
       setLanguage,
       setIsSentryOn,
-      store,
     ]
   )
 
@@ -107,10 +116,10 @@ const KVProvider: FC<KVContextType> = ({ children }) => {
    * Store value on-disk
    */
   const saveSetting = useCallback(
-    (key: PTSettingsKeyType, value: any) => {
-      if (isLoading) return
-      store.set(key, value)
-      store.save()
+    async (key: PTSettingsKeyType, value: any) => {
+      if (isLoading || !store) return
+      await store.set(key, value)
+      await store.save()
     },
     [store, isLoading]
   )
@@ -148,16 +157,20 @@ const KVProvider: FC<KVContextType> = ({ children }) => {
    * load them into the state when KVProvider is mounted
    */
   useEffect(() => {
-    store
-      .load()
-      .then(async () => {
+    const loadSettings = async () => {
+      if (!store) return
+      try {
         for (const setting of AVAILABLE_SETTINGS) {
           await loadSettingIntoState(setting.key as PTSettingsKeyType)
         }
-      })
-      .catch((e) => console.error(e))
-      .finally(() => setIsLoading(false))
-  }, [store, loadSettingIntoState, setIsLoading])
+      } catch (e) {
+        console.error(e)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+    loadSettings()
+  }, [store, loadSettingIntoState])
 
   const context: KVContextType = {
     isLoading,
