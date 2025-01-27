@@ -9,7 +9,10 @@
 /coverage
 
 # production
-/build
+/build/*
+!/build/.keep
+/dist/*
+!/dist/.gitkeep
 
 # misc
 .DS_Store

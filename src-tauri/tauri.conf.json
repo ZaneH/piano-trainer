@@ -1,62 +1,26 @@
 {
-  "$schema": "../node_modules/@tauri-apps/cli/schema.json",
+  "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
   "build": {
     "beforeBuildCommand": "npm run build",
     "beforeDevCommand": "npm run start",
-    "devPath": "http://localhost:3000",
-    "distDir": "../build"
+    "devUrl": "http://localhost:3000",
+    "frontendDist": "../build"
   },
-  "package": {
-    "productName": "Piano Trainer",
-    "version": "1.1.2"
-  },
-  "tauri": {
-    "allowlist": {
-      "all": true
-    },
-    "bundle": {
-      "active": true,
-      "category": "Music",
-      "copyright": "",
-      "deb": {
-        "depends": []
-      },
-      "externalBin": [],
-      "icon": [
-        "icons/32x32.png",
-        "icons/128x128.png",
-        "icons/128x128@2x.png",
-        "icons/icon.icns",
-        "icons/icon.ico"
-      ],
-      "identifier": "com.zane.piano-trainer",
-      "longDescription": "",
-      "macOS": {
-        "entitlements": null,
-        "exceptionDomain": "",
-        "frameworks": [],
-        "providerShortName": null,
-        "signingIdentity": null
-      },
-      "resources": [],
-      "shortDescription": "A MIDI utility for learning scales, chords, and more!",
-      "targets": "all",
-      "windows": {
-        "certificateThumbprint": null,
-        "digestAlgorithm": "sha256",
-        "timestampUrl": ""
-      }
-    },
-    "security": {
-      "csp": null
-    },
+  "productName": "Piano Trainer",
+  "mainBinaryName": "Piano Trainer",
+  "version": "1.2.0",
+  "identifier": "com.zane.piano-trainer",
+  "plugins": {
     "updater": {
-      "active": true,
-      "dialog": true,
       "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDI5ODJFNDA4ODM4NkY4QjAKUldTdytJYURDT1NDS1FZV0lUS3doQURibmtaRGZqUzJxUmI3UzBXY0JxK1drcCtNLy92bUpEaVoK",
       "endpoints": [
         "https://gist.github.com/ZaneH/2075e77e36940b6aebae001648a40e5b/raw"
       ]
+    }
+  },
+  "app": {
+    "security": {
+      "csp": null
     },
     "windows": [
       {
@@ -67,5 +31,41 @@
         "width": 900
       }
     ]
+  },
+  "bundle": {
+    "active": true,
+    "category": "Music",
+    "copyright": "",
+    "linux": {
+      "deb": {
+        "files": {},
+        "depends": []
+      }
+    },
+    "externalBin": [],
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "longDescription": "",
+    "macOS": {
+      "entitlements": null,
+      "exceptionDomain": "",
+      "frameworks": [],
+      "providerShortName": null,
+      "signingIdentity": null
+    },
+    "resources": [],
+    "shortDescription": "A MIDI utility for learning scales, chords, and more!",
+    "targets": "all",
+    "windows": {
+      "certificateThumbprint": null,
+      "digestAlgorithm": "sha256",
+      "timestampUrl": ""
+    },
+    "createUpdaterArtifacts": "v1Compatible"
   }
 }
