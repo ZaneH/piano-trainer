@@ -8,7 +8,7 @@
   },
   "productName": "Piano Trainer",
   "mainBinaryName": "Piano Trainer",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "identifier": "com.zane.piano-trainer",
   "plugins": {
     "updater": {

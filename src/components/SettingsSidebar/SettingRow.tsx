@@ -78,7 +78,7 @@ const SettingRow = ({ setting, value }: SettingRowProps) => {
         <Select
           options={midiDevices.map((d) => ({
             value: d.id,
-            label: d.name || `Name: N/A :: ID: ${d.id}`,
+            label: d?.name || `Name: N/A :: ID: ${d.id}`,
           }))}
           value={{
             value: connectedMidiDevice?.id || 0,
@@ -105,11 +105,11 @@ const SettingRow = ({ setting, value }: SettingRowProps) => {
         </span>
         <Select
           options={Object.keys(AVAILABLE_LANGUAGES).map((code) => ({
-            label: AVAILABLE_LANGUAGES[code as SupportedLanguagesType].name,
+            label: AVAILABLE_LANGUAGES[code as SupportedLanguagesType]?.name,
             value: code,
           }))}
           value={{
-            label: AVAILABLE_LANGUAGES[value as SupportedLanguagesType].name,
+            label: AVAILABLE_LANGUAGES[value as SupportedLanguagesType]?.name,
             value,
           }}
           onChange={(e) => {

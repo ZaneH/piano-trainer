@@ -44,19 +44,25 @@ export const KVContext = createContext({} as KVContextType)
  * Responsible for providing persistant storage and reacting to
  * modified states (Settings)
  */
-const KVProvider: FC<KVContextType> = ({ children }) => {
+const KVProvider: FC<KVContextType> = ({
+  children,
+  isLoading: _isLoading = true,
+  pianoSound: _pianoSound = 'acoustic_grand_piano' as InstrumentName,
+  showKeyboard: _showKeyboard = true,
+  muteSound: _muteSound = false,
+  midiDevice: _midiDevice = { id: 0, name: 'default' },
+  language: _language = 'en',
+  isSentryOn: _isSentryOn = true,
+}) => {
   const [store, setStore] = useState<Store | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
-  const [pianoSound, setPianoSound] = useState(
-    'acoustic_grand_piano' as InstrumentName
+  const [isLoading, setIsLoading] = useState(_isLoading)
+  const [pianoSound, setPianoSound] = useState(_pianoSound)
+  const [showKeyboard, setShowKeyboard] = useState(_showKeyboard)
+  const [muteSound, setMuteSound] = useState(_muteSound)
+  const [midiDevice, setMidiDevice] = useState<MidiDevice>(
+    _midiDevice || { id: 0, name: 'default' }
   )
-  const [showKeyboard, setShowKeyboard] = useState(true)
-  const [muteSound, setMuteSound] = useState(false)
-  const [midiDevice, setMidiDevice] = useState<MidiDevice>({
-    id: 0,
-    name: 'default',
-  })
-  const [language, setLanguage] = useState(AVAILABLE_LANGUAGES.en.code)
+  const [language, setLanguage] = useState(_language)
   const [isSentryOn, setIsSentryOn] = useState(true)
   const { i18n } = useTranslation()
 
@@ -75,7 +81,7 @@ const KVProvider: FC<KVContextType> = ({ children }) => {
     async (key: PTSettingsKeyType) => {
       if (!store) return
       const value = await store.get(key)
-      if (value === null) return
+      if (value === null || value === undefined) return
 
       switch (key) {
         case 'piano-sound':
