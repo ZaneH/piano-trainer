@@ -1,4 +1,4 @@
-import { ScaleType } from '..'
+import { ScaleType } from '../../core/models/types'
 
 const CFlatMajor: ScaleType = {
   label: 'Cb Major',

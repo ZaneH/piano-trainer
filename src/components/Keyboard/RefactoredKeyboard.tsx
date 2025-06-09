@@ -12,6 +12,7 @@ import { normalizeNoteName } from '../../core/services/noteService'
 import { useSettings } from '../../core/contexts/SettingsContext'
 import { useTrainer } from '../../core/contexts/TrainerContext'
 import SoundfontProvider from '../SoundfontProvider'
+import { InstrumentName } from 'soundfont-player'
 
 const KeyboardContainer = styled.div<{ hide: boolean }>`
   height: 25vh;
@@ -54,7 +55,7 @@ const Keyboard = () => {
 
   return (
     <SoundfontProvider
-      instrumentName={pianoSound || 'acoustic_grand_piano'}
+      instrumentName={(pianoSound || 'acoustic_grand_piano') as InstrumentName}
       hostname={'https://d1pzp51pvbm36p.cloudfront.net'}
       format={'mp3'}
       soundfont={'MusyngKite'}

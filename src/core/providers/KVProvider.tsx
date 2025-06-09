@@ -2,12 +2,12 @@
  * Provider component for the Settings (KV) Context
  */
 import { FC, ReactNode, useCallback, useEffect, useState } from 'react'
-import { Store } from 'tauri-plugin-store-api'
+import { LazyStore } from '@tauri-apps/plugin-store'
 import { KVContext } from '../contexts/SettingsContext'
 import { MidiDevice, PTSettingsKeyType } from '../models/types'
 
 // Create the store instance for persistent settings
-const store = new Store('.settings.dat')
+const store = new LazyStore('.settings.dat')
 
 interface KVProviderProps {
   children: ReactNode

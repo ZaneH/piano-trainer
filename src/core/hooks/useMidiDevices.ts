@@ -21,7 +21,7 @@ interface UseMidiDevicesResult {
   devices: MidiDevice[]
   currentDevice: MidiDevice | null
   connectToDevice: (deviceId: number) => Promise<void>
-  refreshDevices: () => Promise<void>
+  refreshDevices: () => Promise<MidiDevice[]>
   activeNotes: Record<number, boolean>
 }
 

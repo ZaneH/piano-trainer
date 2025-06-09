@@ -26,7 +26,7 @@ interface KVContextType {
 
   // Generic setter for any setting
   setSetting: <T>(key: PTSettingsKeyType, value: T) => void
-  getSetting: <T>(key: PTSettingsKeyType) => T | undefined
+  getSetting: <T>(key: PTSettingsKeyType) => Promise<T | undefined>
 }
 
 export const KVContext = createContext<KVContextType | null>(null)
