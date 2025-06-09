@@ -11,7 +11,7 @@ import {
   AVAILABLE_LANGUAGES,
   SupportedLanguagesType,
 } from '../../utils/languages'
-import { KVContext } from '../KVProvider'
+import { KVContext, useSettings } from '../../core/contexts/SettingsContext'
 
 const SettingRowContainer = styled.div`
   margin: 24px 42px;
@@ -38,9 +38,9 @@ const SettingRow = ({ setting, value }: SettingRowProps) => {
     setShowKeyboard,
     setMidiDevice: setConnectedMidiDevice,
     setLanguage,
-    setIsSentryOn,
+    setIsSentryEnabled,
     setPianoSound,
-  } = useContext(KVContext)
+  } = useSettings()
   const { t } = useTranslation()
 
   const [midiDevices, setMidiDevices] = useState<MidiDevice[]>([])
@@ -150,13 +150,13 @@ const SettingRow = ({ setting, value }: SettingRowProps) => {
       onClick={() => {
         switch (setting.key) {
           case 'mute-sound':
-            setMuteSound?.((v) => !v)
+            setMuteSound?.(!value)
             break
           case 'show-keyboard':
-            setShowKeyboard?.((v) => !v)
+            setShowKeyboard?.(!value)
             break
           case 'is-sentry-on':
-            setIsSentryOn?.((v) => !v)
+            setIsSentryEnabled?.(!value)
             break
         }
       }}

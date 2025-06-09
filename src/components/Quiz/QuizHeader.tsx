@@ -2,7 +2,7 @@ import styled from 'styled-components'
 import ArrowBack from 'remixicon-react/ArrowLeftFillIcon'
 import SettingsIcon from 'remixicon-react/Settings2FillIcon'
 import { useContext } from 'react'
-import { TrainerContext } from '../TrainerProvider'
+import { TrainerContext, useTrainer } from '../../core/contexts/TrainerContext'
 import { SidebarContext } from '../SidebarProvider'
 import { useTranslation } from 'react-i18next'
 
@@ -45,7 +45,7 @@ const SettingsIconContainer = styled.div`
 `
 
 const QuizHeader = () => {
-  const { setCurrentScreen } = useContext(TrainerContext)
+  const { setCurrentScreen } = useTrainer()
   const { setIsOpen } = useContext(SidebarContext)
   const { t } = useTranslation()
 

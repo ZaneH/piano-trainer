@@ -7,7 +7,7 @@ import {
   AVAILABLE_MODES,
   AVAILABLE_SCALES,
 } from '../../utils'
-import { TrainerContext } from '../TrainerProvider'
+import { TrainerContext, useTrainer } from '../../core/contexts/TrainerContext'
 import SettingsIcon from 'remixicon-react/Settings2FillIcon'
 import ArrowLeftRightIcon from 'remixicon-react/ArrowLeftRightFillIcon'
 import SkullIcon from 'remixicon-react/SkullFillIcon'
@@ -62,7 +62,7 @@ const TrainerDisplay = () => {
     setIsScalePingPong,
     isHardModeEnabled,
     setIsHardModeEnabled,
-  } = useContext(TrainerContext)
+  } = useTrainer()
   const { setIsOpen } = useContext(SidebarContext)
   const { t } = useTranslation()
 
@@ -93,7 +93,7 @@ const TrainerDisplay = () => {
           <h2>{t('pages.practice.scale.title')}</h2>
           <IconContainer
             title={t('pages.practice.scale.pingPongHint')}
-            onClick={() => setIsScalePingPong?.((isPingPong) => !isPingPong)}
+            onClick={() => setIsScalePingPong?.(!isScalePingPong)}
           >
             <ArrowLeftRightIcon
               color={isScalePingPong ? '#70bcd3' : '#1f1f20'}
@@ -101,7 +101,7 @@ const TrainerDisplay = () => {
           </IconContainer>
           <IconContainer
             title={t('pages.practice.scale.hardModeHint')}
-            onClick={() => setIsHardModeEnabled?.((isHard) => !isHard)}
+            onClick={() => setIsHardModeEnabled?.(!isHardModeEnabled)}
           >
             <SkullIcon color={isHardModeEnabled ? '#70bcd3' : '#1f1f20'} />
           </IconContainer>

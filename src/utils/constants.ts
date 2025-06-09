@@ -1,4 +1,3 @@
-import { ScaleType } from '.'
 import { MajorMinorType } from '../components/Quiz/Questions'
 import {
   AvailableMajorScalesType,
@@ -12,6 +11,7 @@ import {
   AvailableMinorNaturalScalesType,
   AVAILABLE_MINOR_NATURAL_SCALES,
 } from './scales/minor.natural'
+import { type ScaleType } from '../core/models/types'
 
 export const SCALE_LENGTH = 8
 export const OCTAVE_LENGTH = 12

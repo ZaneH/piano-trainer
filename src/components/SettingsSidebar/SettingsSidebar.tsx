@@ -2,7 +2,7 @@ import { useCallback, useContext } from 'react'
 import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 import { AVAILABLE_SETTINGS, PTSettingType } from '../../utils'
-import { KVContext } from '../KVProvider'
+import { KVContext, useSettings } from '../../core/contexts/SettingsContext'
 import { SidebarContext } from '../SidebarProvider'
 import SettingRow from './SettingRow'
 
@@ -41,9 +41,9 @@ const SettingsSidebar = () => {
     muteSound,
     midiDevice,
     language,
-    isSentryOn,
     pianoSound,
-  } = useContext(KVContext)
+    isSentryEnabled,
+  } = useSettings()
   const { setIsOpen } = useContext(SidebarContext)
   const { t } = useTranslation()
 
@@ -61,12 +61,19 @@ const SettingsSidebar = () => {
             <SettingRow key={s.key} setting={s} value={midiDevice?.id || 0} />
           )
         case 'is-sentry-on':
-          return <SettingRow key={s.key} setting={s} value={isSentryOn} />
+          return <SettingRow key={s.key} setting={s} value={isSentryEnabled} />
         case 'piano-sound':
           return <SettingRow key={s.key} setting={s} value={pianoSound} />
       }
     },
-    [showKeyboard, muteSound, isSentryOn, midiDevice?.id, language, pianoSound]
+    [
+      showKeyboard,
+      muteSound,
+      isSentryEnabled,
+      midiDevice?.id,
+      language,
+      pianoSound,
+    ]
   )
 
   return (

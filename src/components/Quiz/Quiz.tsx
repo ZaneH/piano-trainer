@@ -23,8 +23,7 @@ import {
   shuffle,
   swapNoteWithSynonym,
 } from '../../utils'
-import { KVContext } from '../KVProvider'
-import { TrainerContext } from '../TrainerProvider'
+import { TrainerContext, useTrainer } from '../../core/contexts/TrainerContext'
 import {
   formatQuestion,
   getRandomQuizQuestion,
@@ -33,6 +32,7 @@ import {
 } from './Questions'
 import QuizHeader from './QuizHeader'
 import { QuizOption } from './QuizOption'
+import { useSettings } from '../../core/contexts/SettingsContext'
 
 const QuizPage = styled.div`
   height: 100%;
@@ -60,8 +60,9 @@ const KeyboardContainer = styled.div`
 `
 
 const Quiz = () => {
-  const { showKeyboard, midiDevice, setMidiDevice } = useContext(KVContext)
-  const { chordStack, setChordStack } = useContext(TrainerContext)
+  const { chordStack, addToChordStack, removeFromChordStack, clearChordStack } =
+    useTrainer()
+  const { showKeyboard, midiDevice, setMidiDevice } = useSettings()
   const unlistenRef = useRef<UnlistenFn>(null)
   const [activeNotes, setActiveNotes] = useState<{ [note: string]: boolean }>(
     {}
@@ -126,29 +127,14 @@ const Quiz = () => {
 
       if (command === 0x90) {
         // Note off
-        setChordStack?.((cs) => [...cs, note])
-        setActiveNotes((an) => ({
-          ...an,
-          [note]: true,
-        }))
+        addToChordStack(note)
+        setActiveNotes((an) => ({ ...an, [note]: true }))
       }
 
       if (command === 0x80 || velocity === 0) {
         // Note on
-        // remove midiNumber from chordStack
-        setChordStack?.((cs) => {
-          const removalIdx = cs.indexOf(note)
-          if (removalIdx > -1) {
-            cs.splice(removalIdx, 1)
-          }
-
-          return cs
-        })
-
-        setActiveNotes((an) => ({
-          ...an,
-          [note]: false,
-        }))
+        removeFromChordStack(note)
+        setActiveNotes((an) => ({ ...an, [note]: false }))
       }
     })
       .then((ul) => (unlistenRef.current = ul))
@@ -157,7 +143,14 @@ const Quiz = () => {
     console.log('Connected & listening to MIDI device...')
     setListeningIdx(midiInputIdx)
     setMidiDevice?.(foundMidi || { id: 0 })
-  }, [setListeningIdx, midiDevice, setMidiDevice, listeningIdx, setChordStack])
+  }, [
+    setListeningIdx,
+    midiDevice,
+    setMidiDevice,
+    listeningIdx,
+    addToChordStack,
+    removeFromChordStack,
+  ])
 
   const gotoNextQuestion = useCallback(() => {
     setActiveNotes({})
@@ -199,20 +192,20 @@ const Quiz = () => {
       const match = validFifthsNotes.some((e) => chordStackNotes.includes(e))
       if (match) {
         gotoNextQuestion()
-        setChordStack?.([])
+        clearChordStack()
       }
     } else if (currentQuestion.type === 'key') {
       const validMidiNotes = currentValidMidi.map((m) => midiNumberToNote(m))
       const match = chordStackNotes?.some((c) => validMidiNotes.includes(c))
       if (match) {
         gotoNextQuestion()
-        setChordStack?.([])
+        clearChordStack()
       }
     }
   }, [
     activeNotes,
     chordStack,
-    setChordStack,
+    clearChordStack,
     currentQuestion.type,
     currentQuestion.majMin,
     currentQuestionKey,
@@ -337,20 +330,11 @@ const Quiz = () => {
             noteRange={{ first: firstNote, last: lastNote }}
             playNote={(midiNumber: number) => {
               setActiveNotes((an) => ({ ...an, [midiNumber]: true }))
-              setChordStack?.((cs) => [...cs, midiNumber])
+              addToChordStack(midiNumber)
             }}
             stopNote={(midiNumber: number) => {
               setActiveNotes((an) => ({ ...an, [midiNumber]: false }))
-
-              // remove midiNumber from chordStack
-              setChordStack?.((cs) => {
-                const removalIdx = cs.indexOf(midiNumber)
-                if (removalIdx > -1) {
-                  cs.splice(removalIdx, 1)
-                }
-
-                return cs
-              })
+              removeFromChordStack(midiNumber)
             }}
             activeNotes={Object.keys(activeNotes)
               .filter((v: string) => activeNotes[v])

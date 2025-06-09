@@ -1,12 +1,20 @@
+/**
+ * Refactored App.tsx
+ */
 import { useCallback, useEffect } from 'react'
 import styled from 'styled-components'
-import Keyboard from './components/Keyboard'
-import KVProvider from './components/KVProvider/KVProvider'
-import { Quiz } from './components/Quiz'
-import ScreenManager from './components/ScreenManager/ScreenManager'
+
+// Import components
+import KVProvider from './core/providers/KVProvider'
 import SidebarProvider from './components/SidebarProvider/SidebarProvider'
-import { TrainerDisplay, TrainerPiano } from './components/Trainer'
-import TrainerProvider from './components/TrainerProvider'
+import TrainerProvider from './core/providers/TrainerProvider'
+import ScreenManager from './components/ScreenManager/ScreenManager'
+import RefactoredKeyboard from './components/Keyboard/RefactoredKeyboard'
+import { TrainerDisplay } from './components/Trainer'
+import RefactoredTrainerPiano from './components/Trainer/RefactoredTrainerPiano'
+import { Quiz } from './components/Quiz'
+
+// Import i18n configuration
 import './i18n/config'
 
 const PracticeScreenLayout = styled.div`
@@ -23,6 +31,7 @@ const QuizScreenLayout = styled.div`
 `
 
 function App() {
+  // Handle keyboard events for the app
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
     const { key, metaKey } = e
     let preventDefault = true
@@ -36,13 +45,14 @@ function App() {
     }
   }, [])
 
+  // Add and remove event listeners
   useEffect(() => {
     document.addEventListener('keydown', handleKeyDown)
 
     return () => {
       document.removeEventListener('keydown', handleKeyDown)
     }
-  })
+  }, [handleKeyDown])
 
   return (
     <KVProvider>
@@ -51,9 +61,9 @@ function App() {
           <ScreenManager
             practice={
               <PracticeScreenLayout>
-                <TrainerPiano />
+                <RefactoredTrainerPiano />
                 <TrainerDisplay />
-                <Keyboard />
+                <RefactoredKeyboard />
               </PracticeScreenLayout>
             }
             quiz={
