@@ -2,12 +2,12 @@
  * Provider component for the Settings (KV) Context
  */
 import { FC, ReactNode, useCallback, useEffect, useState } from 'react'
-import { Store } from 'tauri-plugin-store-api'
+import { load } from '@tauri-apps/plugin-store'
 import { KVContext } from '../contexts/SettingsContext'
 import { MidiDevice, PTSettingsKeyType } from '../models/types'
 
-// Create the store instance for persistent settings
-const store = new Store('.settings.dat')
+// Create/load the store instance for persistent settings
+let storePromise = load('.settings.dat', { autoSave: false })
 
 interface KVProviderProps {
   children: ReactNode
@@ -29,6 +29,7 @@ const KVProvider: FC<KVProviderProps> = ({ children }) => {
   // Generic setting handlers
   const setSetting = useCallback(
     async <T,>(key: PTSettingsKeyType, value: T) => {
+      const store = await storePromise
       await store.set(key, value)
       await store.save()
 
@@ -59,6 +60,7 @@ const KVProvider: FC<KVProviderProps> = ({ children }) => {
 
   const getSetting = useCallback(
     async <T,>(key: PTSettingsKeyType): Promise<T | undefined> => {
+      const store = await storePromise
       return await store.get<T>(key)
     },
     []
@@ -67,6 +69,8 @@ const KVProvider: FC<KVProviderProps> = ({ children }) => {
   // Load all settings on initial render
   useEffect(() => {
     const loadSettings = async () => {
+      const store = await storePromise
+
       const savedPianoSound = await store.get<string>('piano-sound')
       if (savedPianoSound) setPianoSound(savedPianoSound)
 
