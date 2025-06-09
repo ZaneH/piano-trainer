@@ -1,4 +1,4 @@
-import { useContext, useMemo } from 'react'
+import { useMemo } from 'react'
 import Select, { createFilter } from 'react-select'
 import styled from 'styled-components'
 import {
@@ -7,12 +7,12 @@ import {
   AVAILABLE_MODES,
   AVAILABLE_SCALES,
 } from '../../utils'
-import { TrainerContext, useTrainer } from '../../core/contexts/TrainerContext'
+import { useTrainer } from '../../core/contexts/TrainerContext'
 import SettingsIcon from 'remixicon-react/Settings2FillIcon'
 import ArrowLeftRightIcon from 'remixicon-react/ArrowLeftRightFillIcon'
 import SkullIcon from 'remixicon-react/SkullFillIcon'
 import QuizIcon from 'remixicon-react/SurveyFillIcon'
-import { SidebarContext } from '../SidebarProvider'
+import { useSidebar } from '../../core/contexts/SidebarContext'
 import { useTranslation } from 'react-i18next'
 
 const TrainerDisplayContainer = styled.div`
@@ -63,7 +63,7 @@ const TrainerDisplay = () => {
     isHardModeEnabled,
     setIsHardModeEnabled,
   } = useTrainer()
-  const { setIsOpen } = useContext(SidebarContext)
+  const { setIsOpen } = useSidebar()
   const { t } = useTranslation()
 
   const scaleOptions = Object.keys(AVAILABLE_SCALES).map((s: string) => ({

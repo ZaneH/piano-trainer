@@ -6,7 +6,8 @@ import styled from 'styled-components'
 
 // Import components
 import KVProvider from './core/providers/KVProvider'
-import SidebarProvider from './components/SidebarProvider/SidebarProvider'
+import SidebarProvider from './core/providers/SidebarProvider'
+import SettingsSidebar from './components/SettingsSidebar/SettingsSidebar'
 import TrainerProvider from './core/providers/TrainerProvider'
 import ScreenManager from './components/ScreenManager/ScreenManager'
 import RefactoredKeyboard from './components/Keyboard/RefactoredKeyboard'

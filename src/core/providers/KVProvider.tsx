@@ -7,7 +7,7 @@ import { KVContext } from '../contexts/SettingsContext'
 import { MidiDevice, PTSettingsKeyType } from '../models/types'
 
 // Create/load the store instance for persistent settings
-let storePromise = load('.settings.dat', { autoSave: false })
+const storePromise = load('.settings.dat', { autoSave: false })
 
 interface KVProviderProps {
   children: ReactNode

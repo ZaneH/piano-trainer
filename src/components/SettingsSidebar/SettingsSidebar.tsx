@@ -1,9 +1,9 @@
-import { useCallback, useContext } from 'react'
+import { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 import { AVAILABLE_SETTINGS, PTSettingType } from '../../utils'
-import { KVContext, useSettings } from '../../core/contexts/SettingsContext'
-import { SidebarContext } from '../SidebarProvider'
+import { useSettings } from '../../core/contexts/SettingsContext'
+import { useSidebar } from '../../core/contexts/SidebarContext'
 import SettingRow from './SettingRow'
 
 const CoverScreen = styled.div`
@@ -44,7 +44,7 @@ const SettingsSidebar = () => {
     pianoSound,
     isSentryEnabled,
   } = useSettings()
-  const { setIsOpen } = useContext(SidebarContext)
+  const { setIsOpen } = useSidebar()
   const { t } = useTranslation()
 
   const renderSettingRow = useCallback(
@@ -78,7 +78,7 @@ const SettingsSidebar = () => {
 
   return (
     <CoverScreen>
-      <FadeOut onClick={() => setIsOpen?.(false)} />
+      <FadeOut onClick={() => setIsOpen(false)} />
       <Sidebar>
         <h1>{t('settings.title')}</h1>
         {AVAILABLE_SETTINGS.map((s) => renderSettingRow(s))}
