@@ -1,1 +1,1 @@
-export { default } from './RefactoredKeyboard'
+export { default } from './Keyboard'
