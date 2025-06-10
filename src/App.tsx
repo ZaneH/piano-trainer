@@ -1,6 +1,3 @@
-/**
- * Refactored App.tsx
- */
 import { useCallback, useEffect } from 'react'
 import styled from 'styled-components'
 import KVProvider from './core/providers/KVProvider'
@@ -8,8 +5,7 @@ import SidebarProvider from './core/providers/SidebarProvider'
 import TrainerProvider from './core/providers/TrainerProvider'
 import ScreenManager from './components/ScreenManager/ScreenManager'
 import Keyboard from './components/Keyboard'
-import { TrainerDisplay } from './components/Trainer'
-import RefactoredTrainerPiano from './components/Trainer/RefactoredTrainerPiano'
+import { TrainerDisplay, TrainerPiano } from './components/Trainer'
 import { Quiz } from './components/Quiz'
 
 // Import i18n configuration
@@ -59,7 +55,7 @@ function App() {
           <ScreenManager
             practice={
               <PracticeScreenLayout>
-                <RefactoredTrainerPiano />
+                <TrainerPiano />
                 <TrainerDisplay />
                 <Keyboard />
               </PracticeScreenLayout>

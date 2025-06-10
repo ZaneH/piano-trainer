@@ -7,7 +7,6 @@ import {
   NoteTracker,
   ScaleType,
 } from '../models/types'
-import { SCALE_LENGTH } from '../models/constants'
 import { getTriadChord, getSeventhChord } from '../services/chordService'
 import { getFifthFromMidiNumber } from '../services/noteService'
 
@@ -106,6 +105,7 @@ export function useNoteProgression({
     }
   }, [
     noteTracker.currentMidiNumber,
+    noteTracker.noteCounter,
     scale.keys,
     isPingPongMode,
     isHardMode,
