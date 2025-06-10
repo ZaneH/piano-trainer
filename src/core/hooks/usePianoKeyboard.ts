@@ -6,6 +6,11 @@ import { midiNumberToNote } from '../services/noteService'
 import { useTrainer } from '../contexts/TrainerContext'
 import { MidiNumber } from '../models/types'
 import { useSettings } from '../contexts/SettingsContext'
+import {
+  getTriadChordFromMidiNumber,
+  getSeventhChordFromMidiNumber,
+  getFifthFromMidiNumber,
+} from '../../utils/helpers'
 
 interface UsePianoKeyboardProps {
   firstNote: MidiNumber
@@ -86,11 +91,61 @@ export function usePianoKeyboard({
       }
     } else if (practiceMode === 'chords') {
       // For chords, check if all required notes are played
-      // Implementation depends on your chord detection logic
+      const targetChord = getTriadChordFromMidiNumber(
+        noteTracker.nextTargetMidiNumber,
+        scale!
+      )
+
+      // Turn the target numbers into target letters to ignore octave for matching
+      const targetChordNotes = targetChord.map((n) => midiNumberToNote(n))
+
+      // Check if all required notes are played
+      const matches = targetChordNotes.every((note) =>
+        chordStack.map((cs) => midiNumberToNote(cs)).includes(note)
+      )
+
+      if (matches) {
+        advanceNote()
+        clearChordStack()
+      }
     } else if (practiceMode === 'seventhChords') {
-      // Similar implementation for seventh chords
+      // For seventh chords, check if all required notes are played
+      const targetChord = getSeventhChordFromMidiNumber(
+        noteTracker.nextTargetMidiNumber,
+        scale!
+      )
+
+      // Turn the target numbers into target letters to ignore octave for matching
+      const targetChordNotes = targetChord.map((n) => midiNumberToNote(n))
+
+      // Check if all required notes are played
+      const matches = targetChordNotes.every((note) =>
+        chordStack.map((cs) => midiNumberToNote(cs)).includes(note)
+      )
+
+      if (matches) {
+        advanceNote()
+        clearChordStack()
+      }
     } else if (practiceMode === 'fifths') {
-      // Similar implementation for fifths
+      // For fifths, check if both the root and fifth are played
+      const targetFifths = [
+        noteTracker.nextTargetMidiNumber,
+        getFifthFromMidiNumber(noteTracker.nextTargetMidiNumber, scale?.value!),
+      ]
+
+      // Turn the target numbers into target letters to ignore octave for matching
+      const targetFifthNotes = targetFifths.map((f) => midiNumberToNote(f))
+
+      // Check if all required notes are played
+      const matches = targetFifthNotes.every((note) =>
+        chordStack.map((cs) => midiNumberToNote(cs)).includes(note)
+      )
+
+      if (matches) {
+        advanceNote()
+        clearChordStack()
+      }
     }
   }, [
     chordStack,

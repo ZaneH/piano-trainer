@@ -8,7 +8,7 @@ import {
   ScaleType,
 } from '../models/types'
 import { SCALE_LENGTH } from '../models/constants'
-import { getTriadChord } from '../services/chordService'
+import { getTriadChord, getSeventhChord } from '../services/chordService'
 import { getFifthFromMidiNumber } from '../services/noteService'
 
 interface UseNoteProgressionProps {
@@ -126,11 +126,29 @@ export function useNoteProgression({
     (midiNumber: number): boolean => {
       if (practiceMode === 'scales') {
         return midiNumber === noteTracker.nextTargetMidiNumber
-      } else {
-        return false // Will be implemented for chord modes
+      } else if (practiceMode === 'chords') {
+        const targetChord = getTriadChord(
+          noteTracker.nextTargetMidiNumber,
+          scale
+        )
+        return targetChord.includes(midiNumber)
+      } else if (practiceMode === 'seventhChords') {
+        const targetChord = getSeventhChord(
+          noteTracker.nextTargetMidiNumber,
+          scale
+        )
+        return targetChord.includes(midiNumber)
+      } else if (practiceMode === 'fifths') {
+        if (!scale.value) return false
+        const targetFifths = [
+          noteTracker.nextTargetMidiNumber,
+          getFifthFromMidiNumber(noteTracker.nextTargetMidiNumber, scale.value),
+        ]
+        return targetFifths.includes(midiNumber)
       }
+      return false
     },
-    [noteTracker.nextTargetMidiNumber, practiceMode]
+    [noteTracker.nextTargetMidiNumber, practiceMode, scale]
   )
 
   // Get the active notes to display based on practice mode
@@ -146,8 +164,7 @@ export function useNoteProgression({
       } else if (practiceMode === 'chords') {
         return prevNote ? getTriadChord(prevNote, scale) : []
       } else if (practiceMode === 'seventhChords') {
-        // Implement seventh chord logic here
-        return []
+        return prevNote ? getSeventhChord(prevNote, scale) : []
       } else if (practiceMode === 'fifths') {
         if (!prevNote || !scale.value) return []
         return [prevNote, getFifthFromMidiNumber(prevNote, scale.value)]
@@ -159,8 +176,7 @@ export function useNoteProgression({
       } else if (practiceMode === 'chords') {
         return getTriadChord(targetNote, scale)
       } else if (practiceMode === 'seventhChords') {
-        // Implement seventh chord logic here
-        return []
+        return getSeventhChord(targetNote, scale)
       } else if (practiceMode === 'fifths') {
         if (!scale.value) return []
         return [targetNote, getFifthFromMidiNumber(targetNote, scale.value)]
