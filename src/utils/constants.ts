@@ -6,11 +6,11 @@ import {
 import {
   AvailableMinorMelodicScalesType,
   AVAILABLE_MINOR_MELODIC_SCALES,
-} from './scales/minor.melodic'
+} from './scales/generated-minor-melodic'
 import {
   AvailableMinorNaturalScalesType,
   AVAILABLE_MINOR_NATURAL_SCALES,
-} from './scales/minor.natural'
+} from './scales/generated-minor-natural'
 import { type ScaleType } from '../core/models/types'
 
 export const SCALE_LENGTH = 8
@@ -21,13 +21,11 @@ export type AvailableAllScalesType =
   | AvailableMinorNaturalScalesType
   | AvailableMinorMelodicScalesType
 
-export const AVAILABLE_SCALES: {
-  [key in AvailableAllScalesType]: ScaleType
-} = {
+export const AVAILABLE_SCALES = {
   ...AVAILABLE_MAJOR_SCALES,
   ...AVAILABLE_MINOR_NATURAL_SCALES,
   ...AVAILABLE_MINOR_MELODIC_SCALES,
-}
+} as { [key in AvailableAllScalesType]: ScaleType }
 
 export type ScaleStepsType = 'w' | 'h'
 export const SCALE_STEP_VALUES: { [key in ScaleStepsType]: number } = {

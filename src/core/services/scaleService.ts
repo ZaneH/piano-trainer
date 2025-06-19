@@ -86,9 +86,52 @@ const MAJOR_SCALE_MIDI_ROOTS = {
 } as const
 
 /**
+ * Minor natural scale root notes with their MIDI numbers from the original hardcoded scales
+ */
+const MINOR_NATURAL_SCALE_MIDI_ROOTS = {
+  'c-minor-natural': 48, // C Minor Natural
+  'c-sharp-minor-natural': 49, // C# Minor Natural
+  'd-minor-natural': 50, // D Minor Natural
+  'd-sharp-minor-natural': 51, // D# Minor Natural
+  'e-flat-minor-natural': 51, // Eb Minor Natural (enharmonic with D#)
+  'e-minor-natural': 52, // E Minor Natural
+  'f-minor-natural': 53, // F Minor Natural
+  'f-sharp-minor-natural': 54, // F# Minor Natural
+  'g-minor-natural': 55, // G Minor Natural
+  'g-sharp-minor-natural': 56, // G# Minor Natural
+  'a-flat-minor-natural': 56, // Ab Minor Natural (enharmonic with G#)
+  'a-minor-natural': 57, // A Minor Natural
+  'a-sharp-minor-natural': 58, // A# Minor Natural
+  'b-flat-minor-natural': 58, // Bb Minor Natural (enharmonic with A#)
+  'b-minor-natural': 59, // B Minor Natural
+} as const
+
+/**
+ * Minor melodic scale root notes with their MIDI numbers from the original hardcoded scales
+ */
+const MINOR_MELODIC_SCALE_MIDI_ROOTS = {
+  'c-minor-melodic': 48, // C Minor Melodic
+  'c-sharp-minor-melodic': 49, // C# Minor Melodic
+  'd-minor-melodic': 50, // D Minor Melodic
+  'd-sharp-minor-melodic': 51, // D# Minor Melodic
+  'e-flat-minor-melodic': 51, // Eb Minor Melodic (enharmonic with D#)
+  'e-minor-melodic': 52, // E Minor Melodic
+  'f-minor-melodic': 53, // F Minor Melodic
+  'f-sharp-minor-melodic': 54, // F# Minor Melodic
+  'g-minor-melodic': 55, // G Minor Melodic
+  'g-sharp-minor-melodic': 56, // G# Minor Melodic
+  'a-flat-minor-melodic': 56, // Ab Minor Melodic (enharmonic with G#)
+  'a-minor-melodic': 57, // A Minor Melodic
+  'a-sharp-minor-melodic': 58, // A# Minor Melodic
+  'b-flat-minor-melodic': 58, // Bb Minor Melodic (enharmonic with A#)
+  'b-minor-melodic': 59, // B Minor Melodic
+} as const
+
+/**
  * Scale note names for generating proper labels
  */
 const SCALE_NOTE_NAMES = {
+  // Major scales
   'c-flat-major': 'Cb',
   'c-major': 'C',
   'c-sharp-major': 'C#',
@@ -103,8 +146,39 @@ const SCALE_NOTE_NAMES = {
   'a-major': 'A',
   'b-flat-major': 'Bb',
   'b-major': 'B',
+  // Minor natural scales
+  'c-minor-natural': 'C',
+  'c-sharp-minor-natural': 'C#',
+  'd-minor-natural': 'D',
+  'd-sharp-minor-natural': 'D#',
+  'e-flat-minor-natural': 'Eb',
+  'e-minor-natural': 'E',
+  'f-minor-natural': 'F',
+  'f-sharp-minor-natural': 'F#',
+  'g-minor-natural': 'G',
+  'g-sharp-minor-natural': 'G#',
+  'a-flat-minor-natural': 'Ab',
+  'a-minor-natural': 'A',
+  'a-sharp-minor-natural': 'A#',
+  'b-flat-minor-natural': 'Bb',
+  'b-minor-natural': 'B',
+  // Minor melodic scales
+  'c-minor-melodic': 'C',
+  'c-sharp-minor-melodic': 'C#',
+  'd-minor-melodic': 'D',
+  'd-sharp-minor-melodic': 'D#',
+  'e-flat-minor-melodic': 'Eb',
+  'e-minor-melodic': 'E',
+  'f-minor-melodic': 'F',
+  'f-sharp-minor-melodic': 'F#',
+  'g-minor-melodic': 'G',
+  'g-sharp-minor-melodic': 'G#',
+  'a-flat-minor-melodic': 'Ab',
+  'a-minor-melodic': 'A',
+  'a-sharp-minor-melodic': 'A#',
+  'b-flat-minor-melodic': 'Bb',
+  'b-minor-melodic': 'B',
 } as const
-
 /**
  * Creates a major scale using the exact MIDI numbers from the original implementation
  */
@@ -137,6 +211,61 @@ function createMajorScaleFromMidi(
 }
 
 /**
+ * Creates a minor natural scale using exact MIDI numbers from the original implementation
+ */
+function createMinorNaturalScaleFromMidi(scaleId: string): ScaleType {
+  const midiStart =
+    MINOR_NATURAL_SCALE_MIDI_ROOTS[
+      scaleId as keyof typeof MINOR_NATURAL_SCALE_MIDI_ROOTS
+    ]
+  const scaleName = SCALE_NOTE_NAMES[scaleId as keyof typeof SCALE_NOTE_NAMES]
+
+  // Minor natural scale pattern: W-H-W-W-H-W-W
+  const intervals = [0, 2, 3, 5, 7, 8, 10, 12]
+  const romanNumerals = ['i', 'iiº', 'III', 'iv', 'v', 'VI', 'VII', 'i']
+
+  const keys: ScaleKeyType = {}
+
+  intervals.forEach((interval, index) => {
+    const midiNote = midiStart + interval
+    keys[midiNote] = romanNumerals[index]
+  })
+
+  return {
+    label: `${scaleName} Minor (Natural)`,
+    value: scaleId as AvailableAllScalesType,
+    keys,
+  }
+}
+/**
+ * Creates a minor melodic scale using exact MIDI numbers from the original implementation
+ */
+function createMinorMelodicScaleFromMidi(scaleId: string): ScaleType {
+  const midiStart =
+    MINOR_MELODIC_SCALE_MIDI_ROOTS[
+      scaleId as keyof typeof MINOR_MELODIC_SCALE_MIDI_ROOTS
+    ]
+  const scaleName = SCALE_NOTE_NAMES[scaleId as keyof typeof SCALE_NOTE_NAMES]
+
+  // Minor melodic scale pattern: W-H-W-W-W-W-H
+  const intervals = [0, 2, 3, 5, 7, 9, 11, 12]
+  const romanNumerals = ['i', 'iiº', 'III+', 'IV', 'V', 'viº', 'viiº', 'i']
+
+  const keys: ScaleKeyType = {}
+
+  intervals.forEach((interval, index) => {
+    const midiNote = midiStart + interval
+    keys[midiNote] = romanNumerals[index]
+  })
+
+  return {
+    label: `${scaleName} Minor (Melodic)`,
+    value: scaleId as AvailableAllScalesType,
+    keys,
+  }
+}
+
+/**
  * Generate all major scales dynamically using the exact MIDI mappings
  */
 export function generateAllMajorScales(): Record<
@@ -153,10 +282,49 @@ export function generateAllMajorScales(): Record<
 
   return scales as Record<AvailableMajorScalesType, ScaleType>
 }
+/**
+ * Generate all minor natural scales dynamically using the exact MIDI mappings
+ */
+export function generateAllMinorNaturalScales(): Record<string, ScaleType> {
+  const scales: Record<string, ScaleType> = {}
+
+  for (const scaleId of Object.keys(MINOR_NATURAL_SCALE_MIDI_ROOTS)) {
+    scales[scaleId] = createMinorNaturalScaleFromMidi(scaleId)
+  }
+
+  return scales
+}
+
+/**
+ * Generate all minor melodic scales dynamically using the exact MIDI mappings
+ */
+export function generateAllMinorMelodicScales(): Record<string, ScaleType> {
+  const scales: Record<string, ScaleType> = {}
+
+  for (const scaleId of Object.keys(MINOR_MELODIC_SCALE_MIDI_ROOTS)) {
+    scales[scaleId] = createMinorMelodicScaleFromMidi(scaleId)
+  }
+
+  return scales
+}
 
 /**
  * Get a specific major scale by its identifier
  */
 export function getMajorScale(scaleId: AvailableMajorScalesType): ScaleType {
   return createMajorScaleFromMidi(scaleId)
+}
+
+/**
+ * Get a specific minor natural scale by its identifier
+ */
+export function getMinorNaturalScale(scaleId: string): ScaleType {
+  return createMinorNaturalScaleFromMidi(scaleId)
+}
+
+/**
+ * Get a specific minor melodic scale by its identifier
+ */
+export function getMinorMelodicScale(scaleId: string): ScaleType {
+  return createMinorMelodicScaleFromMidi(scaleId)
 }

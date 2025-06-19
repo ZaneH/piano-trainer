@@ -10,7 +10,7 @@ import {
   ScaleType,
 } from '../models/types'
 import { useNoteProgression } from '../hooks/useNoteProgression'
-import { getMajorScale } from '../services/scaleService'
+import { AVAILABLE_SCALES } from '../../utils'
 
 interface TrainerProviderProps {
   children: ReactNode
@@ -21,7 +21,7 @@ interface TrainerProviderProps {
 
 const TrainerProvider: FC<TrainerProviderProps> = ({
   children,
-  initialScale = getMajorScale('c-major'),
+  initialScale = AVAILABLE_SCALES['c-major'],
   initialPracticeMode = 'scales',
   initialScreen = 'practice',
 }) => {
