@@ -2,7 +2,7 @@ import { MajorMinorType } from '../components/Quiz/Questions'
 import {
   AvailableMajorScalesType,
   AVAILABLE_MAJOR_SCALES,
-} from './scales/major'
+} from './scales/generated-major'
 import {
   AvailableMinorMelodicScalesType,
   AVAILABLE_MINOR_MELODIC_SCALES,

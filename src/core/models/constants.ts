@@ -1,13 +1,7 @@
 /**
  * Constants for scales and settings
  */
-import {
-  AvailableAllScalesType,
-  MajorMinorType,
-  PTSettingType,
-  ScaleStepsType,
-  ScaleType,
-} from '../models/types'
+import { MajorMinorType, PTSettingType, ScaleStepsType } from '../models/types'
 
 // Core constants
 export const SCALE_LENGTH = 8

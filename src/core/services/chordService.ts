@@ -3,7 +3,6 @@
  */
 import { MidiNumber, ScaleType } from '../models/types'
 import { OCTAVE_LENGTH, SCALE_LENGTH } from '../models/constants'
-import { midiNumberToNote } from './noteService'
 
 /**
  * Gets the triad chord (three notes) starting from a midi number

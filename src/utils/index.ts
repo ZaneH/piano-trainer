@@ -9,6 +9,6 @@ export type ScaleType = {
 
 export * from './constants'
 export * from './modes/practice'
-export * from './scales/major'
+export * from './scales/generated-major'
 export * from './helpers'
 export * from './scales/fifths'
