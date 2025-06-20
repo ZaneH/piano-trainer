@@ -2,7 +2,7 @@
  * Note service for converting between notes and MIDI numbers
  */
 import { MidiNumbers } from 'react-piano'
-import { MidiNumber, Note, AvailableAllScalesType } from '../models/types'
+import { MidiNumber, Note } from '../models/types'
 import { OCTAVE_LENGTH } from '../models/constants'
 
 /**

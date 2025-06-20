@@ -71,17 +71,22 @@ export function usePianoKeyboard({
   useEffect(() => {
     if (chordStack.length === 0) return
 
-    const currentNote = noteTracker.nextTargetMidiNumber
-    if (lastProcessedNoteRef.current === currentNote) return
+    const targetNote = noteTracker.nextTargetMidiNumber
+
+    if (chordStack.includes(lastProcessedNoteRef.current || -1)) {
+      // If the last processed note is already in the chord stack, skip processing
+      return
+    }
 
     const targetScaleNote = midiNumberToNote(noteTracker.nextTargetMidiNumber)
 
     if (practiceMode === 'scales') {
       // For scales, we just need to match a single note
-      if (
-        chordStack.map((cs) => midiNumberToNote(cs)).includes(targetScaleNote)
-      ) {
-        lastProcessedNoteRef.current = currentNote
+      const matchingNote = chordStack.find(
+        (cs) => midiNumberToNote(cs) === targetScaleNote
+      )
+      if (matchingNote !== undefined) {
+        lastProcessedNoteRef.current = matchingNote
         advanceNote()
         clearChordStack()
       }
@@ -101,7 +106,11 @@ export function usePianoKeyboard({
       )
 
       if (matches) {
-        lastProcessedNoteRef.current = currentNote
+        // Find the first matching note in the chord stack to use as the last processed note
+        const processedChordNote = chordStack.find((cs) =>
+          targetChordNotes.includes(midiNumberToNote(cs))
+        )
+        lastProcessedNoteRef.current = processedChordNote || targetNote
         advanceNote()
         clearChordStack()
       }
@@ -121,7 +130,11 @@ export function usePianoKeyboard({
       )
 
       if (matches) {
-        lastProcessedNoteRef.current = currentNote
+        // Find the first matching note in the chord stack to use as the last processed note
+        const processedChordNote = chordStack.find((cs) =>
+          targetChordNotes.includes(midiNumberToNote(cs))
+        )
+        lastProcessedNoteRef.current = processedChordNote || targetNote
         advanceNote()
         clearChordStack()
       }
@@ -141,7 +154,11 @@ export function usePianoKeyboard({
       )
 
       if (matches) {
-        lastProcessedNoteRef.current = currentNote
+        // Find the first matching note in the chord stack to use as the last processed note
+        const processedFifthNote = chordStack.find((cs) =>
+          targetFifthNotes.includes(midiNumberToNote(cs))
+        )
+        lastProcessedNoteRef.current = processedFifthNote || targetNote
         advanceNote()
         clearChordStack()
       }

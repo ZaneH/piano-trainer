@@ -130,38 +130,6 @@ const swapKeyWithSynonym = (key: string): AvailableAllScalesType => {
 }
 
 /**
- * This is for safety when passing to MidiNumbers.
- * Some keys aren't recognized so we'll pass them as their synonym
- * @param key A potential "wrong" key (ex. c#, f#, Db)
- * @param majMin Minor or major circle of fifths?
- */
-export const swapNoteWithSynonym = (
-  key: string,
-  majMin: MajorMinorType = 'Major'
-): string => {
-  if (majMin === 'Major') {
-    switch (key.toLowerCase()) {
-      case 'db': {
-        return 'c#'
-      }
-      case 'cb': {
-        return 'b'
-      }
-      case 'd#': {
-        return 'eb'
-      }
-      case 'f#':
-      case 'gb':
-      default: {
-        return key.toLowerCase()
-      }
-    }
-  } else {
-    return key.toLowerCase()
-  }
-}
-
-/**
  * Given a midi number, return three midi numbers that make up a chord with the
  * provided scale.
  * @param midiNumber A midi number to start the triad from

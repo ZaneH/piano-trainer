@@ -1,6 +1,3 @@
-/**
- * Refactored version of the Keyboard component
- */
 import { useTranslation } from 'react-i18next'
 import { KeyboardShortcuts, MidiNumbers, Piano } from 'react-piano'
 import 'react-piano/dist/styles.css'

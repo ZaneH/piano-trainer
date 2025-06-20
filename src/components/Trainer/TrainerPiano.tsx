@@ -1,6 +1,3 @@
-/**
- * Refactored version of the TrainerPiano component
- */
 import { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Keyboard, MidiNumbers } from 'react-piano'

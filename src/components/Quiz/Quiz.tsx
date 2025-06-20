@@ -1,16 +1,11 @@
 import { invoke } from '@tauri-apps/api/core'
 import { listen, UnlistenFn } from '@tauri-apps/api/event'
-import {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { MidiNumbers, Piano } from 'react-piano'
 import styled from 'styled-components'
+import { useSettings } from '../../core/contexts/SettingsContext'
+import { useTrainer } from '../../core/contexts/TrainerContext'
 import {
   CIRCLE_OF_FIFTHS,
   convertKeyToScalesKey,
@@ -21,9 +16,7 @@ import {
   MidiDevice,
   midiNumberToNote,
   shuffle,
-  swapNoteWithSynonym,
 } from '../../utils'
-import { TrainerContext, useTrainer } from '../../core/contexts/TrainerContext'
 import {
   formatQuestion,
   getRandomQuizQuestion,
@@ -32,7 +25,7 @@ import {
 } from './Questions'
 import QuizHeader from './QuizHeader'
 import { QuizOption } from './QuizOption'
-import { useSettings } from '../../core/contexts/SettingsContext'
+import { normalizeNoteName } from '../../core/services/noteService'
 
 const QuizPage = styled.div`
   height: 100%;
@@ -168,17 +161,11 @@ const Quiz = () => {
   const currentValidMidi = useMemo<number[]>(() => {
     if (currentQuestion.type === 'fifth') {
       return getBothFifthsFromMidiNumber(
-        MidiNumbers.fromNote(
-          `${swapNoteWithSynonym(currentQuestionKey, currentQuestion.majMin)}3`
-        ),
+        MidiNumbers.fromNote(`${normalizeNoteName(currentQuestionKey)}3`),
         convertKeyToScalesKey(currentQuestionKey, currentQuestion.majMin)
       )
     } else if (currentQuestion.type === 'key') {
-      return [
-        MidiNumbers.fromNote(
-          `${swapNoteWithSynonym(currentQuestionKey, currentQuestion.majMin)}3`
-        ),
-      ]
+      return [MidiNumbers.fromNote(`${normalizeNoteName(currentQuestionKey)}3`)]
     } else {
       return []
     }

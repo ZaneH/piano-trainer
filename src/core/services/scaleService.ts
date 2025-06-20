@@ -179,6 +179,7 @@ const SCALE_NOTE_NAMES = {
   'b-flat-minor-melodic': 'Bb',
   'b-minor-melodic': 'B',
 } as const
+
 /**
  * Creates a major scale using the exact MIDI numbers from the original implementation
  */

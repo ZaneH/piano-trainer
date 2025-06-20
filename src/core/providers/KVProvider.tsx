@@ -97,12 +97,13 @@ const KVProvider: FC<KVProviderProps> = ({ children }) => {
     }
 
     loadSettings()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   // Update i18n when language changes
   useEffect(() => {
     i18n.changeLanguage(language)
-  }, [language])
+  }, [language, i18n])
 
   return (
     <KVContext.Provider
