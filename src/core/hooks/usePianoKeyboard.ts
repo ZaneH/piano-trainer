@@ -5,7 +5,6 @@ import { useCallback, useEffect, useState } from 'react'
 import { midiNumberToNote } from '../services/noteService'
 import { useTrainer } from '../contexts/TrainerContext'
 import { MidiNumber } from '../models/types'
-import { useSettings } from '../contexts/SettingsContext'
 import {
   getTriadChordFromMidiNumber,
   getSeventhChordFromMidiNumber,
@@ -15,20 +14,15 @@ import {
 interface UsePianoKeyboardProps {
   firstNote: MidiNumber
   lastNote: MidiNumber
-  playNote?: (midiNumber: MidiNumber) => void
-  stopNote?: (midiNumber: MidiNumber) => void
 }
 
 export function usePianoKeyboard({
   firstNote,
   lastNote,
-  playNote,
-  stopNote,
 }: UsePianoKeyboardProps) {
   const [activeNotes, setActiveNotes] = useState<Record<MidiNumber, boolean>>(
     {}
   )
-  const { muteSound } = useSettings()
 
   const {
     noteTracker,
@@ -44,35 +38,31 @@ export function usePianoKeyboard({
   // Handle note played
   const handlePlayNote = useCallback(
     (midiNumber: MidiNumber) => {
+      // Only process if note is within valid range
+      if (midiNumber < firstNote || midiNumber > lastNote) return
+
       // Add to active notes
       setActiveNotes((prev) => ({ ...prev, [midiNumber]: true }))
 
       // Add to chord stack
       addToChordStack(midiNumber)
-
-      // Play sound if not muted
-      if (!muteSound && playNote) {
-        playNote(midiNumber)
-      }
     },
-    [addToChordStack, muteSound, playNote]
+    [addToChordStack, firstNote, lastNote]
   )
 
   // Handle note released
   const handleStopNote = useCallback(
     (midiNumber: MidiNumber) => {
+      // Only process if note is within valid range
+      if (midiNumber < firstNote || midiNumber > lastNote) return
+
       // Remove from active notes
       setActiveNotes((prev) => ({ ...prev, [midiNumber]: false }))
 
       // Remove from chord stack
       removeFromChordStack(midiNumber)
-
-      // Stop sound
-      if (stopNote) {
-        stopNote(midiNumber)
-      }
     },
-    [removeFromChordStack, stopNote]
+    [removeFromChordStack, firstNote, lastNote]
   )
 
   // Check if the current chord stack matches what we're looking for

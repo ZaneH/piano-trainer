@@ -67,7 +67,9 @@ const Keyboard = () => {
               noteRange={{ first: firstNote, last: lastNote }}
               playNote={(midiNumber: number) => {
                 handlePlayNote(midiNumber)
-                !muteSound && playNote(midiNumber)
+                if (!muteSound) {
+                  playNote(midiNumber)
+                }
               }}
               stopNote={(midiNumber: number) => {
                 handleStopNote(midiNumber)
