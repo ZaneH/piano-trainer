@@ -71,7 +71,7 @@ export function useMidiDevices({
       try {
         // Clean up previous connection if exists
         if (unlistenRef.current) {
-          await unlistenRef.current()
+          unlistenRef.current()
           unlistenRef.current = null
         }
 

@@ -1,7 +1,7 @@
 /**
  * Custom hook for piano keyboard interactions
  */
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { midiNumberToNote } from '../services/noteService'
 import { useTrainer } from '../contexts/TrainerContext'
 import { MidiNumber } from '../models/types'
@@ -23,6 +23,8 @@ export function usePianoKeyboard({
   const [activeNotes, setActiveNotes] = useState<Record<MidiNumber, boolean>>(
     {}
   )
+
+  const lastProcessedNoteRef = useRef<number | null>(null)
 
   const {
     noteTracker,
@@ -69,6 +71,9 @@ export function usePianoKeyboard({
   useEffect(() => {
     if (chordStack.length === 0) return
 
+    const currentNote = noteTracker.nextTargetMidiNumber
+    if (lastProcessedNoteRef.current === currentNote) return
+
     const targetScaleNote = midiNumberToNote(noteTracker.nextTargetMidiNumber)
 
     if (practiceMode === 'scales') {
@@ -76,6 +81,7 @@ export function usePianoKeyboard({
       if (
         chordStack.map((cs) => midiNumberToNote(cs)).includes(targetScaleNote)
       ) {
+        lastProcessedNoteRef.current = currentNote
         advanceNote()
         clearChordStack()
       }
@@ -95,6 +101,7 @@ export function usePianoKeyboard({
       )
 
       if (matches) {
+        lastProcessedNoteRef.current = currentNote
         advanceNote()
         clearChordStack()
       }
@@ -114,6 +121,7 @@ export function usePianoKeyboard({
       )
 
       if (matches) {
+        lastProcessedNoteRef.current = currentNote
         advanceNote()
         clearChordStack()
       }
@@ -133,6 +141,7 @@ export function usePianoKeyboard({
       )
 
       if (matches) {
+        lastProcessedNoteRef.current = currentNote
         advanceNote()
         clearChordStack()
       }
