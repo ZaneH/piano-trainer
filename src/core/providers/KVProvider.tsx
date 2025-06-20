@@ -5,6 +5,7 @@ import { FC, ReactNode, useCallback, useEffect, useState } from 'react'
 import { load } from '@tauri-apps/plugin-store'
 import { KVContext } from '../contexts/SettingsContext'
 import { MidiDevice, PTSettingsKeyType } from '../models/types'
+import { useTranslation } from 'react-i18next'
 
 // Create/load the store instance for persistent settings
 const storePromise = load('.settings.dat', { autoSave: false })
@@ -25,6 +26,7 @@ const KVProvider: FC<KVProviderProps> = ({ children }) => {
   // App settings
   const [language, setLanguage] = useState<string>('en')
   const [isSentryEnabled, setIsSentryEnabled] = useState<boolean>(true)
+  const { i18n } = useTranslation()
 
   // Generic setting handlers
   const setSetting = useCallback(
@@ -85,7 +87,10 @@ const KVProvider: FC<KVProviderProps> = ({ children }) => {
         setMidiDevice({ id: savedMidiInputId })
 
       const savedLanguage = await store.get<string>('language')
-      if (savedLanguage) setLanguage(savedLanguage)
+      if (savedLanguage) {
+        setLanguage(savedLanguage)
+        i18n.changeLanguage(savedLanguage)
+      }
 
       const savedIsSentryOn = await store.get<boolean>('is-sentry-on')
       if (savedIsSentryOn !== undefined) setIsSentryEnabled(savedIsSentryOn)
@@ -93,6 +98,11 @@ const KVProvider: FC<KVProviderProps> = ({ children }) => {
 
     loadSettings()
   }, [])
+
+  // Update i18n when language changes
+  useEffect(() => {
+    i18n.changeLanguage(language)
+  }, [language])
 
   return (
     <KVContext.Provider
