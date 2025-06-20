@@ -42,7 +42,9 @@ const SettingRow = ({ setting, value }: SettingRowProps) => {
   } = useSettings()
   const { t } = useTranslation()
 
-  const { devices } = useMidiDevices()
+  const { devices } = useMidiDevices({
+    disableAutoConnect: true,
+  })
 
   // Render Dropdown inputs
   if (setting.key === 'midi-input-id') {

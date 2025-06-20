@@ -15,6 +15,7 @@ interface UseMidiDevicesProps {
   onNoteOn?: (note: number) => void
   onNoteOff?: (note: number) => void
   initialDeviceId?: number
+  disableAutoConnect?: boolean
 }
 
 interface UseMidiDevicesResult {
@@ -29,6 +30,7 @@ export function useMidiDevices({
   onNoteOn,
   onNoteOff,
   initialDeviceId,
+  disableAutoConnect = false,
 }: UseMidiDevicesProps = {}): UseMidiDevicesResult {
   const [devices, setDevices] = useState<MidiDevice[]>([])
   const [currentDevice, setCurrentDevice] = useState<MidiDevice | null>(null)
@@ -99,6 +101,11 @@ export function useMidiDevices({
     const setup = async () => {
       const deviceList = await refreshDevices()
 
+      // Skip auto-connection if disabled
+      if (disableAutoConnect) {
+        return
+      }
+
       // Connect to initial device if specified
       if (
         initialDeviceId !== undefined &&
@@ -119,7 +126,7 @@ export function useMidiDevices({
         unlistenRef.current()
       }
     }
-  }, [initialDeviceId, connectToDevice, refreshDevices])
+  }, [initialDeviceId, connectToDevice, refreshDevices, disableAutoConnect])
 
   return {
     devices,

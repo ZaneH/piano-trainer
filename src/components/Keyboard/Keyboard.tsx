@@ -1,7 +1,6 @@
 /**
  * Refactored version of the Keyboard component
  */
-import { useCallback, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { KeyboardShortcuts, MidiNumbers, Piano } from 'react-piano'
 import 'react-piano/dist/styles.css'
@@ -25,8 +24,7 @@ const KeyboardContainer = styled.div<{ hide: boolean }>`
 
 const Keyboard = () => {
   const { t } = useTranslation()
-  const { muteSound, showKeyboard, midiDevice, setMidiDevice, pianoSound } =
-    useSettings()
+  const { muteSound, showKeyboard, midiDevice, pianoSound } = useSettings()
   const { addToChordStack, removeFromChordStack } = useTrainer()
 
   // Setup MIDI range for keyboard

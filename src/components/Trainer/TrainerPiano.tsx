@@ -27,7 +27,7 @@ const InKeyMarker = styled.div`
 `
 
 const TrainerPiano = () => {
-  const { scale, isHardModeEnabled, noteTracker, getActiveNotes } = useTrainer()
+  const { scale, isHardModeEnabled, getActiveNotes } = useTrainer()
   const { t } = useTranslation()
 
   // Render the note label with Roman numerals
