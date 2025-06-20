@@ -45,20 +45,6 @@ export function normalizeNoteName(noteName: Note): Note {
 }
 
 /**
- * Gets a fifth interval from a MIDI number within a scale
- */
-export function getFifthFromMidiNumber(
-  midiNumber: MidiNumber,
-  scaleType: AvailableAllScalesType
-): MidiNumber {
-  // Calculate perfect fifth (7 semitones up)
-  const fifth = midiNumber + 7
-
-  // Ensure we're still within the scale
-  return fifth
-}
-
-/**
  * Ignores octave information from MIDI numbers in a scale
  */
 export function ignoreOctave(

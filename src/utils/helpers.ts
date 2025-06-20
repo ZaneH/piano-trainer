@@ -32,37 +32,6 @@ export const ignoreOctave = (scale: ScaleType): ScaleKeyType[] => {
 }
 
 /**
- * Given a midi number, return another midi number that's a fifth away.
- * @param midiNumber A midi number to get the fifth of
- * @param scale The scale to follow for this fifth (unnecessary?)
- * @returns A single midi number that is a fifth from the given midi number
- */
-export const getFifthFromMidiNumber = (
-  midiNumber: number,
-  scale: AvailableAllScalesType
-): number => {
-  const slicedKeys = Object.keys(AVAILABLE_SCALES[scale].keys)
-  const currentNoteIdx = slicedKeys.indexOf(midiNumber.toString())
-  let futureFifth = Number(
-    slicedKeys[(currentNoteIdx + SCALE_LENGTH / 2) % slicedKeys.length]
-  )
-  if (midiNumber > futureFifth) {
-    if (scale.includes('major')) {
-      futureFifth +=
-        SCALE_STEP_VALUES[
-          SCALE_STEPS['Major'][currentNoteIdx] as ScaleStepsType
-        ] + OCTAVE_LENGTH
-    } else if (scale.includes('minor')) {
-      futureFifth +=
-        SCALE_STEP_VALUES[
-          SCALE_STEPS['Minor'][currentNoteIdx] as ScaleStepsType
-        ] + OCTAVE_LENGTH
-    }
-  }
-  return futureFifth
-}
-
-/**
  * Given a MIDI number, calculate the previous fifth on the keyboard
  * and the next fifth as MIDI numbers.
  * @param midiNumber Get the fifths from this midi number
@@ -275,6 +244,48 @@ export const getSeventhChordFromMidiNumber = (
   seventhChordMidi.push(firstFinger, secondFinger, thirdFinger, fourthFinger)
 
   return seventhChordMidi
+}
+
+/**
+ * Given a midi number, return another midi number that's a fifth away.
+ * @param midiNumber A midi number to get the fifth of
+ * @param scale The scale to follow for this fifth
+ * @returns A single midi number that is a fifth from the given midi number
+ */
+export const getFifthFromMidiNumber = (
+  midiNumber: number,
+  scale: AvailableAllScalesType
+): number => {
+  const safeScale = swapKeyWithSynonym(scale)
+  const slicedKeys = Object.keys(AVAILABLE_SCALES[safeScale].keys)
+  const currentNoteIdx = slicedKeys.indexOf(midiNumber.toString())
+
+  if (currentNoteIdx === -1) {
+    // If the note isn't found in the scale, return the original note
+    return midiNumber
+  }
+
+  // Calculate the 5th degree of the scale (4 steps ahead in 0-indexed array)
+  let futureFifth = Number(
+    slicedKeys[(currentNoteIdx + SCALE_LENGTH / 2) % slicedKeys.length]
+  )
+
+  // If the fifth is lower than the original note, we need to adjust octave
+  if (midiNumber > futureFifth) {
+    if (scale.includes('major')) {
+      futureFifth +=
+        SCALE_STEP_VALUES[
+          SCALE_STEPS['Major'][currentNoteIdx] as ScaleStepsType
+        ] + OCTAVE_LENGTH
+    } else if (scale.includes('minor')) {
+      futureFifth +=
+        SCALE_STEP_VALUES[
+          SCALE_STEPS['Minor'][currentNoteIdx] as ScaleStepsType
+        ] + OCTAVE_LENGTH
+    }
+  }
+
+  return futureFifth
 }
 
 /**

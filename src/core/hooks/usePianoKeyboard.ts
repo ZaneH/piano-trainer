@@ -9,7 +9,7 @@ import {
   getTriadChordFromMidiNumber,
   getSeventhChordFromMidiNumber,
   getFifthFromMidiNumber,
-} from '../../utils/helpers'
+} from '../../utils'
 
 interface UsePianoKeyboardProps {
   firstNote: MidiNumber

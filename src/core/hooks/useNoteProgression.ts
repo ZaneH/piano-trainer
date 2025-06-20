@@ -8,7 +8,7 @@ import {
   ScaleType,
 } from '../models/types'
 import { getTriadChord, getSeventhChord } from '../services/chordService'
-import { getFifthFromMidiNumber } from '../services/noteService'
+import { getFifthFromMidiNumber } from '../../utils'
 
 interface UseNoteProgressionProps {
   scale: ScaleType
