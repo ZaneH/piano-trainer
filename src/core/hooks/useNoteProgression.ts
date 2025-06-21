@@ -21,7 +21,6 @@ interface UseNoteProgressionResult {
   noteTracker: NoteTracker
   resetProgress: () => void
   advanceNote: () => void
-  isCorrectNote: (midiNumber: number) => boolean
   getActiveNotes: () => number[]
 }
 
@@ -121,36 +120,6 @@ export function useNoteProgression({
     }))
   }, [])
 
-  // Check if a played note matches the expected next note
-  const isCorrectNote = useCallback(
-    (midiNumber: number): boolean => {
-      if (practiceMode === 'scales') {
-        return midiNumber === noteTracker.nextTargetMidiNumber
-      } else if (practiceMode === 'chords') {
-        const targetChord = getTriadChord(
-          noteTracker.nextTargetMidiNumber,
-          scale
-        )
-        return targetChord.includes(midiNumber)
-      } else if (practiceMode === 'seventhChords') {
-        const targetChord = getSeventhChord(
-          noteTracker.nextTargetMidiNumber,
-          scale
-        )
-        return targetChord.includes(midiNumber)
-      } else if (practiceMode === 'fifths') {
-        if (!scale.value) return false
-        const targetFifths = [
-          noteTracker.nextTargetMidiNumber,
-          getFifthFromMidiNumber(noteTracker.nextTargetMidiNumber, scale.value),
-        ]
-        return targetFifths.includes(midiNumber)
-      }
-      return false
-    },
-    [noteTracker.nextTargetMidiNumber, practiceMode, scale]
-  )
-
   // Get the active notes to display based on practice mode
   const getActiveNotes = useCallback((): number[] => {
     const targetNote = noteTracker.nextTargetMidiNumber
@@ -195,7 +164,6 @@ export function useNoteProgression({
     noteTracker,
     resetProgress,
     advanceNote,
-    isCorrectNote,
     getActiveNotes,
   }
 }
