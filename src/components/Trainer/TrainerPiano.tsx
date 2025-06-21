@@ -72,6 +72,9 @@ const TrainerPiano = () => {
         activeNotes={getActiveNotes()}
         keyWidthToHeight={0.33}
         renderNoteLabel={renderNoteLabel}
+        // NOTE: These are required by the Keyboard component
+        onPlayNoteInput={() => {}}
+        onStopNoteInput={() => {}}
       />
     </PianoContainer>
   )
