@@ -53,6 +53,14 @@ export function useNoteProgression({
 
   // Determine the next note based on direction and mode
   useEffect(() => {
+    if (noteTracker.noteCounter === 0) {
+      setNoteTracker((prev) => ({
+        ...prev,
+        nextTargetMidiNumber: prev.currentMidiNumber,
+      }))
+      return
+    }
+
     const scaleKeys = Object.keys(scale.keys).map(Number)
     const scaleStartMidiNumber = scaleKeys[0]
     const scaleEndMidiNumber = scaleKeys[scaleKeys.length - 1]

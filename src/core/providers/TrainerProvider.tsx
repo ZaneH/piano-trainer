@@ -91,7 +91,7 @@ const TrainerProvider: FC<TrainerProviderProps> = ({
 
         // Actions
         advanceNote,
-        resetProgression: resetProgress,
+        resetProgress,
         getActiveNotes,
       }}
     >

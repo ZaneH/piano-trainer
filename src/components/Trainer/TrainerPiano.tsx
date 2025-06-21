@@ -70,8 +70,6 @@ const TrainerPiano = () => {
           last: MidiNumbers.fromNote('c5'),
         }}
         activeNotes={getActiveNotes()}
-        onPlayNoteInput={() => {}}
-        onStopNoteInput={() => {}}
         keyWidthToHeight={0.33}
         renderNoteLabel={renderNoteLabel}
       />

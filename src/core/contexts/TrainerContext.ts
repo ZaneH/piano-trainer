@@ -31,7 +31,7 @@ interface TrainerContextType {
 
   // Actions
   advanceNote: () => void
-  resetProgression: () => void
+  resetProgress: () => void
   getActiveNotes: () => MidiNumber[]
 }
 
