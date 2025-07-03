@@ -95,6 +95,7 @@ fn open_midi_connection(
     }
 }
 
+#[cfg_attr(mobile, tauri::mobile_entry_point)]
 fn main() {
     let context: tauri::Context<Wry> = tauri::generate_context!();
 
@@ -107,7 +108,6 @@ fn main() {
             list_midi_connections
         ])
         .plugin(tauri_plugin_store::Builder::default().build())
-        .plugin(tauri_plugin_updater::Builder::new().build())
         .setup(move |app| {
             if cfg!(target_os = "macos") {
                 let menu = MenuBuilder::new(app)
@@ -120,13 +120,39 @@ fn main() {
                 let _ = app.set_menu(menu);
             }
 
+            #[cfg(desktop)]
+            let _ = app.handle().plugin(tauri_plugin_updater::Builder::new().build());
+
             let handle = app.handle().clone();
             tauri::async_runtime::spawn(async move {
-                let _response = handle.updater().expect("Updater failed").check().await;
+                update(handle).await.expect("failed to check for updates");
             });
 
             Ok(())
         })
         .run(context)
         .expect("error while running tauri application");
+}
+
+async fn update(app: tauri::AppHandle) -> tauri_plugin_updater::Result<()> {
+  if let Some(update) = app.updater()?.check().await? {
+    let mut downloaded = 0;
+
+    update
+      .download_and_install(
+        |chunk_length, content_length| {
+          downloaded += chunk_length;
+          println!("downloaded {downloaded} from {content_length:?}");
+        },
+        || {
+          println!("download finished");
+        },
+      )
+      .await?;
+
+    println!("update installed");
+    app.restart();
+  }
+
+  Ok(())
 }

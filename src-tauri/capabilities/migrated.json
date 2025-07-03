@@ -3,5 +3,10 @@
   "description": "permissions that were migrated from v1",
   "local": true,
   "windows": ["main"],
-  "permissions": ["core:default", "store:allow-load", "store:default"]
+  "permissions": [
+    "core:default",
+    "store:allow-load",
+    "store:default",
+    "updater:default"
+  ]
 }
