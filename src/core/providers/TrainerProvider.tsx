@@ -27,6 +27,9 @@ const TrainerProvider: FC<TrainerProviderProps> = ({
 }) => {
   // State for scale and practice modes
   const [scale, setScale] = useState<ScaleType>(initialScale)
+  const [selectedScales, setSelectedScales] = useState<ScaleType[]>([
+    initialScale,
+  ])
   const [practiceMode, setPracticeMode] =
     useState<AvailablePracticeModesType>(initialPracticeMode)
   const [currentScreen, setCurrentScreen] =
@@ -42,6 +45,9 @@ const TrainerProvider: FC<TrainerProviderProps> = ({
   const { noteTracker, advanceNote, resetProgress, getActiveNotes } =
     useNoteProgression({
       scale,
+      setScale,
+      selectedScales,
+      isShuffleModeEnabled,
       practiceMode,
       isPingPongMode: isScalePingPong,
       isHardMode: isHardModeEnabled,
@@ -74,6 +80,8 @@ const TrainerProvider: FC<TrainerProviderProps> = ({
         // Core state
         scale,
         setScale,
+        selectedScales,
+        setSelectedScales,
         noteTracker,
         chordStack,
         addToChordStack,

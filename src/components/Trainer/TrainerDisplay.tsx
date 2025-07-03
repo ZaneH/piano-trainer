@@ -22,7 +22,7 @@ const TrainerDisplayContainer = styled.div`
 `
 
 const TrainerSection = styled.div`
-  width: 20dvw;
+  width: 40dvw;
   min-width: 250px;
   display: flex;
   flex-direction: column;
@@ -55,6 +55,8 @@ const TrainerDisplay = () => {
   const {
     scale,
     setScale,
+    selectedScales,
+    setSelectedScales,
     practiceMode,
     setPracticeMode,
     setCurrentScreen,
@@ -90,6 +92,50 @@ const TrainerDisplay = () => {
     []
   )
 
+  const handleScaleChange = (selectedOption: any) => {
+    if (isShuffleModeEnabled) {
+      // Multi-select mode
+      const newSelection =
+        selectedOption?.map(
+          (option: any) =>
+            AVAILABLE_SCALES[option.value as keyof typeof AVAILABLE_SCALES]
+        ) || []
+
+      if (newSelection.length > 0) {
+        setSelectedScales?.(newSelection)
+      }
+    } else {
+      // Single select mode
+      setScale?.(
+        AVAILABLE_SCALES[selectedOption?.value as keyof typeof AVAILABLE_SCALES]
+      )
+    }
+  }
+
+  const getSelectValue = () => {
+    if (isShuffleModeEnabled) {
+      // Return array of selected scales for multi-select
+      return (
+        selectedScales?.map((scale) => ({
+          label: t(`scales.${scale.value}`),
+          value: scale.value,
+        })) || []
+      )
+    } else {
+      // Return single scale
+      return {
+        label: t(
+          `scales.${
+            AVAILABLE_SCALES[scale?.value as keyof typeof AVAILABLE_SCALES]
+              .value
+          }`
+        ),
+        value:
+          AVAILABLE_SCALES[scale?.value as keyof typeof AVAILABLE_SCALES].value,
+      }
+    }
+  }
+
   return (
     <TrainerDisplayContainer>
       <TrainerSection>
@@ -99,22 +145,9 @@ const TrainerDisplay = () => {
         <Select
           filterOption={fromStartFilter}
           options={scaleOptions}
-          value={{
-            label: t(
-              `scales.${
-                AVAILABLE_SCALES[scale?.value as keyof typeof AVAILABLE_SCALES]
-                  .value
-              }`
-            ),
-            value:
-              AVAILABLE_SCALES[scale?.value as keyof typeof AVAILABLE_SCALES]
-                .value,
-          }}
-          onChange={(e) => {
-            setScale?.(
-              AVAILABLE_SCALES[e?.value as keyof typeof AVAILABLE_SCALES]
-            )
-          }}
+          value={getSelectValue()}
+          onChange={handleScaleChange}
+          isMulti={isShuffleModeEnabled}
         />
         <div>
           <IconContainer

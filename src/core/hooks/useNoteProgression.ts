@@ -15,6 +15,9 @@ import {
 
 interface UseNoteProgressionProps {
   scale: ScaleType
+  setScale: (scale: ScaleType) => void
+  selectedScales: ScaleType[]
+  isShuffleModeEnabled: boolean
   practiceMode: AvailablePracticeModesType
   isPingPongMode: boolean
   isHardMode: boolean
@@ -29,6 +32,9 @@ interface UseNoteProgressionResult {
 
 export function useNoteProgression({
   scale,
+  setScale,
+  selectedScales,
+  isShuffleModeEnabled,
   practiceMode,
   isPingPongMode,
   isHardMode,
@@ -54,6 +60,12 @@ export function useNoteProgression({
     setIsGoingDown(false)
   }, [scale])
 
+  const switchToRandomScale = useCallback(() => {
+    const randomScale =
+      selectedScales[Math.floor(Math.random() * selectedScales.length)]
+    setScale(randomScale)
+  }, [selectedScales, setScale, resetProgress])
+
   // Determine the next note based on direction and mode
   useEffect(() => {
     if (noteTracker.noteCounter === 0) {
@@ -72,6 +84,11 @@ export function useNoteProgression({
       // Going down in ping-pong mode
       if (noteTracker.currentMidiNumber === scaleStartMidiNumber) {
         setIsGoingDown(false)
+
+        // If shuffle is enabled, switch to a random scale
+        if (isShuffleModeEnabled) {
+          switchToRandomScale()
+        }
       } else {
         const nextIndex = scaleKeys.indexOf(noteTracker.currentMidiNumber) - 1
         setNoteTracker((prev) => ({
@@ -92,6 +109,11 @@ export function useNoteProgression({
             nextTargetMidiNumber: scaleKeys[nextIndex],
           }))
         } else {
+          // If shuffle is enabled, switch to a random scale
+          if (isShuffleModeEnabled) {
+            switchToRandomScale()
+          }
+
           // Loop back to beginning
           setNoteTracker((prev) => ({
             ...prev,
@@ -120,6 +142,8 @@ export function useNoteProgression({
     isPingPongMode,
     isHardMode,
     isGoingDown,
+    isShuffleModeEnabled,
+    switchToRandomScale,
   ])
 
   // Advance to the next note
