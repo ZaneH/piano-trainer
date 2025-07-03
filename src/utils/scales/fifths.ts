@@ -1,11 +1,10 @@
-import { MajorMinorType } from '../../components/Quiz/Questions'
+import { CIRCLE_OF_FIFTHS } from '../../core/models/constants'
 
-const CIRCLE_OF_FIFTHS: { [key in MajorMinorType]: string[] } = {
-  Major: ['C', 'G', 'D', 'A', 'E', 'B', 'F#', 'Db', 'Ab', 'Eb', 'Bb', 'F'],
-  Minor: ['A', 'E', 'B', 'F#', 'C#', 'G#', 'D#', 'Bb', 'F', 'C', 'G', 'D'],
-}
-
-const isAdjacentFifth = (fifths: string[], base: string, test: string) => {
+const isAdjacentFifth = (
+  fifths: typeof CIRCLE_OF_FIFTHS,
+  base: string,
+  test: string
+) => {
   if (!Array.isArray(fifths)) {
     return false
   }
@@ -26,4 +25,4 @@ const isAdjacentFifth = (fifths: string[], base: string, test: string) => {
   return fifths[behindIdx] === base || fifths[frontIdx] === base
 }
 
-export { CIRCLE_OF_FIFTHS, isAdjacentFifth }
+export { isAdjacentFifth }

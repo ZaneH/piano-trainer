@@ -1,10 +1,11 @@
 import { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
-import { AVAILABLE_SETTINGS, PTSettingType } from '../../utils'
+import { PTSettingType } from '../../utils'
 import { useSettings } from '../../core/contexts/SettingsContext'
 import { useSidebar } from '../../core/contexts/SidebarContext'
 import SettingRow from './SettingRow'
+import { AVAILABLE_SETTINGS } from '../../core/models/constants'
 
 const CoverScreen = styled.div`
   position: absolute;

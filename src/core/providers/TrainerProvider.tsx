@@ -10,7 +10,7 @@ import {
   ScaleType,
 } from '../models/types'
 import { useNoteProgression } from '../hooks/useNoteProgression'
-import { AVAILABLE_SCALES } from '../../utils'
+import { AVAILABLE_SCALES } from '../services/scaleService'
 
 interface TrainerProviderProps {
   children: ReactNode

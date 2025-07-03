@@ -27,6 +27,7 @@
   },
   "scripts": {
     "start": "cross-env BROWSER=none react-scripts start",
+    "tauri:dev": "cross-env BROWSER=none tauri dev",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",

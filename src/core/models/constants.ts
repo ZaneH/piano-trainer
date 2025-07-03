@@ -1,28 +1,42 @@
 /**
- * Constants for scales and settings
+ * Core constants for the piano trainer application
  */
-import { MajorMinorType, PTSettingType, ScaleStepsType } from '../models/types'
 
-// Core constants
+import type { AvailablePracticeModesType, PTSettingType } from './types'
+
+// Scale constants
 export const SCALE_LENGTH = 8
 export const OCTAVE_LENGTH = 12
+export const SCALE_STEP_VALUES = { w: 2, h: 1 } as const
+export const SCALE_STEPS = {
+  Major: ['w', 'w', 'h', 'w', 'w', 'w', 'h'],
+  Minor: ['w', 'h', 'w', 'w', 'h', 'w', 'w'], // Natural minor
+} as const
 
-// Scale step values and patterns
-export const SCALE_STEP_VALUES: { [key in ScaleStepsType]: number } = {
-  w: 2,
-  h: 1,
-}
+export const CIRCLE_OF_FIFTHS = [
+  'C',
+  'G',
+  'D',
+  'A',
+  'E',
+  'B',
+  'F#',
+  'C#',
+  'G#',
+  'D#',
+  'A#',
+  'F',
+] as const
 
-export const SCALE_STEPS: { [key in MajorMinorType]: string[] } = {
-  Major: ['w', 'w', 'h', 'w', 'w', 'w', 'h', 'w'],
-  Minor: ['w', 'h', 'w', 'w', 'h', 'w', 'w', 'w'],
-}
-
-// Settings
-export const AVAILABLE_SETTINGS: readonly PTSettingType[] = [
+export const AVAILABLE_SETTINGS: PTSettingType[] = [
   {
     key: 'piano-sound',
     type: 'select',
+    options: [
+      'acoustic_grand_piano',
+      'acoustic_guitar_nylon',
+      'electric_piano_1',
+    ] as const,
   },
   {
     key: 'show-keyboard',
@@ -39,15 +53,31 @@ export const AVAILABLE_SETTINGS: readonly PTSettingType[] = [
   {
     key: 'language',
     type: 'select',
+    options: ['en', 'es', 'pt'] as const,
   },
   {
     key: 'is-sentry-on',
     type: 'checkbox',
   },
-] as const
+]
 
-// Circle of Fifths
-export const CIRCLE_OF_FIFTHS: { [key in MajorMinorType]: string[] } = {
-  Major: ['C', 'G', 'D', 'A', 'E', 'B', 'F#', 'C#', 'F', 'Bb', 'Eb', 'Ab'],
-  Minor: ['a', 'e', 'b', 'f#', 'c#', 'g#', 'd#', 'a#', 'd', 'g', 'c', 'f'],
-}
+export const AVAILABLE_MODES: {
+  [key in AvailablePracticeModesType]: { value: string; label: string }
+} = {
+  scales: {
+    label: 'Scales',
+    value: 'scales',
+  },
+  chords: {
+    label: 'Chords',
+    value: 'chords',
+  },
+  seventhChords: {
+    label: 'Seventh Chords',
+    value: 'seventhChords',
+  },
+  fifths: {
+    label: 'Fifths',
+    value: 'fifths',
+  },
+} as const

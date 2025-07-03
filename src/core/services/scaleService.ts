@@ -5,126 +5,77 @@ import {
   MajorMinorType,
   ScaleType,
   AvailableAllScalesType,
-  Note,
   ScaleKeyType,
   AvailableMajorScalesType,
 } from '../models/types'
-import { SCALE_STEP_VALUES, SCALE_STEPS } from '../models/constants'
-import { MidiNumbers } from 'react-piano'
-import { normalizeNoteName } from './noteService'
 
-/**
- * Creates a scale based on a starting note, type, and octave
- */
-export function createScale(
-  startingNote: Note,
-  type: MajorMinorType,
-  octave: number = 4
-): ScaleType {
-  const steps = SCALE_STEPS[type]
-  const midiStart = MidiNumbers.fromNote(
-    `${normalizeNoteName(startingNote.toLowerCase())}${octave}`
-  )
-
-  let currentMidi = midiStart
-  const keys: ScaleKeyType = {}
-
-  // Roman numerals for scale degrees
-  const scaleNumerals = ['I', 'ii', 'iii', 'IV', 'V', 'vi', 'viiº', 'I']
-
-  // Build the scale
-  for (let i = 0; i < steps.length; i++) {
-    keys[currentMidi] = scaleNumerals[i]
-
-    if (i < steps.length - 1) {
-      const step = steps[i] as 'w' | 'h'
-      currentMidi += SCALE_STEP_VALUES[step]
-    }
-  }
-
-  // Generate the scale name
-  let scaleName = startingNote
-  if (type === 'Major') {
-    scaleName = `${startingNote} Major`
-  } else {
-    scaleName = `${startingNote} Minor`
-  }
-
-  // Generate the scale value (kebab case)
-  const noteValue = startingNote
-    .toLowerCase()
-    .replace('#', '-sharp')
-    .replace('b', '-flat')
-  const typeValue = type.toLowerCase()
-
-  return {
-    label: scaleName,
-    value: `${noteValue}-${typeValue}` as AvailableAllScalesType,
-    keys,
-  }
-}
-
-/**
- * Major scale root notes with their exact MIDI numbers from the original hardcoded scales
- * This ensures we match the original implementation exactly
- */
-const MAJOR_SCALE_MIDI_ROOTS = {
-  'c-flat-major': 59, // Cb Major
-  'c-major': 48, // C Major
-  'c-sharp-major': 49, // C# Major
-  'd-major': 50, // D Major
-  'e-flat-major': 51, // Eb Major
-  'e-major': 52, // E Major
-  'f-major': 53, // F Major
-  'f-sharp-major': 54, // F# Major
-  'g-flat-major': 54, // Gb Major (enharmonic with F#)
-  'g-major': 55, // G Major
-  'a-flat-major': 56, // Ab Major
-  'a-major': 57, // A Major
-  'b-flat-major': 58, // Bb Major
-  'b-major': 59, // B Major
+const SCALE_LENGTH = 8
+const OCTAVE_LENGTH = 12
+const SCALE_STEP_VALUES = { w: 2, h: 1 } as const
+const SCALE_STEPS = {
+  Major: ['w', 'w', 'h', 'w', 'w', 'w', 'h'],
 } as const
 
 /**
- * Minor natural scale root notes with their MIDI numbers from the original hardcoded scales
+ * Major scale root notes with their exact MIDI numbers
+ */
+const MAJOR_SCALE_MIDI_ROOTS = {
+  'c-flat-major': 59,
+  'c-major': 48,
+  'c-sharp-major': 49,
+  'd-major': 50,
+  'e-flat-major': 51,
+  'e-major': 52,
+  'f-major': 53,
+  'f-sharp-major': 54,
+  'g-flat-major': 54, // Gb Major (enharmonic with F#)
+  'g-major': 55,
+  'a-flat-major': 56,
+  'a-major': 57,
+  'b-flat-major': 58,
+  'b-major': 59,
+} as const
+
+/**
+ * Minor natural scale root notes with their MIDI numbers
  */
 const MINOR_NATURAL_SCALE_MIDI_ROOTS = {
-  'c-minor-natural': 48, // C Minor Natural
-  'c-sharp-minor-natural': 49, // C# Minor Natural
-  'd-minor-natural': 50, // D Minor Natural
-  'd-sharp-minor-natural': 51, // D# Minor Natural
+  'c-minor-natural': 48,
+  'c-sharp-minor-natural': 49,
+  'd-minor-natural': 50,
+  'd-sharp-minor-natural': 51,
   'e-flat-minor-natural': 51, // Eb Minor Natural (enharmonic with D#)
-  'e-minor-natural': 52, // E Minor Natural
-  'f-minor-natural': 53, // F Minor Natural
-  'f-sharp-minor-natural': 54, // F# Minor Natural
-  'g-minor-natural': 55, // G Minor Natural
-  'g-sharp-minor-natural': 56, // G# Minor Natural
+  'e-minor-natural': 52,
+  'f-minor-natural': 53,
+  'f-sharp-minor-natural': 54,
+  'g-minor-natural': 55,
+  'g-sharp-minor-natural': 56,
   'a-flat-minor-natural': 56, // Ab Minor Natural (enharmonic with G#)
-  'a-minor-natural': 57, // A Minor Natural
-  'a-sharp-minor-natural': 58, // A# Minor Natural
+  'a-minor-natural': 57,
+  'a-sharp-minor-natural': 58,
   'b-flat-minor-natural': 58, // Bb Minor Natural (enharmonic with A#)
-  'b-minor-natural': 59, // B Minor Natural
+  'b-minor-natural': 59,
 } as const
 
 /**
  * Minor melodic scale root notes with their MIDI numbers from the original hardcoded scales
  */
 const MINOR_MELODIC_SCALE_MIDI_ROOTS = {
-  'c-minor-melodic': 48, // C Minor Melodic
-  'c-sharp-minor-melodic': 49, // C# Minor Melodic
-  'd-minor-melodic': 50, // D Minor Melodic
-  'd-sharp-minor-melodic': 51, // D# Minor Melodic
+  'c-minor-melodic': 48,
+  'c-sharp-minor-melodic': 49,
+  'd-minor-melodic': 50,
+  'd-sharp-minor-melodic': 51,
   'e-flat-minor-melodic': 51, // Eb Minor Melodic (enharmonic with D#)
-  'e-minor-melodic': 52, // E Minor Melodic
-  'f-minor-melodic': 53, // F Minor Melodic
-  'f-sharp-minor-melodic': 54, // F# Minor Melodic
-  'g-minor-melodic': 55, // G Minor Melodic
-  'g-sharp-minor-melodic': 56, // G# Minor Melodic
+  'e-minor-melodic': 52,
+  'f-minor-melodic': 53,
+  'f-sharp-minor-melodic': 54,
+  'g-minor-melodic': 55,
+  'g-sharp-minor-melodic': 56,
   'a-flat-minor-melodic': 56, // Ab Minor Melodic (enharmonic with G#)
-  'a-minor-melodic': 57, // A Minor Melodic
-  'a-sharp-minor-melodic': 58, // A# Minor Melodic
+  'a-minor-melodic': 57,
+  'a-sharp-minor-melodic': 58,
   'b-flat-minor-melodic': 58, // Bb Minor Melodic (enharmonic with A#)
-  'b-minor-melodic': 59, // B Minor Melodic
+  'b-minor-melodic': 59,
 } as const
 
 /**
@@ -180,9 +131,6 @@ const SCALE_NOTE_NAMES = {
   'b-minor-melodic': 'B',
 } as const
 
-/**
- * Creates a major scale using the exact MIDI numbers from the original implementation
- */
 function createMajorScaleFromMidi(
   scaleId: AvailableMajorScalesType
 ): ScaleType {
@@ -211,9 +159,6 @@ function createMajorScaleFromMidi(
   }
 }
 
-/**
- * Creates a minor natural scale using exact MIDI numbers from the original implementation
- */
 function createMinorNaturalScaleFromMidi(scaleId: string): ScaleType {
   const midiStart =
     MINOR_NATURAL_SCALE_MIDI_ROOTS[
@@ -238,9 +183,7 @@ function createMinorNaturalScaleFromMidi(scaleId: string): ScaleType {
     keys,
   }
 }
-/**
- * Creates a minor melodic scale using exact MIDI numbers from the original implementation
- */
+
 function createMinorMelodicScaleFromMidi(scaleId: string): ScaleType {
   const midiStart =
     MINOR_MELODIC_SCALE_MIDI_ROOTS[
@@ -266,9 +209,6 @@ function createMinorMelodicScaleFromMidi(scaleId: string): ScaleType {
   }
 }
 
-/**
- * Generate all major scales dynamically using the exact MIDI mappings
- */
 export function generateAllMajorScales(): Record<
   AvailableMajorScalesType,
   ScaleType
@@ -283,9 +223,7 @@ export function generateAllMajorScales(): Record<
 
   return scales as Record<AvailableMajorScalesType, ScaleType>
 }
-/**
- * Generate all minor natural scales dynamically using the exact MIDI mappings
- */
+
 export function generateAllMinorNaturalScales(): Record<string, ScaleType> {
   const scales: Record<string, ScaleType> = {}
 
@@ -296,9 +234,6 @@ export function generateAllMinorNaturalScales(): Record<string, ScaleType> {
   return scales
 }
 
-/**
- * Generate all minor melodic scales dynamically using the exact MIDI mappings
- */
 export function generateAllMinorMelodicScales(): Record<string, ScaleType> {
   const scales: Record<string, ScaleType> = {}
 
@@ -328,4 +263,150 @@ export function getMinorNaturalScale(scaleId: string): ScaleType {
  */
 export function getMinorMelodicScale(scaleId: string): ScaleType {
   return createMinorMelodicScaleFromMidi(scaleId)
+}
+
+/**
+ * Instead of duplicating d-flat-major and c-sharp-major (etc.) as keys
+ * we'll use this function to convert unsupported keys to supported keys
+ * @param key A potential match for AvailableAllScalesType key
+ */
+function swapKeyWithSynonym(key: string): AvailableAllScalesType {
+  switch (key) {
+    case 'd-flat-major': {
+      return 'c-sharp-major'
+    }
+    case 'c-flat-major': {
+      return 'b-major'
+    }
+    case 'd-sharp-major': {
+      return 'e-flat-major'
+    }
+    case 'f-sharp-major':
+    case 'g-flat-major':
+    default: {
+      return key as AvailableAllScalesType
+    }
+  }
+}
+
+/**
+ * Given a MIDI number, calculate the previous fifth on the keyboard
+ * and the next fifth as MIDI numbers.
+ * @param midiNumber Get the fifths from this midi number
+ * @param scale The fifths will fall in this key
+ * @returns An array with 2 fifths as midi numbers
+ */
+export function getBothFifthsFromMidiNumber(
+  midiNumber: number,
+  scale: AvailableAllScalesType,
+  availableScales: { [key in AvailableAllScalesType]: ScaleType }
+): number[] {
+  const safeScale = swapKeyWithSynonym(scale)
+  try {
+    const slicedKeys = Object.keys(availableScales[safeScale].keys)
+    slicedKeys.slice(-1, 1)
+    const currentNoteIdx = slicedKeys.indexOf(midiNumber.toString())
+    let futureFifth = Number(
+      slicedKeys[(currentNoteIdx + SCALE_LENGTH / 2) % slicedKeys.length]
+    )
+    let pastFifth = Number(
+      slicedKeys.reverse()[
+        (currentNoteIdx + SCALE_LENGTH / 2) % slicedKeys.length
+      ]
+    )
+
+    return [pastFifth, futureFifth]
+  } catch (e) {
+    console.error('Likely missing a scale with key', scale)
+    return []
+  }
+}
+
+/**
+ * Given a midi number, return another midi number that's a fifth away.
+ * @param midiNumber A midi number to get the fifth of
+ * @param scale The scale to follow for this fifth
+ * @returns A single midi number that is a fifth from the given midi number
+ */
+export function getFifthFromMidiNumber(
+  midiNumber: number,
+  scale: AvailableAllScalesType,
+  availableScales: { [key in AvailableAllScalesType]: ScaleType }
+): number {
+  const safeScale = swapKeyWithSynonym(scale)
+  const slicedKeys = Object.keys(availableScales[safeScale].keys)
+  const currentNoteIdx = slicedKeys.indexOf(midiNumber.toString())
+
+  if (currentNoteIdx === -1) {
+    // If the note isn't found in the scale, return the original note
+    return midiNumber
+  }
+
+  // Calculate the 5th degree of the scale (4 steps ahead in 0-indexed array)
+  let futureFifth = Number(
+    slicedKeys[(currentNoteIdx + SCALE_LENGTH / 2) % slicedKeys.length]
+  )
+
+  // If the fifth is lower than the original note, we need to adjust octave
+  if (midiNumber > futureFifth) {
+    if (scale.includes('major')) {
+      futureFifth += OCTAVE_LENGTH
+    } else if (scale.includes('minor')) {
+      futureFifth += OCTAVE_LENGTH
+    }
+  }
+
+  return futureFifth
+}
+
+/**
+ * Given the note in plain text, create a valid key for our Scales object
+ * @param note The plain string of the key ex. 'c', 'Bb', 'G'
+ * @param majMin (Optional) To determine which scale is used
+ */
+export function convertKeyToScalesKey(
+  note: string,
+  majMin: MajorMinorType = 'Major'
+): AvailableAllScalesType {
+  // Regex matches c#, C#, bb -- not BB, Abb, z
+  const regexMatches = note.toLowerCase().match(/^([A-G]|[a-g])(#|b)?$/)
+  if (!regexMatches) {
+    console.error(
+      'Invalid note given to convertKeyToScalesKey. Defaulting to C Major.'
+    )
+    return 'c-major'
+  } else {
+    let outputKey = regexMatches[1] // First regex group
+    switch (regexMatches[2]) {
+      case '#': {
+        outputKey += '-sharp'
+        break
+      }
+      case 'b': {
+        outputKey += '-flat'
+        break
+      }
+      default: {
+        break
+      }
+    }
+
+    if (majMin === 'Minor') {
+      outputKey += `-${majMin.toLowerCase()}-natural`
+    } else {
+      outputKey += `-${majMin.toLowerCase()}`
+    }
+
+    return outputKey as AvailableAllScalesType
+  }
+}
+
+const _availableScales = {
+  ...generateAllMajorScales(),
+  ...generateAllMinorNaturalScales(),
+  ...generateAllMinorMelodicScales(),
+}
+
+export const AVAILABLE_SCALES = _availableScales as {
+  [key in AvailableAllScalesType]: ScaleType
 }

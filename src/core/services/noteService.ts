@@ -3,7 +3,8 @@
  */
 import { MidiNumbers } from 'react-piano'
 import { MidiNumber, Note } from '../models/types'
-import { OCTAVE_LENGTH } from '../models/constants'
+import { OCTAVE_LENGTH, CIRCLE_OF_FIFTHS } from '../models/constants'
+import { MajorMinorType } from '../models/types'
 
 /**
  * Converts a MIDI number to a note name without octave
@@ -59,4 +60,46 @@ export function ignoreOctave(
   }
 
   return result
+}
+
+/**
+ * Returns a random piano note as a string.
+ * @returns A random note (ex. C#, Db, F#, Gb)
+ */
+export function getRandomKey(): string {
+  const allKeys = 'ABCDEFG'
+  const allMods = ['', '#', 'b']
+  let potentialKey = ''
+
+  while (
+    potentialKey === 'E#' ||
+    potentialKey === 'B#' ||
+    potentialKey === 'Fb' ||
+    potentialKey === ''
+  ) {
+    potentialKey = `${allKeys[Math.floor(Math.random() * allKeys.length)]}${
+      allMods[Math.floor(Math.random() * allMods.length)]
+    }`
+  }
+
+  return potentialKey
+}
+
+/**
+ * Helper function to generate a random `MajorMinorType` value.
+ * @returns Either 'Major' or 'Minor'
+ */
+export function getRandomMajMin(): MajorMinorType {
+  const options: MajorMinorType[] = ['Minor', 'Major']
+  return options[Math.floor(Math.random() * options.length)]
+}
+
+/**
+ * Helper function to generate a random note that will be on the Circle of Fifths.
+ * @param majMin Which scale to use to generate a random fifth note
+ * @returns A random note that's on the Circle of Fifths (ex. C, A, E, F#, etc.)
+ */
+export function getRandomFifth(): string {
+  const fifths = CIRCLE_OF_FIFTHS
+  return fifths[Math.floor(Math.random() * fifths.length)]
 }

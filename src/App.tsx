@@ -8,7 +8,6 @@ import Keyboard from './components/Keyboard'
 import { TrainerDisplay, TrainerPiano } from './components/Trainer'
 import { Quiz } from './components/Quiz'
 
-// Import i18n configuration
 import './i18n/config'
 
 const PracticeScreenLayout = styled.div`

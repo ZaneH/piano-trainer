@@ -1,14 +1,6 @@
-import { AvailableAllScalesType } from './constants'
+export { AVAILABLE_SCALES } from '../core/services/scaleService'
+export type { AvailableAllScalesType } from '../core/models/types'
+export * from './sounds'
+export * from './languages'
 
-export type ScaleKeyType = { [midi: number]: string }
-export type ScaleType = {
-  label?: string
-  value?: AvailableAllScalesType
-  keys: ScaleKeyType
-}
-
-export * from './constants'
-export * from './modes/practice'
-export * from './scales/generated-major'
-export * from './helpers'
-export * from './scales/fifths'
+export type { PTSettingType, MidiDevice } from '../core/models/types'

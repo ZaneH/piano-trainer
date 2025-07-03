@@ -15,27 +15,22 @@ interface KVProviderProps {
 }
 
 const KVProvider: FC<KVProviderProps> = ({ children }) => {
-  // Piano settings
   const [pianoSound, setPianoSound] = useState<string>('acoustic_grand_piano')
   const [showKeyboard, setShowKeyboard] = useState<boolean>(true)
   const [muteSound, setMuteSound] = useState<boolean>(false)
 
-  // MIDI settings
   const [midiDevice, setMidiDevice] = useState<MidiDevice | null>(null)
 
-  // App settings
   const [language, setLanguage] = useState<string>('en')
   const [isSentryEnabled, setIsSentryEnabled] = useState<boolean>(true)
   const { i18n } = useTranslation()
 
-  // Generic setting handlers
   const setSetting = useCallback(
     async <T,>(key: PTSettingsKeyType, value: T) => {
       const store = await storePromise
       await store.set(key, value)
       await store.save()
 
-      // Update local state based on the setting
       switch (key) {
         case 'piano-sound':
           setPianoSound(value as string)
@@ -108,30 +103,19 @@ const KVProvider: FC<KVProviderProps> = ({ children }) => {
   return (
     <KVContext.Provider
       value={{
-        // Piano settings
         pianoSound,
         setPianoSound: (sound) => setSetting('piano-sound', sound),
-
-        // Display settings
         showKeyboard,
         setShowKeyboard: (show) => setSetting('show-keyboard', show),
-
-        // Sound settings
         muteSound,
         setMuteSound: (mute) => setSetting('mute-sound', mute),
-
-        // MIDI settings
         midiDevice,
         setMidiDevice: (device) =>
           device && setSetting('midi-input-id', device.id),
-
-        // App settings
         language,
         setLanguage: (lang) => setSetting('language', lang),
         isSentryEnabled,
         setIsSentryEnabled: (enabled) => setSetting('is-sentry-on', enabled),
-
-        // Generic settings
         setSetting,
         getSetting,
       }}

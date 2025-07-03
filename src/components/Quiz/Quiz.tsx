@@ -6,26 +6,28 @@ import { MidiNumbers, Piano } from 'react-piano'
 import styled from 'styled-components'
 import { useSettings } from '../../core/contexts/SettingsContext'
 import { useTrainer } from '../../core/contexts/TrainerContext'
+import { CIRCLE_OF_FIFTHS } from '../../core/models/constants'
 import {
-  CIRCLE_OF_FIFTHS,
   convertKeyToScalesKey,
   getBothFifthsFromMidiNumber,
+  AVAILABLE_SCALES,
+} from '../../core/services/scaleService'
+import {
   getRandomFifth,
   getRandomKey,
-  isAdjacentFifth,
-  MidiDevice,
   midiNumberToNote,
-  shuffle,
-} from '../../utils'
+} from '../../core/services/noteService'
+import { MidiDevice } from '../../utils'
 import {
   formatQuestion,
   getRandomQuizQuestion,
-  MajorMinorType,
   QuestionTypeType,
 } from './Questions'
 import QuizHeader from './QuizHeader'
 import { QuizOption } from './QuizOption'
 import { normalizeNoteName } from '../../core/services/noteService'
+import { isAdjacentFifth } from '../../utils/scales/fifths'
+import { shuffle } from '../../utils/shuffle'
 
 const QuizPage = styled.div`
   height: 100%;
@@ -68,21 +70,18 @@ const Quiz = () => {
   const { t } = useTranslation()
 
   // Get a random note that's appropriate for the question type
-  const getRandomNote = useCallback(
-    (questionType: QuestionTypeType, majMin?: MajorMinorType) => {
-      if (questionType === 'fifth') {
-        return getRandomFifth(majMin!)
-      } else if (questionType === 'key') {
-        return getRandomKey()
-      } else {
-        return getRandomKey()
-      }
-    },
-    []
-  )
+  const getRandomNote = useCallback((questionType: QuestionTypeType) => {
+    if (questionType === 'fifth') {
+      return getRandomFifth()
+    } else if (questionType === 'key') {
+      return getRandomKey()
+    } else {
+      return getRandomKey()
+    }
+  }, [])
 
   const [currentQuestionKey, setCurrentQuestionKey] = useState<string>(
-    getRandomNote(currentQuestion.type, currentQuestion.majMin)
+    getRandomNote(currentQuestion.type)
   )
 
   const [answerChoices, setAnswerChoices] = useState<string[]>([])
@@ -149,9 +148,9 @@ const Quiz = () => {
     setActiveNotes({})
     setCurrentQuestion(() => {
       const newQ = getRandomQuizQuestion()
-      let newKey = getRandomNote(newQ.type, newQ.majMin)
+      let newKey = getRandomNote(newQ.type)
       while (newKey === currentQuestionKey) {
-        newKey = getRandomNote(newQ.type, newQ.majMin)
+        newKey = getRandomNote(newQ.type)
       }
       setCurrentQuestionKey(newKey)
       return newQ
@@ -162,7 +161,8 @@ const Quiz = () => {
     if (currentQuestion.type === 'fifth') {
       return getBothFifthsFromMidiNumber(
         MidiNumbers.fromNote(`${normalizeNoteName(currentQuestionKey)}3`),
-        convertKeyToScalesKey(currentQuestionKey, currentQuestion.majMin)
+        convertKeyToScalesKey(currentQuestionKey, currentQuestion.majMin),
+        AVAILABLE_SCALES
       )
     } else if (currentQuestion.type === 'key') {
       return [MidiNumbers.fromNote(`${normalizeNoteName(currentQuestionKey)}3`)]
@@ -220,14 +220,11 @@ const Quiz = () => {
         // add random answer choices
         const newOptions = []
         while (newOptions.length < 4) {
-          const potentialOption = getRandomNote(
-            currentQuestion.type,
-            currentQuestion.majMin
-          )
+          const potentialOption = getRandomNote(currentQuestion.type)
           if (
             newOptions.indexOf(potentialOption) === -1 &&
             !isAdjacentFifth(
-              CIRCLE_OF_FIFTHS[currentQuestion.majMin!],
+              CIRCLE_OF_FIFTHS,
               currentQuestionKey,
               potentialOption
             )
@@ -239,12 +236,9 @@ const Quiz = () => {
         // add correct answer & shuffle
         let correctAnswer = ''
         while (correctAnswer === '') {
-          const randomNote = getRandomNote(
-            currentQuestion.type,
-            currentQuestion.majMin
-          )
+          const randomNote = getRandomNote(currentQuestion.type)
           const isFifth = isAdjacentFifth(
-            CIRCLE_OF_FIFTHS[currentQuestion.majMin!],
+            CIRCLE_OF_FIFTHS,
             currentQuestionKey,
             randomNote
           )
@@ -270,7 +264,7 @@ const Quiz = () => {
   const fifthAnswers = useMemo(() => {
     return answerChoices.map((co, i) => {
       const isCorrect = isAdjacentFifth(
-        CIRCLE_OF_FIFTHS[currentQuestion.majMin!],
+        CIRCLE_OF_FIFTHS,
         currentQuestionKey,
         co
       )

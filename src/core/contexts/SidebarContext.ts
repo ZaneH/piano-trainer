@@ -5,13 +5,11 @@ export interface SidebarContextType {
   setIsOpen: (open: boolean) => void
 }
 
-// Create the context with default values
 export const SidebarContext = createContext<SidebarContextType>({
   isOpen: false,
   setIsOpen: () => {},
 })
 
-// Custom hook to use the sidebar context
 export function useSidebar(): SidebarContextType {
   const context = useContext(SidebarContext)
   if (!context) {

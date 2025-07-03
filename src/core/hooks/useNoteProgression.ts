@@ -8,7 +8,10 @@ import {
   ScaleType,
 } from '../models/types'
 import { getTriadChord, getSeventhChord } from '../services/chordService'
-import { getFifthFromMidiNumber } from '../../utils'
+import {
+  getFifthFromMidiNumber,
+  AVAILABLE_SCALES,
+} from '../services/scaleService'
 
 interface UseNoteProgressionProps {
   scale: ScaleType
@@ -144,7 +147,10 @@ export function useNoteProgression({
         return prevNote ? getSeventhChord(prevNote, scale) : []
       } else if (practiceMode === 'fifths') {
         if (!prevNote || !scale.value) return []
-        return [prevNote, getFifthFromMidiNumber(prevNote, scale.value)]
+        return [
+          prevNote,
+          getFifthFromMidiNumber(prevNote, scale.value, AVAILABLE_SCALES),
+        ]
       }
     } else {
       // Normal mode - highlight the target note
@@ -156,7 +162,10 @@ export function useNoteProgression({
         return getSeventhChord(targetNote, scale)
       } else if (practiceMode === 'fifths') {
         if (!scale.value) return []
-        return [targetNote, getFifthFromMidiNumber(targetNote, scale.value)]
+        return [
+          targetNote,
+          getFifthFromMidiNumber(targetNote, scale.value, AVAILABLE_SCALES),
+        ]
       }
     }
 

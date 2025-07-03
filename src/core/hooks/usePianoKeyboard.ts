@@ -3,13 +3,13 @@
  */
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { midiNumberToNote } from '../services/noteService'
+import { getTriadChord, getSeventhChord } from '../services/chordService'
+import {
+  getFifthFromMidiNumber,
+  AVAILABLE_SCALES,
+} from '../services/scaleService'
 import { useTrainer } from '../contexts/TrainerContext'
 import { MidiNumber } from '../models/types'
-import {
-  getTriadChordFromMidiNumber,
-  getSeventhChordFromMidiNumber,
-  getFifthFromMidiNumber,
-} from '../../utils'
 
 interface UsePianoKeyboardProps {
   firstNote: MidiNumber
@@ -92,7 +92,7 @@ export function usePianoKeyboard({
       }
     } else if (practiceMode === 'chords') {
       // For chords, check if all required notes are played
-      const targetChord = getTriadChordFromMidiNumber(
+      const targetChord = getTriadChord(
         noteTracker.nextTargetMidiNumber,
         scale!
       )
@@ -116,7 +116,7 @@ export function usePianoKeyboard({
       }
     } else if (practiceMode === 'seventhChords') {
       // For seventh chords, check if all required notes are played
-      const targetChord = getSeventhChordFromMidiNumber(
+      const targetChord = getSeventhChord(
         noteTracker.nextTargetMidiNumber,
         scale!
       )
@@ -142,7 +142,11 @@ export function usePianoKeyboard({
       // For fifths, check if both the root and fifth are played
       const targetFifths = [
         noteTracker.nextTargetMidiNumber,
-        getFifthFromMidiNumber(noteTracker.nextTargetMidiNumber, scale?.value!),
+        getFifthFromMidiNumber(
+          noteTracker.nextTargetMidiNumber,
+          scale?.value!,
+          AVAILABLE_SCALES
+        ),
       ]
 
       // Turn the target numbers into target letters to ignore octave for matching
