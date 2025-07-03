@@ -1,11 +1,10 @@
-import { invoke } from '@tauri-apps/api/core'
-import { listen, UnlistenFn } from '@tauri-apps/api/event'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { MidiNumbers, Piano } from 'react-piano'
 import styled from 'styled-components'
 import { useSettings } from '../../core/contexts/SettingsContext'
 import { useTrainer } from '../../core/contexts/TrainerContext'
+import { useMidiDevices } from '../../core/hooks/useMidiDevices'
 import { CIRCLE_OF_FIFTHS } from '../../core/models/constants'
 import {
   convertKeyToScalesKey,
@@ -17,7 +16,6 @@ import {
   getRandomKey,
   midiNumberToNote,
 } from '../../core/services/noteService'
-import { MidiDevice } from '../../utils'
 import {
   formatQuestion,
   getRandomQuizQuestion,
@@ -57,11 +55,14 @@ const KeyboardContainer = styled.div`
 const Quiz = () => {
   const { chordStack, addToChordStack, removeFromChordStack, clearChordStack } =
     useTrainer()
-  const { showKeyboard, midiDevice, setMidiDevice } = useSettings()
-  const unlistenRef = useRef<UnlistenFn>(null)
-  const [activeNotes, setActiveNotes] = useState<{ [note: string]: boolean }>(
-    {}
-  )
+  const { showKeyboard, midiDevice } = useSettings()
+
+  const { activeNotes } = useMidiDevices({
+    onNoteOn: addToChordStack,
+    onNoteOff: removeFromChordStack,
+    initialDeviceId: midiDevice?.id,
+  })
+
   const [currentQuestion, setCurrentQuestion] = useState(
     getRandomQuizQuestion()
   )
@@ -86,66 +87,7 @@ const Quiz = () => {
 
   const [answerChoices, setAnswerChoices] = useState<string[]>([])
 
-  const [listeningIdx, setListeningIdx] = useState(-1)
-
-  const onLoadCallback = useCallback(async () => {
-    if (midiDevice?.id !== listeningIdx) {
-      setListeningIdx(-1)
-    }
-
-    if (listeningIdx > -1) return
-
-    // TODO: Move this into a MIDIProvider / hook
-    const devicesObject = await invoke('list_midi_connections')
-    const deviceIds = Object.keys(devicesObject as {})
-    let midiInputIdx = 0
-    const foundMidiId = deviceIds.find((d) => Number(d) === midiDevice?.id)
-    let foundMidi: MidiDevice | undefined
-    if (foundMidiId) {
-      foundMidi = {
-        id: Number(foundMidiId),
-        name: Object.values(devicesObject as {})[Number(foundMidiId)],
-      } as MidiDevice | undefined
-      midiInputIdx = Number(foundMidiId)
-    }
-
-    invoke('open_midi_connection', { inputIdx: midiInputIdx })
-
-    listen('midi_message', (event) => {
-      const payload = event.payload as { message: number[] }
-      const [status, note, velocity] = payload.message
-
-      const command = status & 0xf0
-
-      if (command === 0x90) {
-        // Note off
-        addToChordStack(note)
-        setActiveNotes((an) => ({ ...an, [note]: true }))
-      }
-
-      if (command === 0x80 || velocity === 0) {
-        // Note on
-        removeFromChordStack(note)
-        setActiveNotes((an) => ({ ...an, [note]: false }))
-      }
-    })
-      .then((ul) => (unlistenRef.current = ul))
-      .catch(console.error)
-
-    console.log('Connected & listening to MIDI device...')
-    setListeningIdx(midiInputIdx)
-    setMidiDevice?.(foundMidi || { id: 0 })
-  }, [
-    setListeningIdx,
-    midiDevice,
-    setMidiDevice,
-    listeningIdx,
-    addToChordStack,
-    removeFromChordStack,
-  ])
-
   const gotoNextQuestion = useCallback(() => {
-    setActiveNotes({})
     setCurrentQuestion(() => {
       const newQ = getRandomQuizQuestion()
       let newKey = getRandomNote(newQ.type)
@@ -172,7 +114,7 @@ const Quiz = () => {
   }, [currentQuestionKey, currentQuestion.majMin, currentQuestion.type])
 
   useEffect(() => {
-    // Handle MIDI
+    // Handle MIDI - check if correct notes are being played
     const chordStackNotes = chordStack?.map((cs) => midiNumberToNote(cs)) || []
     if (currentQuestion.type === 'fifth') {
       const validFifthsNotes = currentValidMidi.map((f) => midiNumberToNote(f))
@@ -190,7 +132,6 @@ const Quiz = () => {
       }
     }
   }, [
-    activeNotes,
     chordStack,
     clearChordStack,
     currentQuestion.type,
@@ -201,23 +142,10 @@ const Quiz = () => {
   ])
 
   useEffect(() => {
-    onLoadCallback()
-  }, [onLoadCallback])
-
-  useEffect(() => {
-    const unlisten = async () => {
-      unlistenRef.current?.()
-    }
-    return () => {
-      unlisten()
-    }
-  }, [])
-
-  useEffect(() => {
     // Populate the choices to the question
     if (currentQuestion.type === 'fifth') {
       setAnswerChoices(() => {
-        // add random answer choices
+        // Add random answer choices
         const newOptions = []
         while (newOptions.length < 4) {
           const potentialOption = getRandomNote(currentQuestion.type)
@@ -233,7 +161,7 @@ const Quiz = () => {
           }
         }
 
-        // add correct answer & shuffle
+        // Add correct answer & shuffle
         let correctAnswer = ''
         while (correctAnswer === '') {
           const randomNote = getRandomNote(currentQuestion.type)
@@ -284,13 +212,7 @@ const Quiz = () => {
         </QuizOption>
       )
     })
-  }, [
-    gotoNextQuestion,
-    answerChoices,
-    currentQuestion.majMin,
-    currentQuestionKey,
-    t,
-  ])
+  }, [gotoNextQuestion, answerChoices, currentQuestionKey, t])
 
   return (
     <QuizPage>
@@ -310,16 +232,14 @@ const Quiz = () => {
           <Piano
             noteRange={{ first: firstNote, last: lastNote }}
             playNote={(midiNumber: number) => {
-              setActiveNotes((an) => ({ ...an, [midiNumber]: true }))
               addToChordStack(midiNumber)
             }}
             stopNote={(midiNumber: number) => {
-              setActiveNotes((an) => ({ ...an, [midiNumber]: false }))
               removeFromChordStack(midiNumber)
             }}
             activeNotes={Object.keys(activeNotes)
-              .filter((v: string) => activeNotes[v])
-              .map((s: string) => Number(s))}
+              .filter((note: string) => activeNotes[Number(note)])
+              .map((note: string) => Number(note))}
           />
         </KeyboardContainer>
       )}
