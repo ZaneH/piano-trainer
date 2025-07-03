@@ -117,8 +117,9 @@ const en = {
     practice: {
       scale: {
         title: 'Scale',
-        pingPongHint: 'Toggle ping-pong scale practice',
-        hardModeHint: 'Toggle hard mode',
+        pingPongHint: 'Play up and down the scale',
+        hardModeHint: 'Hide the next note until played',
+        shuffleModeHint: 'Switch to random scale when finished',
       },
       mode: {
         title: 'Mode',

@@ -11,6 +11,8 @@ interface TrainerContextType {
   // Core functionality
   scale: ScaleType
   setScale: (scale: ScaleType) => void
+  selectedScales: ScaleType[]
+  setSelectedScales: (scales: ScaleType[]) => void
   noteTracker: NoteTracker
   chordStack: MidiNumber[]
   addToChordStack: (midiNumber: MidiNumber) => void
@@ -28,6 +30,8 @@ interface TrainerContextType {
   setIsScalePingPong: (isPingPong: boolean) => void
   isHardModeEnabled: boolean
   setIsHardModeEnabled: (isHardMode: boolean) => void
+  isShuffleModeEnabled: boolean
+  setIsShuffleModeEnabled: (isShuffleMode: boolean) => void
 
   // Actions
   advanceNote: () => void

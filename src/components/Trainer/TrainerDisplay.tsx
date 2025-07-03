@@ -5,6 +5,7 @@ import ArrowLeftRightIcon from 'remixicon-react/ArrowLeftRightFillIcon'
 import SettingsIcon from 'remixicon-react/Settings2FillIcon'
 import SkullIcon from 'remixicon-react/SkullFillIcon'
 import QuizIcon from 'remixicon-react/SurveyFillIcon'
+import ShuffleIcon from 'remixicon-react/ShuffleFillIcon'
 import styled from 'styled-components'
 import { useSidebar } from '../../core/contexts/SidebarContext'
 import { useTrainer } from '../../core/contexts/TrainerContext'
@@ -21,22 +22,25 @@ const TrainerDisplayContainer = styled.div`
 `
 
 const TrainerSection = styled.div`
-  width: 20vw;
+  width: 40dvw;
   min-width: 250px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 `
 
 const TrainerSectionHeader = styled.div`
-  margin-bottom: 12px;
   & > h2 {
     color: white;
-    margin: 12px 0;
+    margin: 0;
     display: inline-block;
   }
 `
 
 const IconContainer = styled.div`
   padding: 8px;
-  margin-left: 12px;
+  margin-right: 12px;
+  margin-top: 8px;
   width: 2em;
   height: 2em;
   display: inline-flex;
@@ -44,7 +48,6 @@ const IconContainer = styled.div`
   align-items: center;
   border-radius: 50%;
   background-color: white;
-  float: right;
   cursor: pointer;
 `
 
@@ -52,6 +55,8 @@ const TrainerDisplay = () => {
   const {
     scale,
     setScale,
+    selectedScales,
+    setSelectedScales,
     practiceMode,
     setPracticeMode,
     setCurrentScreen,
@@ -59,6 +64,8 @@ const TrainerDisplay = () => {
     setIsScalePingPong,
     isHardModeEnabled,
     setIsHardModeEnabled,
+    isShuffleModeEnabled,
+    setIsShuffleModeEnabled,
   } = useTrainer()
   const { setIsOpen } = useSidebar()
   const { t } = useTranslation()
@@ -85,11 +92,64 @@ const TrainerDisplay = () => {
     []
   )
 
+  const handleScaleChange = (selectedOption: any) => {
+    if (isShuffleModeEnabled) {
+      // Multi-select mode
+      const newSelection =
+        selectedOption?.map(
+          (option: any) =>
+            AVAILABLE_SCALES[option.value as keyof typeof AVAILABLE_SCALES]
+        ) || []
+
+      if (newSelection.length > 0) {
+        setSelectedScales?.(newSelection)
+      }
+    } else {
+      // Single select mode
+      setScale?.(
+        AVAILABLE_SCALES[selectedOption?.value as keyof typeof AVAILABLE_SCALES]
+      )
+    }
+  }
+
+  const getSelectValue = () => {
+    if (isShuffleModeEnabled) {
+      // Return array of selected scales for multi-select
+      return (
+        selectedScales?.map((scale) => ({
+          label: t(`scales.${scale.value}`),
+          value: scale.value,
+        })) || []
+      )
+    } else {
+      // Return single scale
+      return {
+        label: t(
+          `scales.${
+            AVAILABLE_SCALES[scale?.value as keyof typeof AVAILABLE_SCALES]
+              .value
+          }`
+        ),
+        value:
+          AVAILABLE_SCALES[scale?.value as keyof typeof AVAILABLE_SCALES].value,
+      }
+    }
+  }
+
   return (
     <TrainerDisplayContainer>
       <TrainerSection>
         <TrainerSectionHeader>
           <h2>{t('pages.practice.scale.title')}</h2>
+        </TrainerSectionHeader>
+        <Select
+          filterOption={fromStartFilter}
+          options={scaleOptions}
+          value={getSelectValue()}
+          onChange={handleScaleChange}
+          isMulti={isShuffleModeEnabled}
+        />
+        <div>
           <IconContainer
             title={t('pages.practice.scale.pingPongHint')}
             onClick={() => setIsScalePingPong?.(!isScalePingPong)}
@@ -104,32 +164,30 @@ const TrainerDisplay = () => {
           >
             <SkullIcon color={isHardModeEnabled ? '#70bcd3' : '#1f1f20'} />
           </IconContainer>
-        </TrainerSectionHeader>
-        <Select
-          filterOption={fromStartFilter}
-          options={scaleOptions}
-          value={{
-            label: t(
-              `scales.${
-                AVAILABLE_SCALES[scale?.value as keyof typeof AVAILABLE_SCALES]
-                  .value
-              }`
-            ),
-            value:
-              AVAILABLE_SCALES[scale?.value as keyof typeof AVAILABLE_SCALES]
-                .value,
-          }}
-          onChange={(e) => {
-            setScale?.(
-              AVAILABLE_SCALES[e?.value as keyof typeof AVAILABLE_SCALES]
-            )
-          }}
-        />
+          <IconContainer
+            title={t('pages.practice.scale.shuffleModeHint')}
+            onClick={() => setIsShuffleModeEnabled?.(!isShuffleModeEnabled)}
+          >
+            <ShuffleIcon color={isShuffleModeEnabled ? '#70bcd3' : '#1f1f20'} />
+          </IconContainer>
+        </div>
       </TrainerSection>
 
       <TrainerSection>
         <TrainerSectionHeader>
           <h2>{t('pages.practice.mode.title')}</h2>
+        </TrainerSectionHeader>
+        <Select
+          value={{
+            label: t(`practiceModes.${AVAILABLE_MODES[practiceMode!].value}`),
+            value: AVAILABLE_MODES[practiceMode!].value,
+          }}
+          options={modeOptions}
+          onChange={(e) => {
+            setPracticeMode?.(e?.value as AvailablePracticeModesType)
+          }}
+        />
+        <div>
           <IconContainer
             title={t('pages.practice.mode.quizModeHint')}
             onClick={() => setCurrentScreen?.('quiz')}
@@ -142,17 +200,7 @@ const TrainerDisplay = () => {
           >
             <SettingsIcon color='#1f1f20' />
           </IconContainer>
-        </TrainerSectionHeader>
-        <Select
-          value={{
-            label: t(`practiceModes.${AVAILABLE_MODES[practiceMode!].value}`),
-            value: AVAILABLE_MODES[practiceMode!].value,
-          }}
-          options={modeOptions}
-          onChange={(e) => {
-            setPracticeMode?.(e?.value as AvailablePracticeModesType)
-          }}
-        />
+        </div>
       </TrainerSection>
     </TrainerDisplayContainer>
   )
