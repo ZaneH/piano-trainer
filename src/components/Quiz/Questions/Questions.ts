@@ -1,4 +1,4 @@
-export type MajorMinorType = 'Major' | 'Minor'
+import { MajorMinorType } from '../../../core/models/types'
 
 export type QuestionTypeType = 'fifth' | 'key'
 type QuizQuestionType = {

@@ -55,7 +55,7 @@ $ yarn tauri build
 
 Contributions are more than welcome. Read the [Technical Breakdown here](https://github.com/ZaneH/piano-trainer/wiki/Technical-Breakdown) to learn about the codebase.
 
-Create a PR pointing to the `dev` branch. Stable builds will be merged into `master`.
+Create a PR pointing to the `dev` branch. Stable builds will be merged into `main`.
 
 Code formatting is automically handled with Git Hooks.
 

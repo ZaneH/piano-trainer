@@ -1,19 +1,16 @@
-import { useContext, useMemo } from 'react'
+import { useMemo } from 'react'
 import Select, { createFilter } from 'react-select'
 import styled from 'styled-components'
-import {
-  AvailablePracticeModesType,
-  AvailableMajorScalesType,
-  AVAILABLE_MODES,
-  AVAILABLE_SCALES,
-} from '../../utils'
-import { TrainerContext } from '../TrainerProvider'
+import { AVAILABLE_SCALES } from '../../utils'
+import { useTrainer } from '../../core/contexts/TrainerContext'
 import SettingsIcon from 'remixicon-react/Settings2FillIcon'
 import ArrowLeftRightIcon from 'remixicon-react/ArrowLeftRightFillIcon'
 import SkullIcon from 'remixicon-react/SkullFillIcon'
 import QuizIcon from 'remixicon-react/SurveyFillIcon'
-import { SidebarContext } from '../SidebarProvider'
+import { useSidebar } from '../../core/contexts/SidebarContext'
 import { useTranslation } from 'react-i18next'
+import { AVAILABLE_MODES } from '../../core/models/constants'
+import { AvailablePracticeModesType } from '../../core/models/types'
 
 const TrainerDisplayContainer = styled.div`
   display: flex;
@@ -62,13 +59,15 @@ const TrainerDisplay = () => {
     setIsScalePingPong,
     isHardModeEnabled,
     setIsHardModeEnabled,
-  } = useContext(TrainerContext)
-  const { setIsOpen } = useContext(SidebarContext)
+  } = useTrainer()
+  const { setIsOpen } = useSidebar()
   const { t } = useTranslation()
 
   const scaleOptions = Object.keys(AVAILABLE_SCALES).map((s: string) => ({
-    label: t(`scales.${AVAILABLE_SCALES[s as AvailableMajorScalesType].value}`),
-    value: AVAILABLE_SCALES[s as AvailableMajorScalesType].value,
+    label: t(
+      `scales.${AVAILABLE_SCALES[s as keyof typeof AVAILABLE_SCALES].value}`
+    ),
+    value: AVAILABLE_SCALES[s as keyof typeof AVAILABLE_SCALES].value,
   }))
 
   const modeOptions = Object.keys(AVAILABLE_MODES).map((s: string) => ({
@@ -93,7 +92,7 @@ const TrainerDisplay = () => {
           <h2>{t('pages.practice.scale.title')}</h2>
           <IconContainer
             title={t('pages.practice.scale.pingPongHint')}
-            onClick={() => setIsScalePingPong?.((isPingPong) => !isPingPong)}
+            onClick={() => setIsScalePingPong?.(!isScalePingPong)}
           >
             <ArrowLeftRightIcon
               color={isScalePingPong ? '#70bcd3' : '#1f1f20'}
@@ -101,7 +100,7 @@ const TrainerDisplay = () => {
           </IconContainer>
           <IconContainer
             title={t('pages.practice.scale.hardModeHint')}
-            onClick={() => setIsHardModeEnabled?.((isHard) => !isHard)}
+            onClick={() => setIsHardModeEnabled?.(!isHardModeEnabled)}
           >
             <SkullIcon color={isHardModeEnabled ? '#70bcd3' : '#1f1f20'} />
           </IconContainer>
@@ -112,14 +111,18 @@ const TrainerDisplay = () => {
           value={{
             label: t(
               `scales.${
-                AVAILABLE_SCALES[scale?.value as AvailableMajorScalesType].value
+                AVAILABLE_SCALES[scale?.value as keyof typeof AVAILABLE_SCALES]
+                  .value
               }`
             ),
             value:
-              AVAILABLE_SCALES[scale?.value as AvailableMajorScalesType].value,
+              AVAILABLE_SCALES[scale?.value as keyof typeof AVAILABLE_SCALES]
+                .value,
           }}
           onChange={(e) => {
-            setScale?.(AVAILABLE_SCALES[e?.value as AvailableMajorScalesType])
+            setScale?.(
+              AVAILABLE_SCALES[e?.value as keyof typeof AVAILABLE_SCALES]
+            )
           }}
         />
       </TrainerSection>

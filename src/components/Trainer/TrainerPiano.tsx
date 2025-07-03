@@ -1,17 +1,10 @@
-import { useCallback, useContext } from 'react'
+import { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Keyboard, MidiNumbers } from 'react-piano'
 import styled from 'styled-components'
-import {
-  AvailableAllScalesType,
-  AVAILABLE_MAJOR_SCALES,
-  getFifthFromMidiNumber,
-  getTriadChordFromMidiNumber,
-  getSeventhChordFromMidiNumber,
-  ignoreOctave,
-  OCTAVE_LENGTH,
-} from '../../utils'
-import { TrainerContext } from '../TrainerProvider'
+import { useTrainer } from '../../core/contexts/TrainerContext'
+import { ignoreOctave } from '../../core/services/noteService'
+import { OCTAVE_LENGTH } from '../../core/models/constants'
 
 const PianoContainer = styled.div`
   height: 35vh;
@@ -31,59 +24,42 @@ const InKeyMarker = styled.div`
 `
 
 const TrainerPiano = () => {
-  const {
-    scale = AVAILABLE_MAJOR_SCALES['c-major'],
-    isHardModeEnabled,
-    noteTracker,
-    practiceMode,
-  } = useContext(TrainerContext)
+  const { scale, isHardModeEnabled, getActiveNotes } = useTrainer()
   const { t } = useTranslation()
 
-  const getActiveNotes = useCallback(
-    (nextNote?: number) => {
-      if (!nextNote) {
-        return []
+  // Render the note label with Roman numerals
+  const renderNoteLabel = useCallback(
+    ({ midiNumber }: { midiNumber: number }) => {
+      // Get all scale notes ignoring octave
+      const modScale = ignoreOctave(scale.keys)
+
+      if (isHardModeEnabled) {
+        // Only add the roman numeral if it's the first note in the scale
+        const noOctaveFirstNoteInScale = Number(Object.keys(modScale[0])[0])
+        if (midiNumber % OCTAVE_LENGTH === noOctaveFirstNoteInScale) {
+          return <InKeyMarker>{Object.values(modScale[0])[0]}</InKeyMarker>
+        }
+      } else {
+        // Find if this note is in our scale
+        const modKeyIdx = modScale.findIndex(
+          (m) => Object.keys(m)[0] === String(midiNumber % OCTAVE_LENGTH)
+        )
+
+        // If it is, display the roman numeral
+        if (modKeyIdx > -1) {
+          return (
+            <InKeyMarker>
+              {t(
+                `piano.numeral.${Object.values(modScale[modKeyIdx] || {})[0]}`
+              )}
+            </InKeyMarker>
+          )
+        }
       }
 
-      if (practiceMode === 'scales') {
-        if (isHardModeEnabled) {
-          return [noteTracker?.prevNote]
-        } else {
-          return [nextNote]
-        }
-      } else if (practiceMode === 'chords') {
-        if (isHardModeEnabled) {
-          return getTriadChordFromMidiNumber(noteTracker!.prevNote!, scale)
-        } else {
-          return getTriadChordFromMidiNumber(nextNote, scale)
-        }
-      } else if (practiceMode === 'seventhChords') {
-        if (isHardModeEnabled) {
-          return getSeventhChordFromMidiNumber(noteTracker!.prevNote!, scale)
-        } else {
-          return getSeventhChordFromMidiNumber(nextNote, scale)
-        }
-      } else if (practiceMode === 'fifths') {
-        if (isHardModeEnabled) {
-          return [
-            noteTracker!.prevNote!,
-            getFifthFromMidiNumber(
-              noteTracker!.prevNote!,
-              scale.value as AvailableAllScalesType
-            ),
-          ]
-        } else {
-          return [
-            nextNote,
-            getFifthFromMidiNumber(
-              nextNote,
-              scale.value as AvailableAllScalesType
-            ),
-          ]
-        }
-      }
+      return null
     },
-    [isHardModeEnabled, practiceMode, scale, noteTracker]
+    [isHardModeEnabled, scale.keys, t]
   )
 
   return (
@@ -93,49 +69,12 @@ const TrainerPiano = () => {
           first: MidiNumbers.fromNote('c3'),
           last: MidiNumbers.fromNote('c5'),
         }}
-        activeNotes={getActiveNotes(noteTracker?.nextTargetMidiNumber)}
+        activeNotes={getActiveNotes()}
+        keyWidthToHeight={0.33}
+        renderNoteLabel={renderNoteLabel}
+        // NOTE: These are required by the Keyboard component
         onPlayNoteInput={() => {}}
         onStopNoteInput={() => {}}
-        keyWidthToHeight={0.33}
-        renderNoteLabel={({ midiNumber }: { midiNumber: number }) => {
-          const isMidiNumbers = false
-          // modScale will be the midi numbers in-scale starting from c0
-          const modScale = ignoreOctave(scale || { keys: {} })
-          if (isMidiNumbers) {
-            return <InKeyMarker>{midiNumber}</InKeyMarker>
-          } else {
-            if (isHardModeEnabled) {
-              // only add the roman numeral if it's the first note in the scale
-              const noOctaveFirstNoteInScale = Number(
-                Object.keys(modScale[0])[0]
-              )
-              if (midiNumber % OCTAVE_LENGTH === noOctaveFirstNoteInScale) {
-                return (
-                  <InKeyMarker>{Object.values(modScale[0])[0]}</InKeyMarker>
-                )
-              }
-            } else {
-              // TODO: Refactor this to be more readable
-              // Basically checking if the midiNumber is in the modScale array of Objects
-              const modKeyIdx = modScale.findIndex(
-                (m) => Object.keys(m)[0] === String(midiNumber % OCTAVE_LENGTH)
-              )
-
-              // if it is, display the roman numeral
-              if (modKeyIdx > -1) {
-                return (
-                  <InKeyMarker>
-                    {t(
-                      `piano.numeral.${
-                        Object.values(modScale[modKeyIdx] || {})?.[0]
-                      }`
-                    )}
-                  </InKeyMarker>
-                )
-              }
-            }
-          }
-        }}
       />
     </PianoContainer>
   )

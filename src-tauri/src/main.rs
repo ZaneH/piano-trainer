@@ -113,7 +113,7 @@ fn main() {
                 let menu = MenuBuilder::new(app)
                     .item(&PredefinedMenuItem::copy(
                         app,
-                        Some(&context.package_info().name),
+                        Some(&app.package_info().name),
                     )?)
                     .build()?;
 
@@ -127,6 +127,6 @@ fn main() {
 
             Ok(())
         })
-        .run(tauri::generate_context!())
+        .run(context)
         .expect("error while running tauri application");
 }

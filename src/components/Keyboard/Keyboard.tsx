@@ -1,21 +1,14 @@
-import { invoke } from '@tauri-apps/api/core'
-import { listen, UnlistenFn } from '@tauri-apps/api/event'
-import { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { KeyboardShortcuts, MidiNumbers, Piano } from 'react-piano'
 import 'react-piano/dist/styles.css'
 import styled, { css } from 'styled-components'
-import {
-  getFifthFromMidiNumber,
-  getSeventhChordFromMidiNumber,
-  getTriadChordFromMidiNumber,
-  MidiDevice,
-  midiNumberToNote,
-  swapNoteWithSynonym,
-} from '../../utils'
-import { KVContext } from '../KVProvider'
+import { useMidiDevices } from '../../core/hooks/useMidiDevices'
+import { usePianoKeyboard } from '../../core/hooks/usePianoKeyboard'
+import { normalizeNoteName } from '../../core/services/noteService'
+import { useSettings } from '../../core/contexts/SettingsContext'
+import { useTrainer } from '../../core/contexts/TrainerContext'
 import SoundfontProvider from '../SoundfontProvider'
-import { TrainerContext } from '../TrainerProvider'
+import { InstrumentName } from 'soundfont-player'
 
 const KeyboardContainer = styled.div<{ hide: boolean }>`
   height: 25vh;
@@ -27,191 +20,37 @@ const KeyboardContainer = styled.div<{ hide: boolean }>`
 `
 
 const Keyboard = () => {
-  const {
-    noteTracker,
-    setNoteTracker,
-    practiceMode,
-    chordStack,
-    setChordStack,
-    scale,
-  } = useContext(TrainerContext)
+  const { t } = useTranslation()
+  const { muteSound, showKeyboard, midiDevice, pianoSound } = useSettings()
+  const { addToChordStack, removeFromChordStack } = useTrainer()
 
-  const { muteSound, showKeyboard, midiDevice, setMidiDevice, pianoSound } =
-    useContext(KVContext)
-  const unlistenRef = useRef<UnlistenFn>(null)
-  const [activeNotes, setActiveNotes] = useState<{ [note: string]: boolean }>(
-    {}
-  )
+  // Setup MIDI range for keyboard
   const firstNote = MidiNumbers.fromNote('c3')
   const lastNote = MidiNumbers.fromNote('c5')
+
+  // Setup keyboard shortcuts
   const keyboardShortcuts = KeyboardShortcuts.create({
     firstNote,
     lastNote,
     keyboardConfig: KeyboardShortcuts.HOME_ROW,
   })
-  const { t } = useTranslation()
 
-  const [listeningIdx, setListeningIdx] = useState(-1)
+  // Handle MIDI devices
+  const { activeNotes } = useMidiDevices({
+    initialDeviceId: midiDevice?.id,
+    onNoteOn: addToChordStack,
+    onNoteOff: removeFromChordStack,
+  })
 
-  const onLoadCallback = useCallback(async () => {
-    if (midiDevice?.id !== listeningIdx) {
-      setListeningIdx(-1)
-    }
-
-    if (listeningIdx > -1) return
-
-    // TODO: Move this into a MIDIProvider / hook
-    const devicesObject = await invoke('list_midi_connections')
-    const deviceIds = Object.keys(devicesObject as {})
-    let midiInputIdx = 0
-    const foundMidiId = deviceIds.find((d) => Number(d) === midiDevice?.id)
-    let foundMidi: MidiDevice | undefined
-    if (foundMidiId) {
-      foundMidi = {
-        id: Number(foundMidiId),
-        name: Object.values(devicesObject as {})[Number(foundMidiId)],
-      } as MidiDevice | undefined
-      midiInputIdx = Number(foundMidiId)
-    }
-
-    invoke('open_midi_connection', { inputIdx: midiInputIdx })
-
-    listen('midi_message', (event) => {
-      const payload = event.payload as { message: number[] }
-      const [status, note, velocity] = payload.message
-
-      const command = status & 0xf0
-
-      if (command === 0x90) {
-        // Note on
-        setActiveNotes((an) => ({
-          ...an,
-          [note]: true,
-        }))
-      }
-
-      // some midi keyboards don't send the off signal,
-      // they just set the velocity to 0
-      if (command === 0x80 || velocity === 0) {
-        // Note off
-        setActiveNotes((an) => ({
-          ...an,
-          [note]: false,
-        }))
-      }
-    })
-      .then((ul) => (unlistenRef.current = ul))
-      .catch(console.error)
-
-    console.log('Connected & listening to MIDI device...')
-    setListeningIdx(midiInputIdx)
-    setMidiDevice?.(foundMidi || { id: 0 })
-  }, [setListeningIdx, midiDevice, setMidiDevice, listeningIdx])
-
-  useEffect(() => {
-    onLoadCallback()
-  }, [onLoadCallback])
-
-  useEffect(() => {
-    const targetScaleNote = midiNumberToNote(noteTracker!.nextTargetMidiNumber)
-
-    if (
-      practiceMode === 'scales' &&
-      chordStack!.length > 0 &&
-      chordStack?.map((cs) => midiNumberToNote(cs)).includes(targetScaleNote)
-    ) {
-      setNoteTracker?.((nt) => ({
-        ...nt,
-        noteCounter: nt.noteCounter + 1,
-        currentMidiNumber: noteTracker!.nextTargetMidiNumber,
-      }))
-      setChordStack?.([])
-    } else if (practiceMode === 'chords') {
-      const targetChord = getTriadChordFromMidiNumber(
-        noteTracker?.nextTargetMidiNumber!,
-        scale!
-      )
-
-      // turn the target numbers into target letters to ignore octave for matching
-      const targetChordNotes = targetChord.map((n) => midiNumberToNote(n))
-
-      const matches = targetChordNotes.every((e) =>
-        chordStack?.map((cs) => midiNumberToNote(cs)).includes(e)
-      )
-      if (matches) {
-        setNoteTracker?.((nt) => ({
-          ...nt,
-          noteCounter: nt.noteCounter + 1,
-          currentMidiNumber: targetChord[0],
-        }))
-        setChordStack?.([])
-      }
-    } else if (practiceMode === 'seventhChords') {
-      const targetChord = getSeventhChordFromMidiNumber(
-        noteTracker?.nextTargetMidiNumber!,
-        scale!
-      )
-
-      // turn the target numbers into target letters to ignore octave for matching
-      const targetChordNotes = targetChord.map((n) => midiNumberToNote(n))
-
-      const matches = targetChordNotes.every((e) =>
-        chordStack?.map((cs) => midiNumberToNote(cs)).includes(e)
-      )
-      if (matches) {
-        setNoteTracker?.((nt) => ({
-          ...nt,
-          noteCounter: nt.noteCounter + 1,
-          currentMidiNumber: targetChord[0],
-        }))
-        setChordStack?.([])
-      }
-    } else if (practiceMode === 'fifths') {
-      // turn the target numbers into target letters to ignore octave for matching
-      const targetFifths = [
-        noteTracker?.nextTargetMidiNumber!,
-        getFifthFromMidiNumber(
-          noteTracker?.nextTargetMidiNumber!,
-          scale?.value!
-        ),
-      ]
-
-      const targetFifthNotes = targetFifths.map((f) => midiNumberToNote(f))
-
-      const matches = targetFifthNotes.every((e) =>
-        chordStack?.map((cs) => midiNumberToNote(cs)).includes(e)
-      )
-      if (matches) {
-        setNoteTracker?.((nt) => ({
-          ...nt,
-          noteCounter: nt.noteCounter + 1,
-          currentMidiNumber: targetFifths[0],
-        }))
-        setChordStack?.([])
-      }
-    }
-  }, [
-    setNoteTracker,
-    chordStack,
-    noteTracker?.nextTargetMidiNumber,
-    scale,
-    practiceMode,
-    setChordStack,
-    noteTracker,
-  ])
-
-  useEffect(() => {
-    const unlisten = async () => {
-      unlistenRef.current?.()
-    }
-    return () => {
-      unlisten()
-    }
-  }, [])
+  // Keyboard interaction logic
+  const { handlePlayNote, handleStopNote } = usePianoKeyboard({
+    firstNote,
+    lastNote,
+  })
 
   return (
     <SoundfontProvider
-      instrumentName={pianoSound || 'acoustic_grand_piano'}
+      instrumentName={(pianoSound || 'acoustic_grand_piano') as InstrumentName}
       hostname={'https://d1pzp51pvbm36p.cloudfront.net'}
       format={'mp3'}
       soundfont={'MusyngKite'}
@@ -222,28 +61,29 @@ const Keyboard = () => {
             <Piano
               noteRange={{ first: firstNote, last: lastNote }}
               playNote={(midiNumber: number) => {
-                setChordStack?.((cs) => [...cs, midiNumber])
-
-                !muteSound && playNote(midiNumber)
+                handlePlayNote(midiNumber)
+                if (!muteSound) {
+                  playNote(midiNumber)
+                }
               }}
               stopNote={(midiNumber: number) => {
+                handleStopNote(midiNumber)
                 stopNote(midiNumber)
-
-                // remove midiNumber from chordStack
-                setChordStack?.((cs) => {
-                  const removalIdx = cs.indexOf(midiNumber)
-                  if (removalIdx > -1) {
-                    cs.splice(removalIdx, 1)
-                  }
-
-                  return cs
-                })
               }}
               keyboardShortcuts={keyboardShortcuts}
-              renderNoteLabel={({ midiNumber }: { midiNumber: number }) => (
-                <p className='ReactPiano__NoteLabel'>
+              renderNoteLabel={({
+                midiNumber,
+                isAccidental,
+              }: {
+                midiNumber: number
+                isAccidental: boolean
+              }) => (
+                <p
+                  className='ReactPiano__NoteLabel'
+                  style={{ color: isAccidental ? 'white' : 'black' }}
+                >
                   {t(
-                    swapNoteWithSynonym(
+                    normalizeNoteName(
                       MidiNumbers.getAttributes(midiNumber).note.replace(
                         /[0-9]/,
                         ''
@@ -253,7 +93,7 @@ const Keyboard = () => {
                 </p>
               )}
               activeNotes={Object.keys(activeNotes)
-                .filter((v: string) => activeNotes[v])
+                .filter((v: string) => activeNotes[Number(v)])
                 .map((s: string) => Number(s))}
             />
           </KeyboardContainer>

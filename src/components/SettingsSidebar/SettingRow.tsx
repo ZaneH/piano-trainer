@@ -1,17 +1,16 @@
-import { invoke } from '@tauri-apps/api/core'
-import { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import Select from 'react-select'
 import UncheckedIcon from 'remixicon-react/CheckboxBlankCircleLineIcon'
 import CheckedIcon from 'remixicon-react/CheckboxCircleFillIcon'
 import { InstrumentName } from 'soundfont-player'
 import styled from 'styled-components'
-import { AVAILABLE_SOUNDS, MidiDevice, PTSettingType } from '../../utils'
+import { AVAILABLE_SOUNDS, PTSettingType } from '../../utils'
 import {
   AVAILABLE_LANGUAGES,
   SupportedLanguagesType,
 } from '../../utils/languages'
-import { KVContext } from '../KVProvider'
+import { useSettings } from '../../core/contexts/SettingsContext'
+import { useMidiDevices } from '../../core/hooks/useMidiDevices'
 
 const SettingRowContainer = styled.div`
   margin: 24px 42px;
@@ -38,37 +37,19 @@ const SettingRow = ({ setting, value }: SettingRowProps) => {
     setShowKeyboard,
     setMidiDevice: setConnectedMidiDevice,
     setLanguage,
-    setIsSentryOn,
+    setIsSentryEnabled,
     setPianoSound,
-  } = useContext(KVContext)
+  } = useSettings()
   const { t } = useTranslation()
 
-  const [midiDevices, setMidiDevices] = useState<MidiDevice[]>([])
-
-  // TODO: This will probably fit in a future hook
-  useEffect(() => {
-    if (setting.key === 'midi-input-id') {
-      invoke('list_midi_connections').then((devices) => {
-        const devicesObject = devices as { [key: string]: string }
-        const midiConnectionKeys = Object.keys(devicesObject as {})
-        setMidiDevices([])
-        midiConnectionKeys.forEach((ck) => {
-          setMidiDevices((md) => [
-            ...md,
-            {
-              id: Number(ck),
-              name: devicesObject[ck],
-            } as MidiDevice,
-          ])
-        })
-      })
-    }
-  }, [setting.key])
+  const { devices } = useMidiDevices({
+    disableAutoConnect: true,
+  })
 
   // Render Dropdown inputs
   if (setting.key === 'midi-input-id') {
-    if (!Array.isArray(midiDevices)) return null
-    const connectedMidiDevice = midiDevices[Number(value)]
+    if (!Array.isArray(devices)) return null
+    const connectedMidiDevice = devices[Number(value)]
 
     return (
       <SettingRowContainer>
@@ -76,7 +57,7 @@ const SettingRow = ({ setting, value }: SettingRowProps) => {
           {t(`settings.options.${setting.key}`)}
         </span>
         <Select
-          options={midiDevices.map((d) => ({
+          options={devices.map((d) => ({
             value: d.id,
             label: d?.name || `Name: N/A :: ID: ${d.id}`,
           }))}
@@ -86,7 +67,7 @@ const SettingRow = ({ setting, value }: SettingRowProps) => {
           }}
           onChange={(e) => {
             try {
-              const newMidiDevice = midiDevices.find((md) => md.id === e?.value)
+              const newMidiDevice = devices.find((md) => md.id === e?.value)
               if (newMidiDevice) {
                 setConnectedMidiDevice?.(newMidiDevice)
               }
@@ -150,13 +131,13 @@ const SettingRow = ({ setting, value }: SettingRowProps) => {
       onClick={() => {
         switch (setting.key) {
           case 'mute-sound':
-            setMuteSound?.((v) => !v)
+            setMuteSound?.(!value)
             break
           case 'show-keyboard':
-            setShowKeyboard?.((v) => !v)
+            setShowKeyboard?.(!value)
             break
           case 'is-sentry-on':
-            setIsSentryOn?.((v) => !v)
+            setIsSentryEnabled?.(!value)
             break
         }
       }}

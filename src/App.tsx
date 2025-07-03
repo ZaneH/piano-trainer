@@ -1,12 +1,13 @@
 import { useCallback, useEffect } from 'react'
 import styled from 'styled-components'
-import Keyboard from './components/Keyboard'
-import KVProvider from './components/KVProvider/KVProvider'
-import { Quiz } from './components/Quiz'
+import KVProvider from './core/providers/KVProvider'
+import SidebarProvider from './core/providers/SidebarProvider'
+import TrainerProvider from './core/providers/TrainerProvider'
 import ScreenManager from './components/ScreenManager/ScreenManager'
-import SidebarProvider from './components/SidebarProvider/SidebarProvider'
+import Keyboard from './components/Keyboard'
 import { TrainerDisplay, TrainerPiano } from './components/Trainer'
-import TrainerProvider from './components/TrainerProvider'
+import { Quiz } from './components/Quiz'
+
 import './i18n/config'
 
 const PracticeScreenLayout = styled.div`
@@ -23,6 +24,7 @@ const QuizScreenLayout = styled.div`
 `
 
 function App() {
+  // Handle keyboard events for the app
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
     const { key, metaKey } = e
     let preventDefault = true
@@ -36,13 +38,14 @@ function App() {
     }
   }, [])
 
+  // Add and remove event listeners
   useEffect(() => {
     document.addEventListener('keydown', handleKeyDown)
 
     return () => {
       document.removeEventListener('keydown', handleKeyDown)
     }
-  })
+  }, [handleKeyDown])
 
   return (
     <KVProvider>

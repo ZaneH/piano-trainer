@@ -1,5 +1,5 @@
-import { JSX, useContext } from 'react'
-import { TrainerContext } from '../TrainerProvider'
+import { JSX } from 'react'
+import { useTrainer } from '../../core/contexts/TrainerContext'
 
 interface ScreenManagerProps {
   practice: JSX.Element
@@ -7,7 +7,8 @@ interface ScreenManagerProps {
 }
 
 const ScreenManager = ({ practice, quiz }: ScreenManagerProps) => {
-  const { currentScreen } = useContext(TrainerContext)
+  const { currentScreen } = useTrainer()
+
   if (currentScreen === 'practice') {
     return practice
   } else if (currentScreen === 'quiz') {
