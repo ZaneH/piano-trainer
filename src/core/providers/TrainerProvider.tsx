@@ -33,6 +33,7 @@ const TrainerProvider: FC<TrainerProviderProps> = ({
     useState<AvailableScreensType>(initialScreen)
   const [isScalePingPong, setIsScalePingPong] = useState(false)
   const [isHardModeEnabled, setIsHardModeEnabled] = useState(false)
+  const [isShuffleModeEnabled, setIsShuffleModeEnabled] = useState(false)
 
   // State for currently played notes (chords)
   const [chordStack, setChordStack] = useState<MidiNumber[]>([])
@@ -88,6 +89,8 @@ const TrainerProvider: FC<TrainerProviderProps> = ({
         setIsScalePingPong,
         isHardModeEnabled,
         setIsHardModeEnabled,
+        isShuffleModeEnabled,
+        setIsShuffleModeEnabled,
 
         // Actions
         advanceNote,

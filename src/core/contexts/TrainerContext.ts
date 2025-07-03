@@ -28,6 +28,8 @@ interface TrainerContextType {
   setIsScalePingPong: (isPingPong: boolean) => void
   isHardModeEnabled: boolean
   setIsHardModeEnabled: (isHardMode: boolean) => void
+  isShuffleModeEnabled: boolean
+  setIsShuffleModeEnabled: (isShuffleMode: boolean) => void
 
   // Actions
   advanceNote: () => void

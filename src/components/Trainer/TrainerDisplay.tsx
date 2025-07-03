@@ -5,6 +5,7 @@ import ArrowLeftRightIcon from 'remixicon-react/ArrowLeftRightFillIcon'
 import SettingsIcon from 'remixicon-react/Settings2FillIcon'
 import SkullIcon from 'remixicon-react/SkullFillIcon'
 import QuizIcon from 'remixicon-react/SurveyFillIcon'
+import ShuffleIcon from 'remixicon-react/ShuffleFillIcon'
 import styled from 'styled-components'
 import { useSidebar } from '../../core/contexts/SidebarContext'
 import { useTrainer } from '../../core/contexts/TrainerContext'
@@ -21,22 +22,25 @@ const TrainerDisplayContainer = styled.div`
 `
 
 const TrainerSection = styled.div`
-  width: 20vw;
+  width: 20dvw;
   min-width: 250px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 `
 
 const TrainerSectionHeader = styled.div`
-  margin-bottom: 12px;
   & > h2 {
     color: white;
-    margin: 12px 0;
+    margin: 0;
     display: inline-block;
   }
 `
 
 const IconContainer = styled.div`
   padding: 8px;
-  margin-left: 12px;
+  margin-right: 12px;
+  margin-top: 8px;
   width: 2em;
   height: 2em;
   display: inline-flex;
@@ -44,7 +48,6 @@ const IconContainer = styled.div`
   align-items: center;
   border-radius: 50%;
   background-color: white;
-  float: right;
   cursor: pointer;
 `
 
@@ -59,6 +62,8 @@ const TrainerDisplay = () => {
     setIsScalePingPong,
     isHardModeEnabled,
     setIsHardModeEnabled,
+    isShuffleModeEnabled,
+    setIsShuffleModeEnabled,
   } = useTrainer()
   const { setIsOpen } = useSidebar()
   const { t } = useTranslation()
@@ -90,20 +95,6 @@ const TrainerDisplay = () => {
       <TrainerSection>
         <TrainerSectionHeader>
           <h2>{t('pages.practice.scale.title')}</h2>
-          <IconContainer
-            title={t('pages.practice.scale.pingPongHint')}
-            onClick={() => setIsScalePingPong?.(!isScalePingPong)}
-          >
-            <ArrowLeftRightIcon
-              color={isScalePingPong ? '#70bcd3' : '#1f1f20'}
-            />
-          </IconContainer>
-          <IconContainer
-            title={t('pages.practice.scale.hardModeHint')}
-            onClick={() => setIsHardModeEnabled?.(!isHardModeEnabled)}
-          >
-            <SkullIcon color={isHardModeEnabled ? '#70bcd3' : '#1f1f20'} />
-          </IconContainer>
         </TrainerSectionHeader>
         <Select
           filterOption={fromStartFilter}
@@ -125,11 +116,45 @@ const TrainerDisplay = () => {
             )
           }}
         />
+        <div>
+          <IconContainer
+            title={t('pages.practice.scale.pingPongHint')}
+            onClick={() => setIsScalePingPong?.(!isScalePingPong)}
+          >
+            <ArrowLeftRightIcon
+              color={isScalePingPong ? '#70bcd3' : '#1f1f20'}
+            />
+          </IconContainer>
+          <IconContainer
+            title={t('pages.practice.scale.hardModeHint')}
+            onClick={() => setIsHardModeEnabled?.(!isHardModeEnabled)}
+          >
+            <SkullIcon color={isHardModeEnabled ? '#70bcd3' : '#1f1f20'} />
+          </IconContainer>
+          <IconContainer
+            title={t('pages.practice.scale.shuffleModeHint')}
+            onClick={() => setIsShuffleModeEnabled?.(!isShuffleModeEnabled)}
+          >
+            <ShuffleIcon color={isShuffleModeEnabled ? '#70bcd3' : '#1f1f20'} />
+          </IconContainer>
+        </div>
       </TrainerSection>
 
       <TrainerSection>
         <TrainerSectionHeader>
           <h2>{t('pages.practice.mode.title')}</h2>
+        </TrainerSectionHeader>
+        <Select
+          value={{
+            label: t(`practiceModes.${AVAILABLE_MODES[practiceMode!].value}`),
+            value: AVAILABLE_MODES[practiceMode!].value,
+          }}
+          options={modeOptions}
+          onChange={(e) => {
+            setPracticeMode?.(e?.value as AvailablePracticeModesType)
+          }}
+        />
+        <div>
           <IconContainer
             title={t('pages.practice.mode.quizModeHint')}
             onClick={() => setCurrentScreen?.('quiz')}
@@ -142,17 +167,7 @@ const TrainerDisplay = () => {
           >
             <SettingsIcon color='#1f1f20' />
           </IconContainer>
-        </TrainerSectionHeader>
-        <Select
-          value={{
-            label: t(`practiceModes.${AVAILABLE_MODES[practiceMode!].value}`),
-            value: AVAILABLE_MODES[practiceMode!].value,
-          }}
-          options={modeOptions}
-          onChange={(e) => {
-            setPracticeMode?.(e?.value as AvailablePracticeModesType)
-          }}
-        />
+        </div>
       </TrainerSection>
     </TrainerDisplayContainer>
   )
