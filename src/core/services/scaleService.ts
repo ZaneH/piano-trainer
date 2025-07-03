@@ -2,11 +2,11 @@
  * Scale service for creating and manipulating scales
  */
 import {
-  MajorMinorType,
-  ScaleType,
   AvailableAllScalesType,
-  ScaleKeyType,
   AvailableMajorScalesType,
+  MajorMinorType,
+  ScaleKeyType,
+  ScaleType,
 } from '../models/types'
 
 const SCALE_LENGTH = 8

@@ -4,13 +4,13 @@ import UncheckedIcon from 'remixicon-react/CheckboxBlankCircleLineIcon'
 import CheckedIcon from 'remixicon-react/CheckboxCircleFillIcon'
 import { InstrumentName } from 'soundfont-player'
 import styled from 'styled-components'
+import { useSettings } from '../../core/contexts/SettingsContext'
+import { useMidiDevices } from '../../core/hooks/useMidiDevices'
 import { AVAILABLE_SOUNDS, PTSettingType } from '../../utils'
 import {
   AVAILABLE_LANGUAGES,
   SupportedLanguagesType,
 } from '../../utils/languages'
-import { useSettings } from '../../core/contexts/SettingsContext'
-import { useMidiDevices } from '../../core/hooks/useMidiDevices'
 
 const SettingRowContainer = styled.div`
   margin: 24px 42px;

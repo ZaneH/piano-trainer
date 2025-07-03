@@ -1,8 +1,8 @@
 /**
  * Chord service for manipulating chords
  */
-import { MidiNumber, ScaleType } from '../models/types'
 import { OCTAVE_LENGTH, SCALE_LENGTH } from '../models/constants'
+import { MidiNumber, ScaleType } from '../models/types'
 
 /**
  * Gets the triad chord (three notes) starting from a midi number

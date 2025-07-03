@@ -3,8 +3,8 @@ import { useTranslation } from 'react-i18next'
 import { Keyboard, MidiNumbers } from 'react-piano'
 import styled from 'styled-components'
 import { useTrainer } from '../../core/contexts/TrainerContext'
-import { ignoreOctave } from '../../core/services/noteService'
 import { OCTAVE_LENGTH } from '../../core/models/constants'
+import { ignoreOctave } from '../../core/services/noteService'
 
 const PianoContainer = styled.div`
   height: 35vh;

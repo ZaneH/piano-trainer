@@ -3,13 +3,13 @@
  */
 import { FC, ReactNode, useCallback, useState } from 'react'
 import { TrainerContext } from '../contexts/TrainerContext'
+import { useNoteProgression } from '../hooks/useNoteProgression'
 import {
   AvailablePracticeModesType,
   AvailableScreensType,
   MidiNumber,
   ScaleType,
 } from '../models/types'
-import { useNoteProgression } from '../hooks/useNoteProgression'
 import { AVAILABLE_SCALES } from '../services/scaleService'
 
 interface TrainerProviderProps {

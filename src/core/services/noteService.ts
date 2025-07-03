@@ -2,9 +2,8 @@
  * Note service for converting between notes and MIDI numbers
  */
 import { MidiNumbers } from 'react-piano'
-import { MidiNumber, Note } from '../models/types'
-import { OCTAVE_LENGTH, CIRCLE_OF_FIFTHS } from '../models/constants'
-import { MajorMinorType } from '../models/types'
+import { CIRCLE_OF_FIFTHS, OCTAVE_LENGTH } from '../models/constants'
+import { MajorMinorType, MidiNumber, Note } from '../models/types'
 
 /**
  * Converts a MIDI number to a note name without octave

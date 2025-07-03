@@ -7,15 +7,18 @@ import { useTrainer } from '../../core/contexts/TrainerContext'
 import { useMidiDevices } from '../../core/hooks/useMidiDevices'
 import { CIRCLE_OF_FIFTHS } from '../../core/models/constants'
 import {
-  convertKeyToScalesKey,
-  getBothFifthsFromMidiNumber,
-  AVAILABLE_SCALES,
-} from '../../core/services/scaleService'
-import {
   getRandomFifth,
   getRandomKey,
   midiNumberToNote,
+  normalizeNoteName,
 } from '../../core/services/noteService'
+import {
+  AVAILABLE_SCALES,
+  convertKeyToScalesKey,
+  getBothFifthsFromMidiNumber,
+} from '../../core/services/scaleService'
+import { isAdjacentFifth } from '../../utils/scales/fifths'
+import { shuffle } from '../../utils/shuffle'
 import {
   formatQuestion,
   getRandomQuizQuestion,
@@ -23,9 +26,6 @@ import {
 } from './Questions'
 import QuizHeader from './QuizHeader'
 import { QuizOption } from './QuizOption'
-import { normalizeNoteName } from '../../core/services/noteService'
-import { isAdjacentFifth } from '../../utils/scales/fifths'
-import { shuffle } from '../../utils/shuffle'
 
 const QuizPage = styled.div`
   height: 100%;

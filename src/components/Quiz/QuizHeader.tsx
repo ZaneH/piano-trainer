@@ -1,9 +1,9 @@
-import styled from 'styled-components'
+import { useTranslation } from 'react-i18next'
 import ArrowBack from 'remixicon-react/ArrowLeftFillIcon'
 import SettingsIcon from 'remixicon-react/Settings2FillIcon'
-import { useTrainer } from '../../core/contexts/TrainerContext'
-import { useTranslation } from 'react-i18next'
+import styled from 'styled-components'
 import { useSidebar } from '../../core/contexts/SidebarContext'
+import { useTrainer } from '../../core/contexts/TrainerContext'
 
 const HeaderContainer = styled.div`
   width: 100%;

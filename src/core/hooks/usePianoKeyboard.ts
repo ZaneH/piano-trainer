@@ -2,14 +2,14 @@
  * Custom hook for piano keyboard interactions
  */
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { midiNumberToNote } from '../services/noteService'
-import { getTriadChord, getSeventhChord } from '../services/chordService'
-import {
-  getFifthFromMidiNumber,
-  AVAILABLE_SCALES,
-} from '../services/scaleService'
 import { useTrainer } from '../contexts/TrainerContext'
 import { MidiNumber } from '../models/types'
+import { getSeventhChord, getTriadChord } from '../services/chordService'
+import { midiNumberToNote } from '../services/noteService'
+import {
+  AVAILABLE_SCALES,
+  getFifthFromMidiNumber,
+} from '../services/scaleService'
 
 interface UsePianoKeyboardProps {
   firstNote: MidiNumber

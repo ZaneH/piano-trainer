@@ -1,15 +1,15 @@
 /**
  * Custom hook for handling MIDI devices and input
  */
-import { useState, useEffect, useCallback, useRef } from 'react'
 import { UnlistenFn } from '@tauri-apps/api/event'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { MidiDevice } from '../models/types'
 import {
   listMidiConnections,
+  MidiNoteEvent,
   openMidiConnection,
   subscribeMidiMessages,
-  MidiNoteEvent,
 } from '../services/midiService'
-import { MidiDevice } from '../models/types'
 
 interface UseMidiDevicesProps {
   onNoteOn?: (note: number) => void

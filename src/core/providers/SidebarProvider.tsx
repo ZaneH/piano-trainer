@@ -1,6 +1,6 @@
 import { FC, ReactNode, useState } from 'react'
-import { SidebarContext, useSidebar } from '../contexts/SidebarContext'
 import SettingsSidebar from '../../components/SettingsSidebar/SettingsSidebar'
+import { SidebarContext, useSidebar } from '../contexts/SidebarContext'
 
 interface SidebarProviderProps {
   children: ReactNode

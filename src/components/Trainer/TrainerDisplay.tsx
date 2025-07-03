@@ -1,16 +1,16 @@
 import { useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import Select, { createFilter } from 'react-select'
-import styled from 'styled-components'
-import { AVAILABLE_SCALES } from '../../utils'
-import { useTrainer } from '../../core/contexts/TrainerContext'
-import SettingsIcon from 'remixicon-react/Settings2FillIcon'
 import ArrowLeftRightIcon from 'remixicon-react/ArrowLeftRightFillIcon'
+import SettingsIcon from 'remixicon-react/Settings2FillIcon'
 import SkullIcon from 'remixicon-react/SkullFillIcon'
 import QuizIcon from 'remixicon-react/SurveyFillIcon'
+import styled from 'styled-components'
 import { useSidebar } from '../../core/contexts/SidebarContext'
-import { useTranslation } from 'react-i18next'
+import { useTrainer } from '../../core/contexts/TrainerContext'
 import { AVAILABLE_MODES } from '../../core/models/constants'
 import { AvailablePracticeModesType } from '../../core/models/types'
+import { AVAILABLE_SCALES } from '../../utils'
 
 const TrainerDisplayContainer = styled.div`
   display: flex;

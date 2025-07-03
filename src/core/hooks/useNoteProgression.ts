@@ -1,16 +1,16 @@
 /**
  * Hook for managing scales and note progression
  */
-import { useState, useEffect, useCallback } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import {
   AvailablePracticeModesType,
   NoteTracker,
   ScaleType,
 } from '../models/types'
-import { getTriadChord, getSeventhChord } from '../services/chordService'
+import { getSeventhChord, getTriadChord } from '../services/chordService'
 import {
-  getFifthFromMidiNumber,
   AVAILABLE_SCALES,
+  getFifthFromMidiNumber,
 } from '../services/scaleService'
 
 interface UseNoteProgressionProps {

@@ -1,14 +1,14 @@
 import { useTranslation } from 'react-i18next'
 import { KeyboardShortcuts, MidiNumbers, Piano } from 'react-piano'
 import 'react-piano/dist/styles.css'
+import { InstrumentName } from 'soundfont-player'
 import styled, { css } from 'styled-components'
+import { useSettings } from '../../core/contexts/SettingsContext'
+import { useTrainer } from '../../core/contexts/TrainerContext'
 import { useMidiDevices } from '../../core/hooks/useMidiDevices'
 import { usePianoKeyboard } from '../../core/hooks/usePianoKeyboard'
 import { normalizeNoteName } from '../../core/services/noteService'
-import { useSettings } from '../../core/contexts/SettingsContext'
-import { useTrainer } from '../../core/contexts/TrainerContext'
 import SoundfontProvider from '../SoundfontProvider'
-import { InstrumentName } from 'soundfont-player'
 
 const KeyboardContainer = styled.div<{ hide: boolean }>`
   height: 25vh;

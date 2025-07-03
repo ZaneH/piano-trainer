@@ -1,11 +1,11 @@
 /**
  * Provider component for the Settings (KV) Context
  */
-import { FC, ReactNode, useCallback, useEffect, useState } from 'react'
 import { load } from '@tauri-apps/plugin-store'
+import { FC, ReactNode, useCallback, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { KVContext } from '../contexts/SettingsContext'
 import { MidiDevice, PTSettingsKeyType } from '../models/types'
-import { useTranslation } from 'react-i18next'
 
 // Create/load the store instance for persistent settings
 const storePromise = load('.settings.dat', { autoSave: false })
