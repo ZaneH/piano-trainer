@@ -40,7 +40,7 @@ You'll need to setup Rust and Tauri CLI by following the [Getting Started guide 
 ```bash
 $ git clone https://github.com/ZaneH/piano-trainer.git
 $ cd piano-trainer
-$ yarn tauri dev
+$ pnpm tauri dev
 ```
 
 ## Build Target Binary
@@ -48,7 +48,7 @@ $ yarn tauri dev
 Outputs to `./src-tauri/target/release/bundle`
 
 ```bash
-$ yarn tauri build
+$ pnpm tauri build
 ```
 
 # Contributions
