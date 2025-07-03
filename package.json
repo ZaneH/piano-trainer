@@ -23,6 +23,7 @@
     "remixicon-react": "^1.0.0",
     "soundfont-player": "^0.12.0",
     "styled-components": "^5.3.5",
+    "tauri-plugin-sentry-api": "^0.4.1",
     "typescript": "^4.7.4",
     "web-vitals": "^2.1.4"
   },

@@ -9,6 +9,7 @@ use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
 use tauri::menu::{MenuBuilder, PredefinedMenuItem};
 use tauri::{Emitter, Window, Wry};
+use tauri_plugin_sentry::{minidump, sentry};
 use tauri_plugin_updater::UpdaterExt;
 
 #[derive(Default)]
@@ -99,7 +100,20 @@ fn open_midi_connection(
 fn main() {
     let context: tauri::Context<Wry> = tauri::generate_context!();
 
+    let client = sentry::init((
+        "https://36cfcf5f635d48d9bb4209bfcf05667e@o1312215.ingest.us.sentry.io/6561276",
+        sentry::ClientOptions {
+            release: sentry::release_name!(),
+            auto_session_tracking: true,
+            ..Default::default()
+        },
+    ));
+
+    #[cfg(not(target_os = "ios"))]
+    let _guard = minidump::init(&client);
+
     tauri::Builder::default()
+        .plugin(tauri_plugin_sentry::init(&client))
         .manage(MidiState {
             ..Default::default()
         })
@@ -121,7 +135,9 @@ fn main() {
             }
 
             #[cfg(desktop)]
-            let _ = app.handle().plugin(tauri_plugin_updater::Builder::new().build());
+            let _ = app
+                .handle()
+                .plugin(tauri_plugin_updater::Builder::new().build());
 
             let handle = app.handle().clone();
             tauri::async_runtime::spawn(async move {
@@ -135,24 +151,24 @@ fn main() {
 }
 
 async fn update(app: tauri::AppHandle) -> tauri_plugin_updater::Result<()> {
-  if let Some(update) = app.updater()?.check().await? {
-    let mut downloaded = 0;
+    if let Some(update) = app.updater()?.check().await? {
+        let mut downloaded = 0;
 
-    update
-      .download_and_install(
-        |chunk_length, content_length| {
-          downloaded += chunk_length;
-          println!("downloaded {downloaded} from {content_length:?}");
-        },
-        || {
-          println!("download finished");
-        },
-      )
-      .await?;
+        update
+            .download_and_install(
+                |chunk_length, content_length| {
+                    downloaded += chunk_length;
+                    println!("downloaded {downloaded} from {content_length:?}");
+                },
+                || {
+                    println!("download finished");
+                },
+            )
+            .await?;
 
-    println!("update installed");
-    app.restart();
-  }
+        println!("update installed");
+        app.restart();
+    }
 
-  Ok(())
+    Ok(())
 }

@@ -67,6 +67,9 @@ importers:
       styled-components:
         specifier: ^5.3.5
         version: 5.3.11(@babel/core@7.26.10)(react-dom@19.1.0(react@19.1.0))(react-is@18.3.1)(react@19.1.0)
+      tauri-plugin-sentry-api:
+        specifier: ^0.4.1
+        version: 0.4.1
       typescript:
         specifier: ^4.7.4
         version: 4.9.5
@@ -1930,6 +1933,13 @@ packages:
         integrity: sha512-DOBOK255wfQxguUta2INKkzPj6AIS6iafZYiYmHn6W3pHlycSRRlvWKCfLDG10fXfLWqE3DJHgRUOyJYmARa7g==,
       }
     engines: { node: '>=10' }
+
+  '@tauri-apps/api@2.0.0-beta.8':
+    resolution:
+      {
+        integrity: sha512-fN5u+9HsSfhRaXGOdD2kPGbqDgyX+nkm1XF/4d/LNuM4WiNfvHjjRAqWQYBhQsg1aF9nsTPmSW+tmy+Yn5T5+A==,
+      }
+    engines: { node: '>= 18', npm: '>= 6.6.0', yarn: '>= 1.19.1' }
 
   '@tauri-apps/api@2.5.0':
     resolution:
@@ -9277,6 +9287,12 @@ packages:
       }
     engines: { node: '>=6' }
 
+  tauri-plugin-sentry-api@0.4.1:
+    resolution:
+      {
+        integrity: sha512-KgfL7JhN51TOA3e0UYDu6UkdwgH+wC1/RC3qIHJOZIAsvyTfde4uifUFB11GfgXfHgY33xUkIGgqWKkaK5lg6Q==,
+      }
+
   temp-dir@2.0.0:
     resolution:
       {
@@ -11632,6 +11648,8 @@ snapshots:
       loader-utils: 2.0.4
     transitivePeerDependencies:
       - supports-color
+
+  '@tauri-apps/api@2.0.0-beta.8': {}
 
   '@tauri-apps/api@2.5.0': {}
 
@@ -16725,6 +16743,11 @@ snapshots:
   tapable@1.1.3: {}
 
   tapable@2.2.1: {}
+
+  tauri-plugin-sentry-api@0.4.1:
+    dependencies:
+      '@tauri-apps/api': 2.0.0-beta.8
+      tslib: 2.8.1
 
   temp-dir@2.0.0: {}
 
