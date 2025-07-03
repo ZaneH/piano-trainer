@@ -40,6 +40,9 @@
     "category": "Music",
     "copyright": "",
     "linux": {
+      "appimage": {
+        "bundleMediaFramework": true
+      },
       "deb": {
         "files": {},
         "depends": []
