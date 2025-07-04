@@ -64,7 +64,7 @@ export function useNoteProgression({
     const randomScale =
       selectedScales[Math.floor(Math.random() * selectedScales.length)]
     setScale(randomScale)
-  }, [selectedScales, setScale, resetProgress])
+  }, [selectedScales, setScale])
 
   // Determine the next note based on direction and mode
   useEffect(() => {
