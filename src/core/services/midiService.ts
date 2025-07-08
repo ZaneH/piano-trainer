@@ -96,7 +96,7 @@ let currentConnection: any | null = null
 async function listMidiConnectionsWeb(): Promise<MidiDevice[]> {
   const nav = navigator as any
   try {
-    if (nav.requestMIDIAccess) {
+    if (!nav.requestMIDIAccess) {
       throw new Error('Web MIDI API not supported in this browser')
     }
 

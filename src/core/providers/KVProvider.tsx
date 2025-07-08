@@ -34,8 +34,8 @@ const KVProvider: FC<KVProviderProps> = ({ children }) => {
   const setSetting = useCallback(
     async <T,>(key: PTSettingsKeyType, value: T) => {
       const store = await storePromise
-      await store.set(key, value)
-      await store.save()
+      await store?.set(key, value)
+      await store?.save()
 
       switch (key) {
         case 'piano-sound':
@@ -110,18 +110,18 @@ const KVProvider: FC<KVProviderProps> = ({ children }) => {
     <KVContext.Provider
       value={{
         pianoSound,
-        setPianoSound: (sound) => setSetting('piano-sound', sound),
+        setPianoSound: (sound) => setSetting?.('piano-sound', sound),
         showKeyboard,
-        setShowKeyboard: (show) => setSetting('show-keyboard', show),
+        setShowKeyboard: (show) => setSetting?.('show-keyboard', show),
         muteSound,
-        setMuteSound: (mute) => setSetting('mute-sound', mute),
+        setMuteSound: (mute) => setSetting?.('mute-sound', mute),
         midiDevice,
         setMidiDevice: (device) =>
-          device && setSetting('midi-input-id', device.id),
+          device && setSetting?.('midi-input-id', device.id),
         language,
-        setLanguage: (lang) => setSetting('language', lang),
+        setLanguage: (lang) => setSetting?.('language', lang),
         isSentryEnabled,
-        setIsSentryEnabled: (enabled) => setSetting('is-sentry-on', enabled),
+        setIsSentryEnabled: (enabled) => setSetting?.('is-sentry-on', enabled),
         setSetting,
         getSetting,
       }}
