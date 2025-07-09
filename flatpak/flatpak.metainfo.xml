@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>com.zaaane.pianotrainer</id>
+  <name>Piano Trainer</name>
+  <summary>Memorize piano scales with ease! A piano practice program w/ MIDI support. Consider it an interactive reference manual 🎹</summary>
+  <metadata_license>MIT</metadata_license>
+  <project_license>MIT</project_license>
+  <description>
+    <p>
+      Piano Trainer is an app designed to help users learn basic piano scales and chords at their own pace using a MIDI or QWERTY keyboard. The app offers two modes: Quiz and Practice. In Quiz mode, users can test their knowledge of the circle of fifths and key recognition. Practice mode allows users to work on scales, chords, and fifths with interactive exercises and feedback.
+    </p>
+    <p>
+      The app also includes a couple of extra options:
+    </p>
+    <p>
+      - Ping Pong mode: A mode where users play scales forwards, then backwards. - Hard mode: A mode that hides the next note in the scale until the user gets it correct. - Shuffle mode: Switch to a new scale after completing the current one.
+    </p>
+    <p>
+      Piano Trainer has built-in piano sounds and support for multiple languages (English, French, Japanese, German, Portuguese, and Chinese.) The app is cross-platform and open-sourced.
+    </p>
+  </description>
+  <launchable type="desktop-id">com.zaaane.pianotrainer.desktop</launchable>
+  <screenshots>
+    <screenshot type="default">
+      <image>https://i.imgur.com/Nxg1706.png</image>
+    </screenshot>
+    <screenshot>
+      <image>https://i.imgur.com/mBg1fjH.png</image>
+    </screenshot>
+  </screenshots>
+</component>
