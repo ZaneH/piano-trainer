@@ -12,8 +12,9 @@
     <p>
       The app also includes a couple of extra options:
     </p>
-    <p>
-      - Ping Pong mode: A mode where users play scales forwards, then backwards. - Hard mode: A mode that hides the next note in the scale until the user gets it correct. - Shuffle mode: Switch to a new scale after completing the current one.
+    <p><em>Ping Pong mode</em>: A mode where users play scales forwards, then backwards.
+      <em>Hard mode</em>: A mode that hides the next note in the scale until the user gets it correct.
+      <em>Shuffle mode</em>: Switch to a new scale after completing the current one.
     </p>
     <p>
       Piano Trainer has built-in piano sounds and support for multiple languages (English, French, Japanese, German, Portuguese, and Chinese.) The app is cross-platform and open-sourced.

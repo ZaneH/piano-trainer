@@ -21,10 +21,11 @@ modules:
 
     sources:
       - type: file
-        path: flatpak.metainfo.xml
+        path: com.zaaane.pianotrainer.metainfo.xml
       - type: file
-        # Update version here
-        path: ../src-tauri/target/release/bundle/deb/Piano Trainer_1.3.1_amd64.deb
+        url: https://github.com/ZaneH/piano-trainer/releases/download/app-v1.3.1/Piano.Trainer_1.3.1_amd64.deb
+        sha256: 9f125bc25364a15ab4b669e3dfab53da64bc761498b5efdd7cd30979081fc728
+        only-arches: [x86_64]
     build-commands:
       - set -e
 
@@ -45,4 +46,4 @@ modules:
       - install -Dm644 deb-extract/usr/share/icons/hicolor/128x128/apps/Piano\ Trainer.png /app/share/icons/hicolor/128x128/apps/com.zaaane.pianotrainer.png
       - install -Dm644 deb-extract/usr/share/icons/hicolor/32x32/apps/Piano\ Trainer.png /app/share/icons/hicolor/32x32/apps/com.zaaane.pianotrainer.png
       - install -Dm644 deb-extract/usr/share/icons/hicolor/256x256@2/apps/Piano\ Trainer.png /app/share/icons/hicolor/256x256@2/apps/com.zaaane.pianotrainer.png
-      - install -Dm644 flatpak.metainfo.xml /app/share/metainfo/com.zaaane.pianotrainer.metainfo.xml
+      - install -Dm644 com.zaaane.pianotrainer.metainfo.xml /app/share/metainfo/com.zaaane.pianotrainer.metainfo.xml
