@@ -3,19 +3,25 @@
   <id>com.zaaane.pianotrainer</id>
   <name>Piano Trainer</name>
   <summary>Memorize piano scales with ease! A piano practice program w/ MIDI support. Consider it an interactive reference manual 🎹</summary>
+  <developer id="com.zaaane">
+    <name>Zane Helton</name>
+  </developer>
   <metadata_license>MIT</metadata_license>
   <project_license>MIT</project_license>
+  <url type="homepage">https://zaneh.itch.io/piano-trainer</url>
+  <url type="vcs-browser">https://github.com/ZaneH/piano-trainer</url>
+  <url type="bugtracker">https://github.com/ZaneH/piano-trainer/issues</url>
   <description>
-    <p>
-      Piano Trainer is an app designed to help users learn basic piano scales and chords at their own pace using a MIDI or QWERTY keyboard. The app offers two modes: Quiz and Practice. In Quiz mode, users can test their knowledge of the circle of fifths and key recognition. Practice mode allows users to work on scales, chords, and fifths with interactive exercises and feedback.
+    <p><em>Piano Trainer</em> is an app designed to help users learn basic piano scales and chords at their own pace using a MIDI or QWERTY keyboard. The app offers two modes: Quiz and Practice. In Quiz mode, users can test their knowledge of the circle of fifths and key recognition. Practice mode allows users to work on scales, chords, and fifths with interactive exercises and feedback.
     </p>
     <p>
-      The app also includes a couple of extra options:
+      The app includes:
     </p>
-    <p><em>Ping Pong mode</em>: A mode where users play scales forwards, then backwards.
-      <em>Hard mode</em>: A mode that hides the next note in the scale until the user gets it correct.
-      <em>Shuffle mode</em>: Switch to a new scale after completing the current one.
-    </p>
+    <ul>
+      <li><em>Ping Pong mode</em>: A mode where users play scales forwards, then backwards.</li>
+      <li><em>Hard mode</em>: A mode that hides the next note in the scale until the user gets it correct.</li>
+      <li><em>Shuffle mode</em>: Switch to a new scale after completing the current one.</li>
+    </ul>
     <p>
       Piano Trainer has built-in piano sounds and support for multiple languages (English, French, Japanese, German, Portuguese, and Chinese.) The app is cross-platform and open-sourced.
     </p>
@@ -23,10 +29,18 @@
   <launchable type="desktop-id">com.zaaane.pianotrainer.desktop</launchable>
   <screenshots>
     <screenshot type="default">
-      <image>https://i.imgur.com/Nxg1706.png</image>
+      <image>https://zaaane.com/piano-trainer/main-screen.png</image>
+      <caption>Practice all of your scales</caption>
     </screenshot>
     <screenshot>
-      <image>https://i.imgur.com/mBg1fjH.png</image>
+      <image>https://zaaane.com/piano-trainer/quiz-mode.png</image>
+      <caption>Quiz mode tests your knowledge</caption>
     </screenshot>
   </screenshots>
+  <releases>
+    <release version="1.3.1" date="2025-07-09"/>
+  </releases>
+  <content_rating type="oars-1.1">
+    <content_attribute id="social-info">intense</content_attribute>
+  </content_rating>
 </component>
