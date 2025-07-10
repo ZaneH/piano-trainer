@@ -11,6 +11,7 @@ finish-args:
   - --socket=wayland # Permission needed to show the window
   - --socket=fallback-x11 # Permission needed to show the window
   - --socket=pulseaudio # Access to PulseAudio, input/output, MIDI
+  - --device=dri # OpenGL, not necessary for all projects
   - --share=ipc
   - --share=network
   - --env=WEBKIT_DISABLE_COMPOSITING_MODE=1 # Optional: may solve some issues with black webviews on Wayland
