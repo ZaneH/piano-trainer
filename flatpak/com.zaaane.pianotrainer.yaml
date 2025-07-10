@@ -1,0 +1,50 @@
+# https://v2.tauri.app/distribute/flatpak/
+# This Flatpak builder configuration was taken from the Tauri docs.
+id: com.zaaane.pianotrainer
+
+runtime: org.gnome.Platform
+runtime-version: '47'
+sdk: org.gnome.Sdk
+
+command: piano-trainer
+finish-args:
+  - --socket=wayland # Permission needed to show the window
+  - --socket=fallback-x11 # Permission needed to show the window
+  - --socket=pulseaudio # Access to PulseAudio, input/output, MIDI
+  - --device=dri # OpenGL, not necessary for all projects
+  - --share=ipc
+  - --share=network
+  - --env=WEBKIT_DISABLE_COMPOSITING_MODE=1 # Optional: may solve some issues with black webviews on Wayland
+
+modules:
+  - name: binary
+    buildsystem: simple
+
+    sources:
+      - type: file
+        path: com.zaaane.pianotrainer.metainfo.xml
+      - type: file
+        url: https://github.com/ZaneH/piano-trainer/releases/download/app-v1.3.1/Piano.Trainer_1.3.1_amd64.deb
+        sha256: 9f125bc25364a15ab4b669e3dfab53da64bc761498b5efdd7cd30979081fc728
+        only-arches: [x86_64]
+    build-commands:
+      - set -e
+
+      # Extract the deb package
+      - mkdir deb-extract
+      - ar -x *.deb --output deb-extract
+      - tar -C deb-extract -xf deb-extract/data.tar.gz
+
+      # Copy binary
+      - mkdir -p /app/bin
+      - 'install -Dm755 deb-extract/usr/bin/Piano\ Trainer /app/bin/piano-trainer'
+
+      # Copy desktop file + ensure the right icon is set
+      - sed -i 's/^Icon=.*/Icon=com.zaaane.pianotrainer/' deb-extract/usr/share/applications/Piano\ Trainer.desktop
+      - install -Dm644 deb-extract/usr/share/applications/Piano\ Trainer.desktop /app/share/applications/com.zaaane.pianotrainer.desktop
+
+      # Copy icons
+      - install -Dm644 deb-extract/usr/share/icons/hicolor/128x128/apps/Piano\ Trainer.png /app/share/icons/hicolor/128x128/apps/com.zaaane.pianotrainer.png
+      - install -Dm644 deb-extract/usr/share/icons/hicolor/32x32/apps/Piano\ Trainer.png /app/share/icons/hicolor/32x32/apps/com.zaaane.pianotrainer.png
+      - install -Dm644 deb-extract/usr/share/icons/hicolor/256x256@2/apps/Piano\ Trainer.png /app/share/icons/hicolor/256x256@2/apps/com.zaaane.pianotrainer.png
+      - install -Dm644 com.zaaane.pianotrainer.metainfo.xml /app/share/metainfo/com.zaaane.pianotrainer.metainfo.xml

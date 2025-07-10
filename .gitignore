@@ -24,3 +24,9 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# Flatpak
+/builddir
+/build-dir
+/repo
+/.flatpak-builder

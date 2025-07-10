@@ -19,6 +19,7 @@ Learn to play the piano at your own pace through various modes of practice. [Wat
 - [x] Interactive fifths practice
 - [x] Interactive quiz
 - [x] Hard mode
+- [x] Shuffle mode
 
 ## Coming Soon
 

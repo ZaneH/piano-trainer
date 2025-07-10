@@ -1,14 +1,20 @@
 /**
  * Provider component for the Settings (KV) Context
  */
-import { load } from '@tauri-apps/plugin-store'
+import { load, Store } from '@tauri-apps/plugin-store'
 import { FC, ReactNode, useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { KVContext } from '../contexts/SettingsContext'
 import { MidiDevice, PTSettingsKeyType } from '../models/types'
+import { isTauri } from '@tauri-apps/api/core'
 
 // Create/load the store instance for persistent settings
-const storePromise = load('.settings.dat', { autoSave: false })
+let storePromise: Promise<Store>
+;(async () => {
+  if (isTauri()) {
+    storePromise = load('.settings.dat', { autoSave: false })
+  }
+})()
 
 interface KVProviderProps {
   children: ReactNode
@@ -28,8 +34,8 @@ const KVProvider: FC<KVProviderProps> = ({ children }) => {
   const setSetting = useCallback(
     async <T,>(key: PTSettingsKeyType, value: T) => {
       const store = await storePromise
-      await store.set(key, value)
-      await store.save()
+      await store?.set(key, value)
+      await store?.save()
 
       switch (key) {
         case 'piano-sound':
@@ -68,26 +74,26 @@ const KVProvider: FC<KVProviderProps> = ({ children }) => {
     const loadSettings = async () => {
       const store = await storePromise
 
-      const savedPianoSound = await store.get<string>('piano-sound')
+      const savedPianoSound = await store?.get<string>('piano-sound')
       if (savedPianoSound) setPianoSound(savedPianoSound)
 
-      const savedShowKeyboard = await store.get<boolean>('show-keyboard')
+      const savedShowKeyboard = await store?.get<boolean>('show-keyboard')
       if (savedShowKeyboard !== undefined) setShowKeyboard(savedShowKeyboard)
 
-      const savedMuteSound = await store.get<boolean>('mute-sound')
+      const savedMuteSound = await store?.get<boolean>('mute-sound')
       if (savedMuteSound !== undefined) setMuteSound(savedMuteSound)
 
-      const savedMidiInputId = await store.get<number>('midi-input-id')
+      const savedMidiInputId = await store?.get<number>('midi-input-id')
       if (savedMidiInputId !== undefined)
         setMidiDevice({ id: savedMidiInputId })
 
-      const savedLanguage = await store.get<string>('language')
+      const savedLanguage = await store?.get<string>('language')
       if (savedLanguage) {
         setLanguage(savedLanguage)
         i18n.changeLanguage(savedLanguage)
       }
 
-      const savedIsSentryOn = await store.get<boolean>('is-sentry-on')
+      const savedIsSentryOn = await store?.get<boolean>('is-sentry-on')
       if (savedIsSentryOn !== undefined) setIsSentryEnabled(savedIsSentryOn)
     }
 
@@ -104,18 +110,18 @@ const KVProvider: FC<KVProviderProps> = ({ children }) => {
     <KVContext.Provider
       value={{
         pianoSound,
-        setPianoSound: (sound) => setSetting('piano-sound', sound),
+        setPianoSound: (sound) => setSetting?.('piano-sound', sound),
         showKeyboard,
-        setShowKeyboard: (show) => setSetting('show-keyboard', show),
+        setShowKeyboard: (show) => setSetting?.('show-keyboard', show),
         muteSound,
-        setMuteSound: (mute) => setSetting('mute-sound', mute),
+        setMuteSound: (mute) => setSetting?.('mute-sound', mute),
         midiDevice,
         setMidiDevice: (device) =>
-          device && setSetting('midi-input-id', device.id),
+          device && setSetting?.('midi-input-id', device.id),
         language,
-        setLanguage: (lang) => setSetting('language', lang),
+        setLanguage: (lang) => setSetting?.('language', lang),
         isSentryEnabled,
-        setIsSentryEnabled: (enabled) => setSetting('is-sentry-on', enabled),
+        setIsSentryEnabled: (enabled) => setSetting?.('is-sentry-on', enabled),
         setSetting,
         getSetting,
       }}
