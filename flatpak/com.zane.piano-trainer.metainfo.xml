@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component type="desktop-application">
-  <id>com.zaaane.pianotrainer</id>
+  <id>com.zane.piano-trainer</id>
   <name>Piano Trainer</name>
   <summary>Memorize piano scales with ease! A piano practice program w/ MIDI support. Consider it an interactive reference manual 🎹</summary>
-  <developer id="com.zaaane">
+  <developer id="com.zane">
     <name>Zane Helton</name>
   </developer>
   <metadata_license>MIT</metadata_license>
@@ -26,7 +26,7 @@
       Piano Trainer has built-in piano sounds and support for multiple languages (English, French, Japanese, German, Portuguese, and Chinese.) The app is cross-platform and open-sourced.
     </p>
   </description>
-  <launchable type="desktop-id">com.zaaane.pianotrainer.desktop</launchable>
+  <launchable type="desktop-id">com.zane.piano-trainer.desktop</launchable>
   <screenshots>
     <screenshot type="default">
       <image>https://zaaane.com/piano-trainer/main-screen.png</image>

@@ -1,0 +1,51 @@
+# https://v2.tauri.app/distribute/flatpak/
+# This Flatpak builder configuration was derived from the Tauri docs.
+id: com.zane.piano-trainer
+
+runtime: org.gnome.Platform
+runtime-version: '48'
+sdk: org.gnome.Sdk
+
+command: piano-trainer
+finish-args:
+  - --socket=wayland # Permission needed to show the window
+  - --socket=fallback-x11 # Permission needed to show the window
+  - --socket=pulseaudio # Access to PulseAudio, input/output, MIDI
+  - --device=dri # OpenGL, not necessary for all projects
+  - --share=ipc
+  - --share=network
+  - --env=WEBKIT_DISABLE_COMPOSITING_MODE=1 # Optional: may solve some issues with black webviews on Wayland
+
+modules:
+  - name: piano-trainer
+    buildsystem: simple
+
+    sources:
+      - type: file
+        path: com.zane.piano-trainer.metainfo.xml
+      - type: file
+        # NOTE This needs to be updated with each release
+        url: https://github.com/ZaneH/piano-trainer/releases/download/app-v1.3.2/Piano.Trainer_1.3.2_amd64.deb
+        sha256: f9eef1591ee8128afd02b059fd754ce2ee057afb1bc6ff8f94efe2fd202eb03f
+        only-arches: [x86_64]
+    build-commands:
+      - set -e
+
+      # Extract the deb package
+      - mkdir deb-extract
+      - ar -x *.deb --output deb-extract
+      - tar -C deb-extract -xf deb-extract/data.tar.gz
+
+      # Copy binary
+      - mkdir -p /app/bin
+      - 'install -Dm755 deb-extract/usr/bin/piano-trainer /app/bin/piano-trainer'
+
+      # Copy desktop file + ensure the right icon is set
+      - sed -i 's/^Icon=.*/Icon=com.zane.piano-trainer/' deb-extract/usr/share/applications/Piano\ Trainer.desktop
+      - install -Dm644 deb-extract/usr/share/applications/Piano\ Trainer.desktop /app/share/applications/com.zane.piano-trainer.desktop
+
+      # Copy icons
+      - install -Dm644 deb-extract/usr/share/icons/hicolor/128x128/apps/piano-trainer.png /app/share/icons/hicolor/128x128/apps/com.zane.piano-trainer.png
+      - install -Dm644 deb-extract/usr/share/icons/hicolor/32x32/apps/piano-trainer.png /app/share/icons/hicolor/32x32/apps/com.zane.piano-trainer.png
+      - install -Dm644 deb-extract/usr/share/icons/hicolor/256x256@2/apps/piano-trainer.png /app/share/icons/hicolor/256x256@2/apps/com.zane.piano-trainer.png
+      - install -Dm644 com.zane.piano-trainer.metainfo.xml /app/share/metainfo/com.zane.piano-trainer.metainfo.xml

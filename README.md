@@ -52,14 +52,24 @@ Outputs to `./src-tauri/target/release/bundle`
 $ yarn tauri build
 ```
 
+## Build and Install Flatpak
+
+For non-FHS distros, the Flatpak can be used as a self-contained runtime environment. After cloning the repo, you can
+use the following commands to install and run Piano Trainer using Flatpak.
+
+```bash
+$ flatpak-builder --force-clean --user --install-deps-from=flathub --install builddir flatpak/com.zane.piano-trainer.yaml
+$ flatpak run com.zane.piano-trainer
+```
+
 # Contributions
 
 Contributions are more than welcome. Read the [Technical Breakdown here](https://github.com/ZaneH/piano-trainer/wiki/Technical-Breakdown) to learn about the codebase.
 
 Create a PR pointing to the `dev` branch. Stable builds will be merged into `main`.
 
-Code formatting is automically handled with Git Hooks.
+Code formatting is automatically handled with Git Hooks.
 
-# Credit
+# Credits
 
 Special thank you to [ruohki/tauri-midi-example](https://github.com/ruohki/tauri-midi-example), [kevinsqi/react-piano](https://github.com/kevinsqi/react-piano), and the [Tauri Discord community](https://tauri.app/).
