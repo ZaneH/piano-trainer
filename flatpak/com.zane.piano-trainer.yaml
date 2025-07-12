@@ -6,6 +6,10 @@ runtime: org.gnome.Platform
 runtime-version: '48'
 sdk: org.gnome.Sdk
 
+build-options:
+  build-args:
+    - --share=network
+
 command: piano-trainer
 finish-args:
   - --socket=wayland # Permission needed to show the window
@@ -26,7 +30,7 @@ modules:
       - type: file
         # NOTE This needs to be updated with each release
         url: https://github.com/ZaneH/piano-trainer/releases/download/app-v1.3.2/Piano.Trainer_1.3.2_amd64.deb
-        sha256: f9eef1591ee8128afd02b059fd754ce2ee057afb1bc6ff8f94efe2fd202eb03f
+        sha256: db68d57c5e84327511dde0e24c397a24c85bd74a110eab8771839cdd044ece7a
         only-arches: [x86_64]
     build-commands:
       - set -e
