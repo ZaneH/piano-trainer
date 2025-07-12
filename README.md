@@ -54,8 +54,7 @@ $ yarn tauri build
 
 ## Build and Install Flatpak
 
-For non-FHS distros, the Flatpak can be used as a self-contained runtime environment. After cloning the repo, you can
-use the following commands to install and run Piano Trainer using Flatpak.
+For non-FHS distros, the Flatpak can be used as a self-contained runtime environment. Ensure these build dependencies are installed: `flatpak`, `flatpak-builder`, and `appstream`. After cloning the repo, use the following commands to install and run Piano Trainer:
 
 ```bash
 $ flatpak-builder --force-clean --user --install-deps-from=flathub --install builddir flatpak/com.zane.piano-trainer.yaml
