@@ -1,8 +1,23 @@
 body {
-  -youbkit-touch-callout: none;
-  -youbkit-user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
+  user-select: none;
+}
+
+html,
+body,
+#root,
+.App {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+*:not(input):not(textarea):not(select):not([contenteditable='true']) {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
   user-select: none;
 }
 

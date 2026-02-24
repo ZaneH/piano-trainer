@@ -1,6 +1,6 @@
 // Based on SoundfontProvider
 // https://github.com/kevinsqi/react-piano/blob/master/demo/src/SoundfontProvider.js
-import { JSX, useCallback, useEffect, useMemo, useState } from 'react'
+import { JSX, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import Soundfont, { InstrumentName, Player } from 'soundfont-player'
 
 interface SoundfontProviderProps {
@@ -26,9 +26,7 @@ const SoundfontProvider = ({
   render,
 }: SoundfontProviderProps) => {
   const [instrument, setInstrument] = useState<Player>()
-  const [activeAudioNodes, setActiveAudioNodes] = useState<{
-    [note: string]: any
-  }>({})
+  const activeAudioNodesRef = useRef<{ [note: string]: any }>({})
 
   const audioContext = useMemo(
     () => new (window.AudioContext || window.webkitAudioContext)(),
@@ -38,25 +36,21 @@ const SoundfontProvider = ({
   const playNote = (midiNumber: string) => {
     resumeAudio().then(() => {
       const audioNode = instrument?.play(midiNumber)
-      setActiveAudioNodes((aan) => ({
-        ...aan,
-        [midiNumber]: audioNode,
-      }))
+      if (!audioNode) return
+
+      activeAudioNodesRef.current[midiNumber] = audioNode
     })
   }
 
   const stopNote = (midiNumber: string) => {
     resumeAudio().then(() => {
-      if (!activeAudioNodes[midiNumber]) {
+      const activeNode = activeAudioNodesRef.current[midiNumber]
+      if (!activeNode) {
         return
       }
 
-      const audioNode = activeAudioNodes[midiNumber]
-      audioNode.stop()
-      setActiveAudioNodes((aan) => ({
-        ...aan,
-        [midiNumber]: null,
-      }))
+      activeNode.stop()
+      delete activeAudioNodesRef.current[midiNumber]
     })
   }
 

@@ -1,8 +1,12 @@
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 import styled from 'styled-components'
 import KVProvider from './core/providers/KVProvider'
 import SidebarProvider from './core/providers/SidebarProvider'
 import TrainerProvider from './core/providers/TrainerProvider'
+import {
+  isEditableTarget,
+  shouldPreventDoubleTapDefault,
+} from './core/services/touchGuard'
 import ScreenManager from './components/ScreenManager/ScreenManager'
 import Keyboard from './components/Keyboard'
 import { TrainerDisplay, TrainerPiano } from './components/Trainer'
@@ -24,6 +28,8 @@ const QuizScreenLayout = styled.div`
 `
 
 function App() {
+  const lastTouchStartRef = useRef(0)
+
   // Handle keyboard events for the app
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
     const { key, metaKey } = e
@@ -38,14 +44,42 @@ function App() {
     }
   }, [])
 
+  const preventSelectionDefault = useCallback((e: Event) => {
+    if (isEditableTarget(e.target)) {
+      return
+    }
+
+    e.preventDefault()
+  }, [])
+
+  const handleTouchStart = useCallback((e: TouchEvent) => {
+    const now = Date.now()
+    if (
+      shouldPreventDoubleTapDefault(lastTouchStartRef.current, now, e.target)
+    ) {
+      e.preventDefault()
+    }
+    lastTouchStartRef.current = now
+  }, [])
+
   // Add and remove event listeners
   useEffect(() => {
     document.addEventListener('keydown', handleKeyDown)
+    document.addEventListener('selectstart', preventSelectionDefault)
+    document.addEventListener('contextmenu', preventSelectionDefault)
+    document.addEventListener('gesturestart', preventSelectionDefault)
+    document.addEventListener('touchstart', handleTouchStart, {
+      passive: false,
+    })
 
     return () => {
       document.removeEventListener('keydown', handleKeyDown)
+      document.removeEventListener('selectstart', preventSelectionDefault)
+      document.removeEventListener('contextmenu', preventSelectionDefault)
+      document.removeEventListener('gesturestart', preventSelectionDefault)
+      document.removeEventListener('touchstart', handleTouchStart)
     }
-  }, [handleKeyDown])
+  }, [handleKeyDown, handleTouchStart, preventSelectionDefault])
 
   return (
     <KVProvider>
