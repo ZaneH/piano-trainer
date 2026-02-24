@@ -30,3 +30,6 @@ yarn-error.log*
 /build-dir
 /repo
 /.flatpak-builder
+
+# direnv
+.direnv/
