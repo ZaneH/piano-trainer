@@ -16,6 +16,19 @@ interface UsePianoKeyboardProps {
   lastNote: MidiNumber
 }
 
+export function findExactScaleMatch(
+  chordStack: MidiNumber[],
+  targetMidiNumber: MidiNumber
+): MidiNumber | undefined {
+  const exactMatch = chordStack.find((cs) => cs === targetMidiNumber)
+  if (exactMatch !== undefined) {
+    return exactMatch
+  }
+
+  const targetNote = midiNumberToNote(targetMidiNumber)
+  return chordStack.find((cs) => midiNumberToNote(cs) === targetNote)
+}
+
 export function usePianoKeyboard({
   firstNote,
   lastNote,
@@ -78,12 +91,11 @@ export function usePianoKeyboard({
       return
     }
 
-    const targetScaleNote = midiNumberToNote(noteTracker.nextTargetMidiNumber)
-
     if (practiceMode === 'scales') {
-      // For scales, we just need to match a single note
-      const matchingNote = chordStack.find(
-        (cs) => midiNumberToNote(cs) === targetScaleNote
+      // For scales, match by pitch class so any octave can progress.
+      const matchingNote = findExactScaleMatch(
+        chordStack,
+        noteTracker.nextTargetMidiNumber
       )
       if (matchingNote !== undefined) {
         lastProcessedNoteRef.current = matchingNote

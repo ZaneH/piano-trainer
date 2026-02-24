@@ -25,8 +25,8 @@ const Keyboard = () => {
   const { addToChordStack, removeFromChordStack } = useTrainer()
 
   // Setup MIDI range for keyboard
-  const firstNote = MidiNumbers.fromNote('c3')
-  const lastNote = MidiNumbers.fromNote('c5')
+  const firstNote = MidiNumbers.fromNote('c2')
+  const lastNote = MidiNumbers.fromNote('c6')
 
   // Setup keyboard shortcuts
   const keyboardShortcuts = KeyboardShortcuts.create({
@@ -47,6 +47,10 @@ const Keyboard = () => {
     firstNote,
     lastNote,
   })
+
+  const rawActiveMidiNumbers = Object.keys(activeNotes)
+    .filter((v: string) => activeNotes[Number(v)])
+    .map((s: string) => Number(s))
 
   return (
     <SoundfontProvider
@@ -92,9 +96,7 @@ const Keyboard = () => {
                   )}
                 </p>
               )}
-              activeNotes={Object.keys(activeNotes)
-                .filter((v: string) => activeNotes[Number(v)])
-                .map((s: string) => Number(s))}
+              activeNotes={rawActiveMidiNumbers}
             />
           </KeyboardContainer>
         )
