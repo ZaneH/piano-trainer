@@ -30,7 +30,7 @@ modules:
       - type: file
         # NOTE This needs to be updated with each release
         url: https://github.com/ZaneH/piano-trainer/releases/download/app-v1.3.3/Piano.Trainer_1.3.3_amd64.deb
-        sha256: 13df41fd5ad96fac81872dbf450256b77edb30be75895e8c930e3f458cdf40c3
+        sha256: b986e8df069fdd1ec18f5683ef5fbfa1bd8473ebd58861e682f0b0341da14f49
         only-arches: [x86_64]
     build-commands:
       - set -e
