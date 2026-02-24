@@ -146,8 +146,17 @@ describe('Keyboard touch behavior', () => {
     expect(lastPianoProps.noteRange).toEqual({ first: 48, last: 72 })
   })
 
+  it('uses a reduced note range on half-screen desktop widths', () => {
+    setInnerWidth(960)
+    render(<Keyboard />)
+
+    const lastPianoProps =
+      mockPiano.mock.calls[mockPiano.mock.calls.length - 1][0]
+    expect(lastPianoProps.noteRange).toEqual({ first: 48, last: 72 })
+  })
+
   it('uses full note range on large screens', () => {
-    setInnerWidth(1024)
+    setInnerWidth(1366)
     render(<Keyboard />)
 
     const lastPianoProps =

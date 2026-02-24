@@ -38,6 +38,7 @@ export function usePianoKeyboard({
   )
 
   const lastProcessedNoteRef = useRef<number | null>(null)
+  const lastProcessedTargetRef = useRef<number | null>(null)
 
   const {
     noteTracker,
@@ -86,8 +87,13 @@ export function usePianoKeyboard({
 
     const targetNote = noteTracker.nextTargetMidiNumber
 
-    if (chordStack.includes(lastProcessedNoteRef.current || -1)) {
-      // If the last processed note is already in the chord stack, skip processing
+    if (
+      lastProcessedNoteRef.current !== null &&
+      lastProcessedTargetRef.current === targetNote &&
+      chordStack.length === 1 &&
+      chordStack[0] === lastProcessedNoteRef.current
+    ) {
+      // If only the last processed note is still held, skip processing until a new note is played.
       return
     }
 
@@ -99,6 +105,7 @@ export function usePianoKeyboard({
       )
       if (matchingNote !== undefined) {
         lastProcessedNoteRef.current = matchingNote
+        lastProcessedTargetRef.current = targetNote
         advanceNote()
         clearChordStack()
       }
@@ -123,6 +130,7 @@ export function usePianoKeyboard({
           targetChordNotes.includes(midiNumberToNote(cs))
         )
         lastProcessedNoteRef.current = processedChordNote || targetNote
+        lastProcessedTargetRef.current = targetNote
         advanceNote()
         clearChordStack()
       }
@@ -147,6 +155,7 @@ export function usePianoKeyboard({
           targetChordNotes.includes(midiNumberToNote(cs))
         )
         lastProcessedNoteRef.current = processedChordNote || targetNote
+        lastProcessedTargetRef.current = targetNote
         advanceNote()
         clearChordStack()
       }
@@ -175,6 +184,7 @@ export function usePianoKeyboard({
           targetFifthNotes.includes(midiNumberToNote(cs))
         )
         lastProcessedNoteRef.current = processedFifthNote || targetNote
+        lastProcessedTargetRef.current = targetNote
         advanceNote()
         clearChordStack()
       }

@@ -25,6 +25,8 @@ const KeyboardContainer = styled.div<{ hide: boolean }>`
     `}
 `
 
+const SMALL_SCREEN_BREAKPOINT = 1200
+
 const Keyboard = () => {
   const { t } = useTranslation()
   const { muteSound, showKeyboard, midiDevice, pianoSound } = useSettings()
@@ -32,12 +34,12 @@ const Keyboard = () => {
   const pressedNotesRef = useRef<Set<number>>(new Set())
   const stopSoundRef = useRef<(midiNumber: number) => void>(() => {})
   const [isSmallScreen, setIsSmallScreen] = useState(
-    () => window.innerWidth <= 768
+    () => window.innerWidth <= SMALL_SCREEN_BREAKPOINT
   )
 
   useEffect(() => {
     const handleResize = () => {
-      setIsSmallScreen(window.innerWidth <= 768)
+      setIsSmallScreen(window.innerWidth <= SMALL_SCREEN_BREAKPOINT)
     }
 
     window.addEventListener('resize', handleResize)
