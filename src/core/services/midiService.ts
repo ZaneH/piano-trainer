@@ -92,6 +92,22 @@ async function subscribeMidiMessagesTauri(
 
 let webMidiAccess: any | null = null
 let currentConnection: any | null = null
+let webInputKeys: string[] = []
+
+/**
+ * iOS Web MIDI Browser exposes a Map-like object that can fail with
+ * standard iteration helpers; key-iteration is the reliable path.
+ */
+function enumerateKeys<TMap extends Map<string, any>>(map: TMap): string[] {
+  const keys: string[] = []
+  const iterator = map.keys()
+  for (;;) {
+    const { done, value: key } = iterator.next()
+    if (done) break
+    keys.push(key)
+  }
+  return keys
+}
 
 async function listMidiConnectionsWeb(): Promise<MidiDevice[]> {
   const nav = navigator as any
@@ -100,13 +116,18 @@ async function listMidiConnectionsWeb(): Promise<MidiDevice[]> {
       throw new Error('Web MIDI API not supported in this browser')
     }
 
-    webMidiAccess = await nav?.requestMIDIAccess()
+    try {
+      webMidiAccess = await nav.requestMIDIAccess({ sysex: false })
+    } catch {
+      webMidiAccess = await nav.requestMIDIAccess()
+    }
     const devices: MidiDevice[] = []
+    webInputKeys = enumerateKeys(webMidiAccess.inputs)
 
-    let id = 0
-    webMidiAccess?.inputs.forEach((input: any) => {
+    webInputKeys.forEach((key, id) => {
+      const input = webMidiAccess.inputs.get(key)
       devices.push({
-        id: id++,
+        id,
         name: input?.name || 'Unknown Device',
       })
     })
@@ -124,9 +145,12 @@ async function openMidiConnectionWeb(deviceId: number): Promise<void> {
       throw new Error('MIDI access not initialized')
     }
 
-    const inputs = Array.from(webMidiAccess.inputs.values())
-    const selectedInput = inputs[deviceId]
-    console.log({ selectedInput })
+    if (!webInputKeys.length) {
+      webInputKeys = enumerateKeys(webMidiAccess.inputs)
+    }
+
+    const selectedKey = webInputKeys[deviceId]
+    const selectedInput = selectedKey && webMidiAccess.inputs.get(selectedKey)
 
     if (!selectedInput) {
       throw new Error(`No MIDI input found at index ${deviceId}`)
