@@ -81,7 +81,11 @@ const SoundfontProvider = ({
   )
 
   useEffect(() => {
-    loadInstrument(instrumentName)?.then((i) => setInstrument(i))
+    loadInstrument(instrumentName)
+      ?.then((i) => setInstrument(i))
+      .catch((error) => {
+        console.error('Failed to load soundfont instrument.', error)
+      })
   }, [instrumentName, loadInstrument])
 
   return render({ playNote, stopNote })

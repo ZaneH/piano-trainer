@@ -30,6 +30,7 @@
             harfbuzz
             librsvg
             alsa-lib
+            glib-networking
           ];
 
           LD_LIBRARY_PATH = pkgs.lib.makeLibraryPath [
@@ -45,7 +46,10 @@
             pkgs.librsvg
             pkgs.alsa-lib
             pkgs.openssl
+            pkgs.glib-networking
           ];
+
+          GIO_EXTRA_MODULES = "${pkgs.glib-networking}/lib/gio/modules";
         };
     };
 }
