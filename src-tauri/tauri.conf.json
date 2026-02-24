@@ -72,6 +72,6 @@
       "digestAlgorithm": "sha256",
       "timestampUrl": ""
     },
-    "createUpdaterArtifacts": false
+    "createUpdaterArtifacts": true
   }
 }
